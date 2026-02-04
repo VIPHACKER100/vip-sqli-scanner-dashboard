@@ -38,12 +38,12 @@ const Terminal: React.FC<TerminalProps> = ({ logs, onClear }) => {
     };
 
     return (
-        <div className={`fixed bottom-0 right-0 left-64 transition-all duration-300 z-50 ${isExpanded ? 'h-80' : 'h-10'} bg-gray-950/95 backdrop-blur-md border-t border-white/10 shadow-2xl`}>
+        <div className={`fixed bottom-0 right-0 left-64 transition-all duration-300 z-50 ${isExpanded ? 'h-80' : 'h-10'} bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-t border-slate-200 dark:border-white/10 shadow-2xl`}>
             {/* Header */}
             <div className="h-10 flex items-center justify-between px-4 cursor-pointer hover:bg-white/5 transition-colors" onClick={() => setIsExpanded(!isExpanded)}>
                 <div className="flex items-center gap-2">
-                    <TerminalIcon size={14} className="text-primary-400" />
-                    <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Technical Mission Control</span>
+                    <TerminalIcon size={14} className="text-primary-600 dark:text-primary-400" />
+                    <span className="text-[10px] font-bold text-slate-700 dark:text-gray-300 uppercase tracking-widest">Technical Mission Control</span>
                     <span className="text-[10px] bg-primary-600/20 text-primary-400 px-1.5 py-0.5 rounded border border-primary-600/30 ml-2 font-mono">
                         {logs.length} events
                     </span>
@@ -74,11 +74,11 @@ const Terminal: React.FC<TerminalProps> = ({ logs, onClear }) => {
                                     {log.level}
                                 </span>
                                 <div className="flex-1">
-                                    <p className="text-xs text-gray-200 leading-relaxed">{log.message}</p>
+                                    <p className="text-xs text-gray-700 dark:text-gray-200 leading-relaxed">{log.message}</p>
                                     {log.url && <p className="text-[10px] text-primary-500/70 mt-0.5 truncate max-w-full">TARGET :: {log.url}</p>}
                                     {log.payload && (
-                                        <div className="mt-2 p-2 bg-gray-900 border border-white/5 rounded text-[11px] text-gray-400 overflow-x-auto">
-                                            <span className="text-primary-400 mr-2">$</span>{log.payload}
+                                        <div className="mt-2 p-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded text-[11px] text-slate-600 dark:text-gray-400 overflow-x-auto transition-colors">
+                                            <span className="text-primary-600 dark:text-primary-400 mr-2">$</span>{log.payload}
                                         </div>
                                     )}
                                 </div>

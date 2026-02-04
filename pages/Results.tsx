@@ -25,23 +25,42 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
       case 'VULNERABLE':
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black bg-red-500/10 text-red-500 border border-red-500/20 uppercase tracking-widest animate-pulse">Breach</span>;
       case 'SUSPICIOUS':
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black bg-amber-500/10 text-amber-500 border border-amber-500/20 uppercase tracking-widest">Anomalous</span>;
+        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black bg-amber-500/10 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 border border-amber-500/20 uppercase tracking-widest">Anomalous</span>;
       case 'SAFE':
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black bg-primary-500/5 text-primary-500/60 border border-primary-500/10 uppercase tracking-widest">Cleared</span>;
+        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black bg-emerald-500/5 text-emerald-600 dark:text-primary-500/60 border border-emerald-500/10 dark:border-primary-500/10 uppercase tracking-widest">Cleared</span>;
       default:
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black bg-gray-800 text-gray-500 uppercase tracking-widest">Idle</span>;
     }
   };
 
-  const handleExport = () => {
+  const handleExport = (format: 'txt' | 'json') => {
     if (results.length === 0) return;
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const filename = `VIP_SQLi_Report_${timestamp}.txt`;
-    let report = `==========================================================\n       ADVANCED SQL INJECTION SCANNER v2.2 REPORT\n==========================================================\n\n`;
-    results.forEach((r, i) => {
-      report += `[${i + 1}] VERDICT: ${r.verdict}\nURL: ${r.url}\nDETAILS: ${r.details || 'N/A'}\n\n`;
-    });
-    const blob = new Blob([report], { type: 'text/plain' });
+    const filename = `VIP_SQLi_Report_${timestamp}.${format}`;
+    let content = '';
+    let type = '';
+
+    if (format === 'json') {
+      content = JSON.stringify({
+        scannerVersion: 'v2.2-Elite',
+        timestamp: new Date().toISOString(),
+        missionSummary: {
+          total: results.length,
+          vulnerable: results.filter(r => r.verdict === 'VULNERABLE').length,
+          suspicious: results.filter(r => r.verdict === 'SUSPICIOUS').length
+        },
+        findings: results
+      }, null, 2);
+      type = 'application/json';
+    } else {
+      content = `==========================================================\n       ADVANCED SQL INJECTION SCANNER v2.2 REPORT\n==========================================================\n\n`;
+      results.forEach((r, i) => {
+        content += `[${i + 1}] VERDICT: ${r.verdict}\nURL: ${r.url}\nDETAILS: ${r.details || 'N/A'}\n\n`;
+      });
+      type = 'text/plain';
+    }
+
+    const blob = new Blob([content], { type });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -61,28 +80,39 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
     <div className="space-y-10 reveal-up pb-20 matrix-text-overlay">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/5 pb-8">
         <div>
-          <h2 className="text-4xl font-bold text-white tracking-tighter uppercase italic">Forensic Findings</h2>
-          <p className="text-gray-400 text-sm mt-2">Intelligence harvest and vector validation repository.</p>
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase italic">Forensic Findings</h2>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Intelligence harvest and vector validation repository.</p>
         </div>
         <div className="flex gap-4">
-          <div className="px-6 py-3 bg-white/[0.02] border border-white/5 rounded-3xl flex items-center gap-4">
+          <div className="px-6 py-3 bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-3xl flex items-center gap-4 transition-colors">
             <Package size={20} className="text-primary-500" />
             <div>
-              <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em]">Stored_Payloads</p>
-              <p className="text-xl font-mono text-white font-bold">{results.length} VECTORS</p>
+              <p className="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Stored_Payloads</p>
+              <p className="text-xl font-mono text-gray-900 dark:text-white font-bold">{results.length} VECTORS</p>
             </div>
           </div>
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-4 px-8 py-4 bg-primary-600/10 hover:bg-primary-600 text-primary-400 hover:text-white rounded-[24px] border border-primary-500/20 transition-all font-black text-[10px] uppercase tracking-[0.2em] shadow-xl active:scale-95 group"
-          >
-            <Download size={16} className="group-hover:translate-y-0.5 transition-transform" />
-            Export Mission Intelligence
-          </button>
+          <div className="flex bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-3xl p-1 gap-1">
+            <button
+              onClick={() => handleExport('txt')}
+              className="flex items-center gap-3 px-6 py-3 bg-primary-600/10 hover:bg-primary-600 text-primary-600 dark:text-primary-400 hover:text-white rounded-[20px] transition-all font-black text-[10px] uppercase tracking-widest active:scale-95 group"
+              title="Download Text Report"
+            >
+              <Download size={14} />
+              TXT_INTEL
+            </button>
+            <button
+              onClick={() => handleExport('json')}
+              className="flex items-center gap-3 px-6 py-3 bg-purple-600/10 hover:bg-purple-600 text-purple-600 dark:text-purple-400 hover:text-white rounded-[20px] transition-all font-black text-[10px] uppercase tracking-widest active:scale-95 group"
+              title="Download JSON Data"
+            >
+              <FileCode size={14} />
+              JSON_RAW
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="bg-gray-900/40 backdrop-blur-3xl border border-white/5 rounded-[40px] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.4)] flex flex-col group">
+      <div className="hf-glass hf-glass-hover rounded-[40px] overflow-hidden shadow-xl dark:shadow-[0_0_80px_rgba(0,0,0,0.4)] flex flex-col group transition-colors">
         {/* Elite Toolbar */}
         <div className="p-8 border-b border-white/5 bg-white/[0.01] flex flex-col lg:flex-row gap-8">
           <div className="relative flex-1 group/search">
@@ -90,12 +120,12 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
             <input
               type="text"
               placeholder="SEARCH SECURED INTELLIGENCE (URL/VECTOR)..."
-              className="w-full pl-14 pr-6 py-4 bg-gray-950 border border-white/5 rounded-[24px] text-gray-200 focus:border-primary-500/40 outline-none font-mono text-xs tracking-widest shadow-inner transition-all placeholder:text-gray-600"
+              className="w-full pl-14 pr-6 py-4 bg-slate-100 dark:bg-gray-950 border border-slate-200 dark:border-white/5 rounded-[24px] text-slate-900 dark:text-gray-200 focus:border-primary-500/40 outline-none font-mono text-xs tracking-widest shadow-inner transition-all placeholder:text-slate-400 dark:placeholder:text-gray-600"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <div className="flex gap-3 bg-gray-950/50 p-2 rounded-[28px] border border-white/5">
+          <div className="flex gap-3 bg-slate-100 dark:bg-gray-950/50 p-2 rounded-[28px] border border-slate-200 dark:border-white/5">
             {['all', 'vulnerable', 'suspicious', 'safe'].map(f => (
               <button
                 key={f}
@@ -114,14 +144,14 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
         {/* Technical Data Web */}
         <div className="overflow-auto scrollbar-hide">
           <table className="w-full text-left border-collapse">
-            <thead className="bg-white/[0.02] text-gray-400 text-[10px] uppercase font-black tracking-[0.25em] sticky top-0 z-10 backdrop-blur-xl border-b border-white/5">
+            <thead className="bg-slate-50 dark:bg-white/[0.02] text-slate-500 dark:text-gray-400 text-[10px] uppercase font-black tracking-[0.25em] sticky top-0 z-10 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 transition-colors">
               <tr>
                 <th className="px-10 py-5">Classification</th>
                 <th className="px-10 py-5 text-center">Infiltration Point</th>
                 <th className="px-10 py-5 text-right">Confidence Matrix</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.02]">
+            <tbody className="divide-y divide-slate-100 dark:divide-white/[0.02]">
               {filteredResults.length === 0 ? (
                 <tr>
                   <td colSpan={3} className="px-10 py-24 text-center">
@@ -135,7 +165,7 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                 filteredResults.map((result) => (
                   <React.Fragment key={result.id}>
                     <tr
-                      className={`hover:bg-white/[0.02] transition-all cursor-pointer group ${expandedId === result.id ? 'bg-primary-600/[0.03]' : ''}`}
+                      className={`hover:bg-primary-500/5 transition-all cursor-pointer group ${expandedId === result.id ? 'bg-primary-600/[0.05]' : ''}`}
                       onClick={() => setExpandedId(expandedId === result.id ? null : result.id)}
                     >
                       <td className="px-10 py-8 w-48">
@@ -175,17 +205,17 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                     </tr>
 
                     {expandedId === result.id && (
-                      <tr className="bg-black/20 italic">
+                      <tr className="bg-gray-50/50 dark:bg-black/20 italic">
                         <td colSpan={3} className="px-12 py-12 border-b border-white/5 relative">
                           <div className="absolute inset-0 scan-line-overlay opacity-5 pt-0"></div>
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10">
                             <div className="space-y-8">
                               <div>
-                                <h4 className="text-[10px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4 flex items-center gap-3">
+                                <h4 className="text-[10px] font-black text-gray-500 dark:text-gray-600 uppercase tracking-[0.3em] mb-4 flex items-center gap-3 transition-colors">
                                   <TerminalIcon size={14} className="text-primary-500" />
                                   Operational Forensic Log
                                 </h4>
-                                <pre className="p-6 bg-gray-950 border border-white/5 rounded-[32px] text-xs font-mono text-gray-400 leading-relaxed shadow-inner overflow-hidden relative">
+                                <pre className="p-6 bg-gray-100 dark:bg-gray-950 border border-gray-200 dark:border-white/5 rounded-[32px] text-xs font-mono text-gray-600 dark:text-gray-400 leading-relaxed shadow-inner overflow-hidden relative transition-colors">
                                   <div className="absolute top-0 right-0 p-4 opacity-5"><Activity size={60} /></div>
                                   {result.details}
                                 </pre>
@@ -210,9 +240,9 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
 
                             <div className="space-y-8">
                               {result.extraction ? (
-                                <div className="bg-gray-900/60 backdrop-blur-xl p-8 rounded-[40px] border border-white/5 shadow-2xl relative overflow-hidden">
+                                <div className="hf-glass p-8 rounded-[40px] shadow-xl dark:shadow-2xl relative overflow-hidden transition-colors">
                                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-600/50 to-transparent"></div>
-                                  <h4 className="text-sm font-black text-white mb-8 flex items-center gap-4 uppercase italic tracking-tighter">
+                                  <h4 className="text-sm font-black text-gray-900 dark:text-white mb-8 flex items-center gap-4 uppercase italic tracking-tighter">
                                     <div className="p-2.5 bg-primary-600/10 rounded-xl border border-primary-500/20">
                                       <Activity size={18} className="text-primary-400" />
                                     </div>
@@ -249,9 +279,9 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                                         </div>
                                         <div className="space-y-3">
                                           {Object.keys(result.extraction.extractedData).slice(0, 1).map(table => (
-                                            <div key={table} className="bg-black border border-red-500/10 rounded-2xl p-5 shadow-inner group/row relative overflow-hidden">
-                                              <div className="absolute top-0 left-0 w-0.5 h-full bg-red-500/20 group-hover/row:bg-red-500 transition-all"></div>
-                                              <pre className="text-[10px] font-mono text-gray-500 leading-relaxed overflow-x-auto">
+                                            <div key={table} className="bg-gray-100 dark:bg-black border border-gray-200 dark:border-red-500/10 rounded-2xl p-5 shadow-inner group/row relative overflow-hidden transition-colors">
+                                              <div className="absolute top-0 left-0 w-0.5 h-full bg-red-600/30 dark:bg-red-500/20 group-hover/row:bg-red-500 transition-all"></div>
+                                              <pre className="text-[10px] font-mono text-gray-600 dark:text-gray-500 leading-relaxed overflow-x-auto transition-colors">
                                                 {JSON.stringify(result.extraction!.extractedData![table][0], null, 2)}
                                               </pre>
                                             </div>
@@ -320,7 +350,7 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                   <TerminalIcon size={16} />
                   Raw Mission Request (Vector)
                 </h4>
-                <div className="p-8 bg-black border border-white/5 rounded-[32px] font-mono text-[11px] leading-relaxed relative group shadow-inner">
+                <div className="p-8 bg-gray-50 dark:bg-black border border-gray-100 dark:border-white/5 rounded-[32px] font-mono text-[11px] leading-relaxed relative group shadow-inner transition-colors">
                   <div className="absolute top-0 right-0 p-8 opacity-5"><Globe size={80} /></div>
                   <div className="text-primary-400">GET <span className="text-gray-300 italic">{inspectingResult.url}</span> HTTP/1.1</div>
                   <div className="text-purple-400 mt-2">Host: <span className="text-gray-400 font-bold tracking-tight">target.infrastructure.net</span></div>
@@ -338,7 +368,7 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                   <ShieldCheck size={16} />
                   Heuristic Response Intelligence
                 </h4>
-                <div className="p-8 bg-black border border-white/5 rounded-[32px] font-mono text-[11px] leading-relaxed relative overflow-hidden shadow-inner">
+                <div className="p-8 bg-gray-50 dark:bg-black border border-gray-100 dark:border-white/5 rounded-[32px] font-mono text-[11px] leading-relaxed relative overflow-hidden shadow-inner transition-colors">
                   <div className="text-green-500 font-bold mb-4">HTTP/1.1 <span className="px-3 py-0.5 bg-green-500/10 rounded-full border border-green-500/20 ml-2 shadow-[0_0_10px_rgba(34,197,94,0.2)]">200 OK</span></div>
                   <div className="space-y-1 text-gray-600 text-[10px]">
                     <div>Content-Type: application/json; charset=UTF-8</div>

@@ -8,6 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -64,6 +65,12 @@
       width: 100%;
       height: 100%;
       z-index: -1;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .dark .mesh-gradient {
+      opacity: 1;
       background-image:
         radial-gradient(at 0% 0%, hsla(263, 100%, 12%, 1) 0, transparent 50%),
         radial-gradient(at 50% 0%, hsla(280, 100%, 7%, 1) 0, transparent 50%),

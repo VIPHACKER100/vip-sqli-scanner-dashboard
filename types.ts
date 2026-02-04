@@ -89,5 +89,6 @@ export enum Page {
   RESULTS = 'results',
   PLUGINS = 'plugins',
   SETTINGS = 'settings',
-  DOCS = 'docs'
+  DOCS = 'docs',
+  ABOUT = 'about'
 }

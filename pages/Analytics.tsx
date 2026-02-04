@@ -9,25 +9,26 @@ import { ShieldCheck, AlertTriangle, Target, Activity, Cpu, Zap, BarChart3, Tren
 interface AnalyticsProps {
     results: ScanResult[];
     stats: ScanStats;
+    theme: 'light' | 'dark';
 }
 
 const AnalyticsCard = ({ title, children, icon: Icon, subtitle }: any) => (
-    <div className="bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-[40px] p-8 shadow-2xl transition-all hover:border-white/10 group relative overflow-hidden">
+    <div className="hf-glass hf-glass-hover rounded-[40px] p-8 group overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform">
             <Icon size={120} />
         </div>
         <div className="flex items-center justify-between mb-10 relative z-10">
             <div>
-                <h3 className="text-sm font-bold text-white uppercase tracking-[0.2em] flex items-center gap-3">
-                    <div className="p-2 bg-white/5 rounded-xl">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-[0.2em] flex items-center gap-3">
+                    <div className="p-2 bg-slate-900 dark:bg-white/5 rounded-xl transition-colors">
                         <Icon size={16} className="text-primary-500" />
                     </div>
                     {title}
                 </h3>
-                {subtitle && <p className="text-[10px] text-gray-400 font-bold uppercase mt-2 tracking-widest">{subtitle}</p>}
+                {subtitle && <p className="text-[10px] text-slate-500 dark:text-gray-400 font-bold uppercase mt-2 tracking-widest">{subtitle}</p>}
             </div>
-            <div className="flex gap-1.5">
-                {[1, 2, 3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-gray-800"></div>)}
+            <div className="flex gap-1.5 opacity-20">
+                {[1, 2, 3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-gray-800"></div>)}
             </div>
         </div>
         <div className="h-72 relative z-10">
@@ -36,7 +37,13 @@ const AnalyticsCard = ({ title, children, icon: Icon, subtitle }: any) => (
     </div>
 );
 
-const Analytics: React.FC<AnalyticsProps> = ({ results, stats }) => {
+const Analytics: React.FC<AnalyticsProps> = ({ results, stats, theme }) => {
+    const isDark = theme === 'dark';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+    const labelColor = isDark ? '#475569' : '#94a3b8';
+    const tooltipBg = isDark ? '#020617' : '#ffffff';
+    const tooltipBorder = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+    const dotStroke = isDark ? '#020617' : '#ffffff';
     // Process Data for Vulnerability Distribution
     const vulnerabilityTypes: Record<string, number> = {};
     results.filter(r => r.verdict === 'VULNERABLE').forEach(r => {
@@ -69,13 +76,13 @@ const Analytics: React.FC<AnalyticsProps> = ({ results, stats }) => {
         <div className="space-y-10 reveal-up pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-white/5 pb-8">
                 <div>
-                    <h2 className="text-4xl font-bold text-white tracking-tighter italic uppercase">Intelligence Analytics</h2>
-                    <p className="text-gray-300 text-sm mt-2">Deep-sector technical metrics and vulnerability distribution landscape.</p>
+                    <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter italic uppercase">Intelligence Analytics</h2>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Deep-sector technical metrics and vulnerability distribution landscape.</p>
                 </div>
                 <div className="flex items-center gap-6">
                     <div className="flex flex-col items-end">
-                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Engine Precision</p>
-                        <p className="text-2xl font-bold text-white font-mono tracking-tighter">{(avgML * 100).toFixed(2)}%</p>
+                        <p className="text-[9px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.3em]">Engine Precision</p>
+                        <p className="text-2xl font-bold text-slate-900 dark:text-white font-mono tracking-tighter">{(avgML * 100).toFixed(2)}%</p>
                     </div>
                     <div className="h-10 w-px bg-white/10"></div>
                     <div className="flex flex-col items-end">
@@ -105,7 +112,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ results, stats }) => {
                                 {typeData.length === 0 && <Cell fill="#1e293b" />}
                             </Pie>
                             <Tooltip
-                                contentStyle={{ backgroundColor: '#020617', borderColor: '#ffffff10', borderRadius: '1rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}
+                                contentStyle={{ backgroundColor: tooltipBg, borderColor: tooltipBorder, borderRadius: '1rem', boxShadow: isDark ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 25px 50px -12px rgba(0, 0, 0, 0.1)' }}
                                 itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
                             />
                             <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '10px', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '0.1em' }} />
@@ -122,11 +129,11 @@ const Analytics: React.FC<AnalyticsProps> = ({ results, stats }) => {
                                     <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                            <XAxis dataKey="index" stroke="#475569" fontSize={10} tickLine={false} axisLine={false} />
-                            <YAxis stroke="#475569" fontSize={10} tickLine={false} axisLine={false} domain={[90, 100]} />
-                            <Tooltip contentStyle={{ backgroundColor: '#020617', borderColor: '#ffffff10', borderRadius: '1rem' }} />
-                            <Area type="monotone" dataKey="confidence" stroke="#a855f7" strokeWidth={4} fillOpacity={1} fill="url(#colorConf)" dot={{ r: 4, fill: '#a855f7', strokeWidth: 2, stroke: '#020617' }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+                            <XAxis dataKey="index" stroke={labelColor} fontSize={10} tickLine={false} axisLine={false} />
+                            <YAxis stroke={labelColor} fontSize={10} tickLine={false} axisLine={false} domain={[90, 100]} />
+                            <Tooltip contentStyle={{ backgroundColor: tooltipBg, borderColor: tooltipBorder, borderRadius: '1rem' }} />
+                            <Area type="monotone" dataKey="confidence" stroke="#a855f7" strokeWidth={4} fillOpacity={1} fill="url(#colorConf)" dot={{ r: 4, fill: '#a855f7', strokeWidth: 2, stroke: dotStroke }} activeDot={{ r: 6, strokeWidth: 0 }} />
                         </AreaChart>
                     </ResponsiveContainer>
                 </AnalyticsCard>
@@ -139,12 +146,12 @@ const Analytics: React.FC<AnalyticsProps> = ({ results, stats }) => {
                                 risk: r.verdict === 'VULNERABLE' ? 100 : (r.verdict === 'SUSPICIOUS' ? 50 : 10),
                                 id: r.id
                             }))}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                                <XAxis dataKey="name" stroke="#475569" fontSize={10} tickLine={false} axisLine={false} dy={10} />
-                                <YAxis stroke="#475569" fontSize={10} tickLine={false} axisLine={false} hide />
+                                <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+                                <XAxis dataKey="name" stroke={labelColor} fontSize={10} tickLine={false} axisLine={false} dy={10} />
+                                <YAxis stroke={labelColor} fontSize={10} tickLine={false} axisLine={false} hide />
                                 <Tooltip
-                                    cursor={{ fill: '#ffffff03' }}
-                                    contentStyle={{ backgroundColor: '#020617', borderColor: '#ffffff10', borderRadius: '1rem' }}
+                                    cursor={{ fill: isDark ? '#ffffff03' : '#00000003' }}
+                                    contentStyle={{ backgroundColor: tooltipBg, borderColor: tooltipBorder, borderRadius: '1rem' }}
                                 />
                                 <Bar dataKey="risk" radius={[8, 8, 0, 0]}>
                                     {results.slice(0, 20).map((entry, index) => (
@@ -166,19 +173,19 @@ const Analytics: React.FC<AnalyticsProps> = ({ results, stats }) => {
                 {[
                     { title: "Coverage Baseline", icon: ShieldCheck, color: "text-green-500", desc: "7,500+ active signatures. Zero-day heuristic coverage established for high-integrity missions." },
                     { title: "Exfiltration Load", icon: TrendingUp, color: "text-red-500", desc: "High-value breach proximity detected. Adjusting fuzzing velocity for maximum technical data harvest." },
-                    { title: "Node Persistence", icon: Network, color: "text-primary-500", desc: "Real-time extraction tunnels established. Persistent intelligence cached in localized Instance 0x3F." }
+                    { title: "Node Persistence", icon: Network, color: "text-primary-600 dark:text-primary-500", desc: "Real-time extraction tunnels established. Persistent intelligence cached in localized Instance 0x3F." }
                 ].map((item, i) => (
-                    <div key={i} className="p-8 bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-[32px] space-y-6 group hover:border-white/10 transition-all relative overflow-hidden">
+                    <div key={i} className="p-8 bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[32px] space-y-6 group hover:border-primary-500/30 transition-all relative overflow-hidden transition-colors">
                         <div className="absolute -right-4 -bottom-4 opacity-[0.02] group-hover:scale-110 transition-transform">
                             <item.icon size={100} />
                         </div>
                         <div className="flex items-center gap-4 relative z-10">
-                            <div className={`p-3 bg-white/5 rounded-2xl border border-white/5 ${item.color}`}>
+                            <div className={`p-3 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 ${item.color}`}>
                                 <item.icon size={20} />
                             </div>
-                            <h4 className="text-sm font-black text-white uppercase tracking-[0.2em]">{item.title}</h4>
+                            <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-[0.2em]">{item.title}</h4>
                         </div>
-                        <p className="text-[11px] text-gray-400 leading-relaxed uppercase font-bold tracking-[0.1em] opacity-80 group-hover:opacity-100 transition-opacity">
+                        <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed uppercase font-bold tracking-[0.1em] opacity-80 group-hover:opacity-100 transition-opacity">
                             {item.desc}
                         </p>
                     </div>
@@ -186,11 +193,11 @@ const Analytics: React.FC<AnalyticsProps> = ({ results, stats }) => {
             </div>
 
             {/* Tactical Heatmap Representation */}
-            <div className="bg-gray-950/40 border border-white/5 rounded-[40px] p-12 relative overflow-hidden group shadow-inner flex flex-col items-center">
+            <div className="bg-slate-100 dark:bg-gray-950/40 border border-slate-200 dark:border-white/5 rounded-[40px] p-12 relative overflow-hidden group shadow-inner flex flex-col items-center transition-colors">
                 <div className="text-center space-y-4 mb-10">
                     <div className="flex items-center justify-center gap-4">
-                        <Fingerprint className="text-primary-500" size={24} />
-                        <h3 className="text-2xl font-bold text-white italic tracking-tighter uppercase">Mission Intensity Map</h3>
+                        <Fingerprint className="text-primary-600 dark:text-primary-500" size={24} />
+                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white italic tracking-tighter uppercase">Mission Intensity Map</h3>
                     </div>
                     <div className="h-0.5 w-32 bg-primary-500/20 mx-auto"></div>
                 </div>
@@ -200,12 +207,12 @@ const Analytics: React.FC<AnalyticsProps> = ({ results, stats }) => {
                             key={i}
                             className={`aspect-square rounded-md border transition-all duration-700 ${i % 7 === 0 ? 'bg-red-500/30 border-red-500/50 animate-pulse' :
                                 i % 13 === 0 ? 'bg-amber-500/20 border-amber-500/30' :
-                                    'bg-primary-500/10 border-white/5'
+                                    'bg-primary-500/10 border-slate-200 dark:border-white/5'
                                 }`}
                         />
                     ))}
                 </div>
-                <p className="mt-8 text-[9px] font-black text-gray-700 uppercase tracking-[0.5em] font-mono">Real-time Sector Risk Distribution // 2.2.4-STABLE</p>
+                <p className="mt-8 text-[9px] font-black text-slate-400 dark:text-gray-700 uppercase tracking-[0.5em] font-mono">Real-time Sector Risk Distribution // 2.2.4-STABLE</p>
             </div>
         </div>
     );

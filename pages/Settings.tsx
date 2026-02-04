@@ -8,15 +8,15 @@ interface SettingsProps {
 }
 
 const SettingsCard = ({ title, icon: Icon, children, colorClass, subtitle }: any) => (
-  <div className="bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-[40px] overflow-hidden shadow-2xl transition-all duration-300 hover:border-white/10 group relative">
-    <div className="p-8 border-b border-white/5 bg-white/[0.01] flex items-center justify-between">
+  <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[40px] overflow-hidden shadow-xl dark:shadow-2xl transition-all duration-300 hover:border-primary-500/30 group relative transition-colors">
+    <div className="p-8 border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.01] flex items-center justify-between">
       <div className="flex items-center gap-5">
         <div className={`p-3.5 rounded-2xl bg-gray-900 border border-white/10 group-hover:scale-110 transition-transform ${colorClass} shadow-xl`}>
           <Icon size={22} strokeWidth={1.5} />
         </div>
         <div>
-          <h3 className="font-bold text-white text-lg tracking-tight uppercase italic">{title}</h3>
-          {subtitle && <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1 opacity-60">{subtitle}</p>}
+          <h3 className="font-bold text-gray-900 dark:text-white text-lg tracking-tight uppercase italic">{title}</h3>
+          {subtitle && <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest mt-1 opacity-60 transition-colors">{subtitle}</p>}
         </div>
       </div>
       <div className="flex gap-1.5 opacity-20">
@@ -44,8 +44,8 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
     <div className="max-w-5xl mx-auto space-y-10 reveal-up pb-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/5 pb-8">
         <div>
-          <h2 className="text-4xl font-bold text-white tracking-tighter uppercase italic">Engine Calibration</h2>
-          <p className="text-gray-400 text-sm mt-2">Fine-tune the SQLiHunter core parameters and exfiltration telemetry units.</p>
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase italic">Engine Calibration</h2>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Fine-tune the SQLiHunter core parameters and exfiltration telemetry units.</p>
         </div>
         <div className="flex items-center gap-4 bg-white/[0.02] px-6 py-3 rounded-3xl border border-white/5 shadow-inner">
           <Fingerprint size={18} className="text-primary-500" />
@@ -67,7 +67,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                   <Terminal className="absolute left-5 top-1/2 -translate-y-1/2 text-primary-500/40" size={16} />
                   <input
                     type="text"
-                    className="w-full bg-gray-950 border border-white/5 rounded-2xl pl-14 pr-6 py-4 text-gray-200 focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 outline-none text-xs font-mono transition-all shadow-inner"
+                    className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-white/5 rounded-2xl pl-14 pr-6 py-4 text-gray-900 dark:text-gray-200 focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 outline-none text-xs font-mono transition-all shadow-inner"
                     value={settings.userAgent}
                     onChange={(e) => setSettings({ ...settings, userAgent: e.target.value })}
                   />
@@ -117,7 +117,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                           checked={settings.surfaceCoverage[key]}
                           onChange={() => handleToggleSurface(key)}
                         />
-                        <div className="w-8 h-4.5 bg-gray-900 rounded-full peer peer-checked:bg-primary-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3.5 after:w-3.5 after:shadow-md after:transition-all peer-checked:after:translate-x-3.5"></div>
+                        <div className="w-9 h-5 bg-slate-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-primary-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:shadow-sm after:transition-all peer-checked:after:translate-x-4 transition-colors"></div>
                       </div>
                     </label>
                   ))}
@@ -139,7 +139,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                     <input
                       type="password"
                       value="https://hooks.slack.com/services/SQLI/HUNTER/ALERTS"
-                      className="w-full bg-gray-950 border border-white/5 rounded-2xl pl-12 pr-4 py-4 text-gray-600 text-[10px] font-mono outline-none shadow-inner"
+                      className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-white/5 rounded-2xl pl-12 pr-4 py-4 text-gray-500 dark:text-gray-600 text-[10px] font-mono outline-none shadow-inner"
                       readOnly
                     />
                   </div>
@@ -177,7 +177,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                     <input
                       type="password"
                       value="••••••••••••••••••••••••"
-                      className="w-full bg-gray-950 border border-white/5 rounded-2xl pl-14 pr-6 py-4 text-gray-400 text-xs font-mono outline-none"
+                      className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-white/5 rounded-2xl pl-14 pr-6 py-4 text-gray-600 dark:text-gray-400 text-xs font-mono outline-none shadow-inner"
                       readOnly
                     />
                   </div>
@@ -195,7 +195,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
               <div className="p-3 bg-red-600/10 rounded-2xl border border-red-500/20">
                 <Shield size={20} className="text-red-500" />
               </div>
-              <h3 className="text-lg font-black text-white italic tracking-tighter uppercase">Extreme De-Sanitization</h3>
+              <h3 className="text-lg font-black text-gray-900 dark:text-white italic tracking-tighter uppercase">Extreme De-Sanitization</h3>
             </div>
             <p className="text-[10px] text-gray-500 uppercase font-black tracking-widest relative z-10 leading-loose">
               This protocol initiates a full localized wipe of the intelligence cache, session metadata, and instance identity. This mission reset is irreversible.

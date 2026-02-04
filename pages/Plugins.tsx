@@ -7,20 +7,21 @@ import { ScannerSettings } from '../types';
 interface PluginsProps {
     settings: ScannerSettings;
     setSettings: (settings: ScannerSettings) => void;
+    theme: 'light' | 'dark';
 }
 
 const PluginCard = ({ name, version, desc, active, onToggle, icon: Icon, stats, colorClass }: any) => (
-    <div className={`relative overflow-hidden bg-gray-900/40 backdrop-blur-xl border ${active ? 'border-primary-500/30 shadow-[0_0_40px_rgba(59,130,246,0.1)]' : 'border-white/5'} rounded-3xl p-8 transition-all duration-500 hover:scale-[1.02] group shadow-2xl`}>
-        {active && <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity"><Icon size={120} /></div>}
+    <div className={`relative overflow-hidden ${active ? 'bg-primary-50/50 dark:bg-primary-900/10 border-primary-500/30 shadow-xl dark:shadow-[0_0_40px_rgba(59,130,246,0.1)]' : 'hf-glass'} rounded-3xl p-8 transition-all duration-500 hover:scale-[1.02] group transition-colors shadow-lg dark:shadow-2xl`}>
+        {active && <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity dark:text-white"><Icon size={120} /></div>}
 
         <div className="flex justify-between items-start mb-8 relative z-10">
-            <div className={`p-4 rounded-2xl ${active ? `bg-primary-600/10 ${colorClass} shadow-[0_0_20px_rgba(37,99,235,0.1)]` : 'bg-white/5 text-gray-600'} transition-all duration-500`}>
+            <div className={`p-4 rounded-2xl ${active ? `bg-primary-600/10 ${colorClass} shadow-lg shadow-primary-600/5` : 'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-gray-600'} transition-all duration-500`}>
                 <Icon size={24} strokeWidth={1.5} />
             </div>
             <div className="flex flex-col items-end gap-3">
                 <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" className="sr-only peer" checked={active} onChange={onToggle} />
-                    <div className={`w-11 h-6 rounded-full peer peer-focus:outline-none transition-all duration-500 ${active ? 'bg-primary-600 shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-gray-800'} after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:shadow-md after:transition-all ${active ? 'after:translate-x-5' : ''}`}></div>
+                    <div className={`w-11 h-6 rounded-full peer peer-focus:outline-none transition-all duration-500 ${active ? 'bg-primary-600 shadow-lg shadow-primary-600/30' : 'bg-slate-200 dark:bg-gray-800'} after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:shadow-md after:transition-all ${active ? 'after:translate-x-5' : ''}`}></div>
                 </label>
             </div>
         </div>
@@ -28,36 +29,41 @@ const PluginCard = ({ name, version, desc, active, onToggle, icon: Icon, stats, 
         <div className="space-y-6 relative z-10">
             <div>
                 <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-xl font-bold text-white tracking-tight">{name}</h3>
-                    <span className="text-[9px] font-black text-gray-500 bg-white/5 px-2 py-1 rounded-full border border-white/10 uppercase tracking-widest">{version || 'v2.2'}</span>
+                    <h3 className={`text-xl font-bold tracking-tight transition-colors ${active ? 'text-primary-900 dark:text-white' : 'text-slate-700 dark:text-gray-300'}`}>{name}</h3>
+                    <span className="text-[9px] font-black text-slate-500 dark:text-gray-400 bg-slate-100 dark:bg-white/5 px-2 py-1 rounded-full border border-slate-200 dark:border-white/10 uppercase tracking-widest">{version || 'v2.2'}</span>
                 </div>
-                <p className="text-gray-400 text-[11px] leading-relaxed h-12 overflow-hidden italic">"{desc}"</p>
+                <p className="text-slate-500 dark:text-gray-400 text-[11px] leading-relaxed h-12 overflow-hidden italic transition-colors">"{desc}"</p>
             </div>
 
-            <div className="pt-6 border-t border-white/5 grid grid-cols-2 gap-4">
+            <div className="pt-6 border-t border-slate-200 dark:border-white/5 grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                    <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Efficiency</p>
-                    <p className="text-lg font-mono text-white font-bold">{active ? stats.success : '0.0%'}</p>
+                    <p className="text-[9px] font-bold text-slate-500 dark:text-gray-600 uppercase tracking-widest">Efficiency</p>
+                    <p className={`text-lg font-mono font-bold ${active ? 'text-primary-700 dark:text-white' : 'text-slate-400 dark:text-gray-500'}`}>{active ? stats.success : '0.0%'}</p>
                 </div>
                 <div className="space-y-1">
-                    <p className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Heuristic Δ</p>
-                    <p className="text-lg font-mono text-gray-300">{active ? stats.latency : '0ms'}</p>
+                    <p className="text-[9px] font-bold text-slate-500 dark:text-gray-600 uppercase tracking-widest">Heuristic Δ</p>
+                    <p className={`text-lg font-mono ${active ? 'text-slate-800 dark:text-gray-300' : 'text-slate-400 dark:text-gray-500'}`}>{active ? stats.latency : '0ms'}</p>
                 </div>
             </div>
 
             {active && (
                 <div className="pt-2 flex items-center gap-2">
-                    <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div className="flex-1 h-1 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
                         <div className="h-full bg-primary-500/50 animate-pulse w-full"></div>
                     </div>
-                    <span className="text-[8px] font-black text-green-500 uppercase tracking-[0.2em]">Live_Sync</span>
+                    <span className="text-[8px] font-black text-green-600 dark:text-green-500 uppercase tracking-[0.2em]">Live_Sync</span>
                 </div>
             )}
         </div>
     </div>
 );
 
-const Plugins: React.FC<PluginsProps> = ({ settings, setSettings }) => {
+const Plugins: React.FC<PluginsProps> = ({ settings, setSettings, theme }) => {
+    const isDark = theme === 'dark';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+    const labelColor = isDark ? '#475569' : '#94a3b8';
+    const tooltipBg = isDark ? '#020617' : '#ffffff';
+    const tooltipBorder = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
     const [searchTerm, setSearchTerm] = useState('');
     const totalPayloads = Object.values(PAYLOADS).reduce((acc, curr) => acc + curr.length, 0);
 
@@ -84,15 +90,15 @@ const Plugins: React.FC<PluginsProps> = ({ settings, setSettings }) => {
         <div className="space-y-10 reveal-up">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/5 pb-8">
                 <div>
-                    <h2 className="text-4xl font-bold text-white tracking-tighter italic uppercase">Intelligence Modules</h2>
-                    <p className="text-gray-400 text-sm mt-2">Deploy specialized telemetry units for deep infrastructure fingerprinting.</p>
+                    <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter italic uppercase">Intelligence Modules</h2>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Deploy specialized telemetry units for deep infrastructure fingerprinting.</p>
                 </div>
                 <div className="flex gap-4">
                     <div className="px-6 py-3 bg-white/[0.02] border border-white/5 rounded-3xl flex items-center gap-4">
                         <Fingerprint size={20} className="text-primary-500" />
                         <div>
-                            <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em]">Active Matrix</p>
-                            <p className="text-xl font-mono text-white font-bold">{Object.values(settings.enabledPlugins).filter(Boolean).length} / 4 UNITS</p>
+                            <p className="text-[9px] font-black text-gray-500 dark:text-gray-600 uppercase tracking-[0.2em]">Active Matrix</p>
+                            <p className="text-xl font-mono text-gray-900 dark:text-white font-bold">{Object.values(settings.enabledPlugins).filter(Boolean).length} / 4 UNITS</p>
                         </div>
                     </div>
                 </div>
@@ -139,11 +145,11 @@ const Plugins: React.FC<PluginsProps> = ({ settings, setSettings }) => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-[40px] p-10 shadow-2xl relative overflow-hidden group">
+                <div className="lg:col-span-2 bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[40px] p-10 shadow-xl dark:shadow-2xl relative overflow-hidden group transition-colors">
                     <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:scale-110 transition-transform"><BarChart3 size={200} /></div>
                     <div className="flex items-center justify-between mb-10 relative z-10">
                         <div>
-                            <h3 className="text-xl font-bold text-white flex items-center gap-3">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
                                 <Activity size={20} className="text-primary-500" />
                                 Extraction Precision Matrix
                             </h3>
@@ -164,25 +170,25 @@ const Plugins: React.FC<PluginsProps> = ({ settings, setSettings }) => {
                     <div className="h-80 relative z-10 flex items-center justify-center">
                         <ResponsiveContainer width="100%" height="100%">
                             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                                <PolarGrid stroke="#ffffff05" />
-                                <PolarAngleAxis dataKey="subject" tick={{ fill: '#475569', fontSize: 10, fontWeight: 'bold' }} />
+                                <PolarGrid stroke={gridColor} />
+                                <PolarAngleAxis dataKey="subject" tick={{ fill: labelColor, fontSize: 10, fontWeight: 'bold' }} />
                                 <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
                                 <Radar name="Legacy" dataKey="A" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.1} />
                                 <Radar name="V2.2" dataKey="B" stroke="#a855f7" fill="#a855f7" fillOpacity={0.3} />
-                                <Tooltip contentStyle={{ backgroundColor: '#020617', borderColor: '#ffffff10', borderRadius: '1rem' }} />
+                                <Tooltip contentStyle={{ backgroundColor: tooltipBg, borderColor: tooltipBorder, borderRadius: '1rem' }} />
                             </RadarChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
-                <div className="bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-[40px] p-10 shadow-2xl flex flex-col justify-between group">
+                <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[40px] p-10 shadow-xl dark:shadow-2xl flex flex-col justify-between group transition-colors">
                     <div className="space-y-10">
                         <div className="flex items-center gap-4">
                             <div className="p-4 bg-red-600/10 rounded-3xl border border-red-500/20">
                                 <Zap size={24} className="text-red-500" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-bold text-white tracking-tight">Signature DB</h3>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Signature DB</h3>
                                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest italic">Encrypted Payload Cache</p>
                             </div>
                         </div>
@@ -191,7 +197,7 @@ const Plugins: React.FC<PluginsProps> = ({ settings, setSettings }) => {
                             <div className="relative group/val">
                                 <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-3">Unit Integrity</p>
                                 <div className="flex items-end justify-between mb-2">
-                                    <p className="text-4xl font-bold text-white tracking-tighter font-mono">{totalPayloads.toLocaleString()}</p>
+                                    <p className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter font-mono">{totalPayloads.toLocaleString()}</p>
                                     <div className="flex items-center gap-2 mb-1.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
                                         <span className="text-[8px] font-black text-green-500 uppercase tracking-widest">Secured</span>
@@ -225,18 +231,18 @@ const Plugins: React.FC<PluginsProps> = ({ settings, setSettings }) => {
                 </div>
             </div>
 
-            <div className="bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-[40px] p-10 shadow-2xl relative overflow-hidden group">
+            <div className="hf-glass hf-glass-hover rounded-[40px] p-10 shadow-2xl relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:scale-110 transition-transform"><Terminal size={180} /></div>
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-10 relative z-10">
                     <div>
-                        <h3 className="text-2xl font-bold text-white flex items-center gap-4">
-                            <Database size={24} className="text-primary-500" />
+                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-4">
+                            <Database size={24} className="text-primary-600 dark:text-primary-500" />
                             Elite Extraction Matrix
                         </h3>
-                        <p className="text-xs text-gray-500 mt-3 max-w-2xl leading-relaxed italic">The v2.2 extraction core employs multi-threaded asynchronous tunneling. Upon validation of an injection vector, the engine fingerprints the target environment and establishes a persistent intelligence feed.</p>
+                        <p className="text-xs text-slate-500 dark:text-gray-500 mt-3 max-w-2xl leading-relaxed italic transition-colors">The v2.2 extraction core employs multi-threaded asynchronous tunneling. Upon validation of an injection vector, the engine fingerprints the target environment and establishes a persistent intelligence feed.</p>
                     </div>
                     <div className="relative w-full md:w-96">
-                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-primary-500/50">
+                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-primary-600 dark:text-primary-500 opacity-50">
                             <Search size={18} />
                         </div>
                         <input
@@ -244,7 +250,7 @@ const Plugins: React.FC<PluginsProps> = ({ settings, setSettings }) => {
                             placeholder="OPERATIONAL VECTOR SEARCH..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-gray-950 border border-white/5 text-gray-200 text-xs font-mono font-bold rounded-2xl pl-14 pr-6 py-4 focus:border-primary-500/50 outline-none transition-all tracking-widest placeholder:text-gray-800 shadow-inner"
+                            className="w-full bg-slate-100 dark:bg-gray-950 border border-slate-200 dark:border-white/5 text-slate-900 dark:text-gray-200 text-xs font-mono font-bold rounded-2xl pl-14 pr-6 py-4 focus:border-primary-500/50 outline-none transition-all tracking-widest placeholder:text-slate-400 dark:placeholder:text-gray-800 shadow-inner"
                         />
                     </div>
                 </div>

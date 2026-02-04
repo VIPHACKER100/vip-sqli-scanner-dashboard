@@ -7,6 +7,7 @@ import Results from './pages/Results';
 import Plugins from './pages/Plugins';
 import Settings from './pages/Settings';
 import Documentation from './pages/Documentation';
+import About from './pages/About';
 import ToastContainer, { ToastMessage } from './components/Toast';
 import Terminal from './components/Terminal';
 import SplashScreen from './components/SplashScreen';
@@ -42,6 +43,22 @@ const App: React.FC = () => {
     const saved = localStorage.getItem('sqli_hunter_settings');
     return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
   });
+
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('sqli_hunter_theme');
+    return (saved as 'light' | 'dark') || 'light';
+  });
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('sqli_hunter_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
 
   const [stats, setStats] = useState<ScanStats>({
     total: 0,
@@ -160,21 +177,23 @@ const App: React.FC = () => {
   const renderContent = () => {
     switch (currentPage) {
       case Page.DASHBOARD:
-        return <DashboardHome stats={stats} scanHistory={scanHistory} results={results} />;
+        return <DashboardHome stats={stats} scanHistory={scanHistory} results={results} theme={theme} />;
       case Page.NEW_SCAN:
-        return <NewScan onStartScan={handleStartScan} setPage={setCurrentPage} />;
+        return <NewScan onStartScan={handleStartScan} setPage={setCurrentPage} theme={theme} />;
       case Page.ANALYTICS:
-        return <Analytics results={results} stats={stats} />;
+        return <Analytics results={results} stats={stats} theme={theme} />;
       case Page.RESULTS:
-        return <Results results={results} />;
+        return <Results results={results} theme={theme} />;
       case Page.PLUGINS:
-        return <Plugins settings={settings} setSettings={setSettings} />;
+        return <Plugins settings={settings} setSettings={setSettings} theme={theme} />;
       case Page.SETTINGS:
-        return <Settings settings={settings} setSettings={setSettings} />;
+        return <Settings settings={settings} setSettings={setSettings} theme={theme} />;
       case Page.DOCS:
-        return <Documentation />;
+        return <Documentation theme={theme} />;
+      case Page.ABOUT:
+        return <About />;
       default:
-        return <DashboardHome stats={stats} scanHistory={scanHistory} results={results} />;
+        return <DashboardHome stats={stats} scanHistory={scanHistory} results={results} theme={theme} />;
     }
   };
 
@@ -183,18 +202,20 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-950 text-gray-100 font-sans relative">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-gray-100 font-sans relative transition-colors duration-500">
       <Sidebar
         activePage={currentPage}
         setPage={setCurrentPage}
         payloadCount={payloadCount}
         isSystemReady={isSystemReady}
+        theme={theme}
+        toggleTheme={toggleTheme}
       />
 
       <main className="flex-1 ml-64 min-h-screen relative overflow-x-hidden pb-12">
-        <header className="h-16 border-b border-white/5 bg-gray-950/40 backdrop-blur-md sticky top-0 z-20 px-8 flex items-center justify-between">
-          <div className="flex items-center text-sm text-gray-500">
-            <span className="capitalize">{currentPage.replace('_', ' ')}</span>
+        <header className="h-16 border-b border-slate-200 dark:border-white/5 bg-white/40 dark:bg-gray-950/40 backdrop-blur-md sticky top-0 z-20 px-8 flex items-center justify-between transition-colors">
+          <div className="flex items-center text-sm text-slate-500 dark:text-gray-400 font-bold uppercase tracking-widest transition-colors">
+            <span className="text-[10px]">{currentPage.replace('_', ' ')}</span>
           </div>
           <div className="flex items-center gap-4">
             {!isSystemReady && (
@@ -203,7 +224,7 @@ const App: React.FC = () => {
                 <span className="text-xs font-medium text-amber-500">Initializing Database...</span>
               </div>
             )}
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-800 rounded-full border border-gray-700">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-200 dark:bg-gray-800 rounded-full border border-gray-300 dark:border-gray-700">
               <span className={`w-2 h-2 rounded-full ${stats.processed < stats.total && stats.total > 0 ? 'bg-green-500 animate-pulse' : 'bg-gray-500'}`}></span>
               <span className="text-xs font-medium text-gray-300">
                 {stats.processed < stats.total && stats.total > 0 ? 'Scanner Running' : 'Scanner Idle'}

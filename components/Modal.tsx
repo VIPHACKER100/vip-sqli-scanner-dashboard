@@ -28,10 +28,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 italic">
             <div
-                className="absolute inset-0 bg-[#020617]/90 backdrop-blur-md animate-in fade-in duration-500"
+                className="absolute inset-0 bg-gray-900/40 dark:bg-[#020617]/90 backdrop-blur-md animate-in fade-in duration-500"
                 onClick={onClose}
             />
-            <div className="relative w-full max-w-5xl bg-gray-900/40 backdrop-blur-3xl border border-white/10 rounded-[40px] shadow-[0_0_100px_rgba(0,0,0,0.5)] flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-500 overflow-hidden group">
+            <div className="relative w-full max-w-5xl hf-glass hf-glass-hover rounded-[40px] shadow-xl dark:shadow-[0_0_100px_rgba(0,0,0,0.5)] flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-500 overflow-hidden group transition-colors">
                 {/* Glow Border Effect */}
                 <div className="absolute inset-0 border-[0.5px] border-primary-500/20 rounded-[40px] pointer-events-none"></div>
 
@@ -39,7 +39,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
                 <div className="flex items-center justify-between p-8 border-b border-white/5 relative z-10 bg-white/[0.01]">
                     <div className="flex items-center gap-4">
                         <div className="w-2 h-2 rounded-full bg-primary-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
-                        <h3 className="text-xl font-bold text-white tracking-tighter uppercase">{title}</h3>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">{title}</h3>
                     </div>
                     <button
                         onClick={onClose}

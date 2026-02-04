@@ -4,13 +4,21 @@
 
 @layer base {
   body {
-    @apply bg-gray-950 text-gray-100 antialiased;
+    @apply bg-slate-50 text-slate-900 transition-colors duration-500 antialiased selection:bg-primary-500/30;
+  }
+
+  .dark body {
+    @apply bg-slate-950 text-slate-100;
   }
 }
 
 @layer components {
-  .glass-card {
-    @apply bg-gray-900/60 backdrop-blur-2xl border border-white/5;
+  .hf-glass {
+    @apply bg-white/70 dark:bg-slate-900/40 backdrop-blur-2xl border border-white/20 dark:border-white/5 shadow-sm dark:shadow-2xl transition-all duration-500;
+  }
+
+  .hf-glass-hover {
+    @apply hover:border-primary-500/40 hover:shadow-xl hover:shadow-primary-500/5 transition-all duration-500;
   }
 }
 
@@ -88,12 +96,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  @apply bg-slate-200 dark:bg-white/10;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  @apply bg-slate-300 dark:bg-white/20;
 }
 
 /* High-tech glow for vulnerable items */
@@ -111,9 +119,15 @@
 
 .cyber-grid {
   background-image:
+    linear-gradient(rgba(139, 92, 246, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.dark .cyber-grid {
+  background-image:
     linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
 }
 
 @keyframes scan-line {
@@ -157,7 +171,7 @@
 }
 
 .matrix-overlay {
-  background: linear-gradient(rgba(37, 99, 235, 0.03) 50%,
+  background: linear-gradient(rgba(139, 92, 246, 0.03) 50%,
       transparent 50%);
   background-size: 100% 4px;
   pointer-events: none;
@@ -183,4 +197,40 @@
   animation: matrix-rain 20s linear infinite;
   z-index: -1;
   pointer-events: none;
+}
+
+.dark .matrix-text-overlay::before {
+  color: rgba(139, 92, 246, 0.04);
+}
+
+.matrix-text-overlay::before {
+  color: rgba(0, 0, 0, 0.02);
+}
+
+/* Neural Pulse Glow */
+@keyframes neural-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 15px rgba(139, 92, 246, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
+}
+
+.neural-active {
+  animation: neural-pulse 2s infinite;
+}
+
+/* High Fidelity Glass */
+.hf-glass {
+  @apply bg-white/40 dark:bg-gray-950/40 backdrop-blur-xl border border-gray-200 dark:border-white/5;
+}
+
+.hf-glass-hover {
+  @apply hover:border-primary-500/30 transition-all duration-500;
 }

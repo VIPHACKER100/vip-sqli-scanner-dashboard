@@ -2,12 +2,12 @@ import React from 'react';
 import { BookOpen, Shield, Code, Zap, Hash, Terminal, Database, Check } from 'lucide-react';
 
 const DocSection = ({ title, icon: Icon, children }: any) => (
-    <div className="bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-2xl relative overflow-hidden group hover:border-white/10 transition-all">
+    <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-xl dark:shadow-2xl relative overflow-hidden group hover:border-primary-500/30 transition-all transition-colors">
         <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
             <Icon size={160} />
         </div>
         <div className="relative z-10">
-            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-4 italic tracking-tight">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-4 italic tracking-tight">
                 <div className="p-3 bg-white/5 rounded-2xl border border-white/5">
                     <Icon size={20} className="text-primary-500" />
                 </div>
@@ -25,8 +25,8 @@ const Documentation: React.FC = () => {
         <div className="max-w-5xl mx-auto space-y-12 reveal-up pb-20">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-8">
                 <div>
-                    <h2 className="text-4xl font-bold text-white tracking-tighter uppercase italic">Mission Protocols</h2>
-                    <p className="text-gray-400 text-sm mt-2">Technical documentation for the SQLiHunter Intelligence Suite v2.2</p>
+                    <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase italic">Mission Protocols</h2>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Technical documentation for the SQLiHunter Intelligence Suite v2.2</p>
                 </div>
                 <div className="px-6 py-2 bg-primary-600/10 border border-primary-500/30 rounded-2xl flex items-center gap-3">
                     <Shield size={16} className="text-primary-400" />
@@ -65,10 +65,10 @@ const Documentation: React.FC = () => {
                 </DocSection>
             </div>
 
-            <div className="bg-gray-900/60 backdrop-blur-xl border border-white/5 rounded-[40px] p-12 relative overflow-hidden group shadow-2xl">
+            <div className="bg-white dark:bg-gray-900/60 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[40px] p-12 relative overflow-hidden group shadow-xl dark:shadow-2xl transition-colors">
                 <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform"><Check size={160} /></div>
                 <div className="relative z-10 space-y-8">
-                    <h3 className="text-2xl font-bold text-white flex items-center gap-4 italic tracking-tighter">
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-4 italic tracking-tighter">
                         <Zap size={24} className="text-amber-500" />
                         Mission Mitigation Protocol
                     </h3>
@@ -80,8 +80,8 @@ const Documentation: React.FC = () => {
                                     { t: "Prepared Statements", d: "Enforce parameterized queries to decouple code from data vectors." },
                                     { t: "Input Sanitization", d: "Implement strict allow-list validation on all entry points." }
                                 ].map(item => (
-                                    <div key={item.t} className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl">
-                                        <p className="text-sm font-bold text-white mb-1">{item.t}</p>
+                                    <div key={item.t} className="p-5 bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-2xl">
+                                        <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">{item.t}</p>
                                         <p className="text-[11px] text-gray-500 leading-relaxed">{item.d}</p>
                                     </div>
                                 ))}
@@ -94,8 +94,8 @@ const Documentation: React.FC = () => {
                                     { t: "WAF Integration", d: "Deploy Cloud-native firewalls with updated SQLi signature sets." },
                                     { t: "Least Privilege", d: "Restrict database service accounts to absolute minimum permissions." }
                                 ].map(item => (
-                                    <div key={item.t} className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl">
-                                        <p className="text-sm font-bold text-white mb-1">{item.t}</p>
+                                    <div key={item.t} className="p-5 bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-2xl">
+                                        <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">{item.t}</p>
                                         <p className="text-[11px] text-gray-500 leading-relaxed">{item.d}</p>
                                     </div>
                                 ))}
@@ -105,11 +105,11 @@ const Documentation: React.FC = () => {
                 </div>
             </div>
 
-            <div className="bg-gray-950/40 border border-white/5 rounded-[40px] p-12 relative overflow-hidden group shadow-inner">
+            <div className="bg-gray-100 dark:bg-gray-950/40 border border-gray-200 dark:border-white/5 rounded-[40px] p-12 relative overflow-hidden group shadow-inner transition-colors">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-500/50 to-transparent"></div>
                 <div className="max-w-3xl mx-auto space-y-8 relative z-10">
                     <div className="text-center space-y-4">
-                        <h3 className="text-2xl font-bold text-white flex items-center justify-center gap-3 italic tracking-tighter">
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center justify-center gap-3 italic tracking-tighter">
                             <Terminal size={24} className="text-primary-500" />
                             Mission Authorization & Ethics
                         </h3>

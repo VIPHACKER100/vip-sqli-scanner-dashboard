@@ -7,27 +7,33 @@ interface DashboardHomeProps {
   stats: ScanStats;
   scanHistory: any[];
   results: ScanResult[];
+  theme: 'light' | 'dark';
 }
 
-const StatCard = ({ title, value, subtext, icon: Icon, colorClass, bgClass }: any) => (
-  <div className="bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-3xl p-6 shadow-2xl transition-all hover:border-white/10 group relative overflow-hidden">
+const StatCard = ({ title, value, icon: Icon, colorClass, bgClass, subtext }: any) => (
+  <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl p-6 shadow-xl dark:shadow-2xl transition-all hover:border-primary-500/30 group relative overflow-hidden transition-colors">
     <div className={`absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform ${colorClass}`}>
       <Icon size={100} />
     </div>
     <div className="flex justify-between items-start relative z-10">
       <div>
-        <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 group-hover:text-gray-300 transition-colors font-mono">{title}</p>
-        <h3 className="text-4xl font-bold text-white mb-1 tracking-tighter">{value}</h3>
-        {subtext && <p className="text-[10px] text-gray-400 font-mono group-hover:text-gray-300 transition-colors uppercase tracking-widest">{subtext}</p>}
+        <p className="text-slate-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 group-hover:text-primary-600 dark:group-hover:text-gray-300 transition-colors font-mono">{title}</p>
+        <h3 className="text-4xl font-bold text-slate-900 dark:text-white mb-1 tracking-tighter">{value}</h3>
+        {subtext && <p className="text-[10px] text-slate-400 dark:text-gray-400 font-mono group-hover:text-slate-500 dark:group-hover:text-gray-300 transition-colors uppercase tracking-widest">{subtext}</p>}
       </div>
-      <div className={`p-4 rounded-2xl ${bgClass} shadow-xl transform transition-all duration-500 group-hover:rotate-6`}>
+      <div className={`p-4 rounded-2xl ${bgClass} shadow-lg dark:shadow-xl transform transition-all duration-500 group-hover:rotate-6`}>
         <Icon className={`w-6 h-6 ${colorClass}`} strokeWidth={1.5} />
       </div>
     </div>
   </div>
 );
 
-const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, results }) => {
+const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, results, theme }) => {
+  const isDark = theme === 'dark';
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+  const labelColor = isDark ? '#475569' : '#94a3b8';
+  const tooltipBg = isDark ? '#020617' : '#ffffff';
+  const tooltipBorder = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
   const progress = stats.total > 0 ? (stats.processed / stats.total) * 100 : 0;
   const isScanning = stats.total > 0 && stats.processed < stats.total;
   const vulnerableResults = results.filter(r => r.verdict === 'VULNERABLE').slice(0, 3);
@@ -36,8 +42,8 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
     <div className="space-y-8 reveal-up">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-bold text-white tracking-tighter italic">Mission Intelligence Hub</h2>
-          <p className="text-gray-300 text-sm">Real-time tactical metrics and high-value exfiltration telemetry.</p>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter italic transition-colors">Mission Intelligence Hub</h2>
+          <p className="text-gray-500 dark:text-gray-300 text-sm transition-colors">Real-time tactical metrics and high-value exfiltration telemetry.</p>
         </div>
         {isScanning && (
           <div className="flex items-center gap-4 bg-primary-600/10 border border-primary-500/30 px-6 py-3 rounded-2xl shadow-2xl shadow-primary-600/10 backdrop-blur-md">
@@ -60,13 +66,13 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           {/* Chart Section */}
-          <div className="bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
+          <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-xl dark:shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
               <Activity size={120} />
             </div>
             <div className="flex items-center justify-between mb-8 relative z-10">
               <div>
-                <h3 className="text-lg font-bold text-white flex items-center gap-3">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-3">
                   <Activity size={18} className="text-primary-500" />
                   Operations Timeline
                 </h3>
@@ -90,10 +96,10 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
                       <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                  <XAxis dataKey="time" stroke="#475569" fontSize={10} tickLine={false} axisLine={false} dy={10} />
-                  <YAxis stroke="#475569" fontSize={10} tickLine={false} axisLine={false} />
-                  <Tooltip contentStyle={{ backgroundColor: '#020617', borderColor: '#ffffff10', borderRadius: '1rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+                  <XAxis dataKey="time" stroke={labelColor} fontSize={10} tickLine={false} axisLine={false} dy={10} />
+                  <YAxis stroke={labelColor} fontSize={10} tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ backgroundColor: tooltipBg, borderColor: tooltipBorder, borderRadius: '1rem', boxShadow: isDark ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 25px 50px -12px rgba(0, 0, 0, 0.1)' }} />
                   <Area type="monotone" dataKey="vulnerable" stroke="#ef4444" strokeWidth={3} fill="url(#colorVulnDash)" />
                   <Area type="monotone" dataKey="safe" stroke="#22c55e" strokeWidth={3} fill="url(#colorSafeDash)" />
                 </AreaChart>
@@ -102,9 +108,9 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
           </div>
 
           {/* High-Value Intelligence Feed */}
-          <div className="bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
-            <div className="p-6 border-b border-white/5 bg-white/[0.02] flex justify-between items-center">
-              <h3 className="font-bold text-white flex items-center gap-3">
+          <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl dark:shadow-2xl">
+            <div className="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] flex justify-between items-center">
+              <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-3">
                 <Terminal size={18} className="text-red-500" />
                 Critical Intelligence Matrix
               </h3>
@@ -160,11 +166,11 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
 
         <div className="space-y-8">
           {/* Tactical Statistics */}
-          <div className="bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-2xl flex flex-col group relative overflow-hidden">
+          <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-xl dark:shadow-2xl flex flex-col group relative overflow-hidden">
             <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:rotate-12 transition-transform">
               <Database size={120} />
             </div>
-            <h3 className="text-lg font-bold text-white mb-8 flex items-center gap-3 relative z-10">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-8 flex items-center gap-3 relative z-10">
               <Cpu size={18} className="text-primary-500" />
               Telemetric Precision
             </h3>
@@ -205,11 +211,11 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
           </div>
 
           {/* Tactical Node Explorer */}
-          <div className="bg-gray-900/40 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
+          <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-xl dark:shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:scale-110 transition-transform">
               <Network size={120} />
             </div>
-            <h3 className="text-lg font-bold text-white mb-8 flex items-center gap-3 relative z-10">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-8 flex items-center gap-3 relative z-10">
               <Target size={18} className="text-red-500" />
               Target Vector Map
             </h3>
@@ -222,12 +228,19 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
                 return (
                   <div
                     key={i}
-                    className={`aspect-square rounded-xl border transition-all duration-500 ${isNodeVuln ? 'bg-red-500/20 border-red-500 animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.3)]' :
+                    className={`aspect-square rounded-xl border transition-all duration-500 relative group/node ${isNodeVuln ? 'bg-red-500/20 border-red-500 animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.3)]' :
                       isNodeSafe ? 'bg-green-500/10 border-green-500/30' :
                         isNodeLoading ? 'bg-primary-500/10 border-primary-500/30 animate-pulse' :
-                          'bg-white/5 border-white/5'
+                          'bg-gray-200/50 dark:bg-white/5 border-gray-300 dark:border-white/5'
                       }`}
-                  ></div>
+                  >
+                    {results[i] && (
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-[8px] font-mono rounded-lg opacity-0 group-hover/node:opacity-100 transition-opacity whitespace-nowrap z-30 pointer-events-none shadow-2xl border border-white/10">
+                        {results[i].url}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-gray-900"></div>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
@@ -243,8 +256,8 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
                     { subject: 'Velocity', A: 90, fullMark: 150 },
                     { subject: 'Extraction', A: 110, fullMark: 150 },
                   ]}>
-                    <PolarGrid stroke="#ffffff05" />
-                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#475569', fontSize: 8, fontWeight: 'bold' }} />
+                    <PolarGrid stroke={gridColor} />
+                    <PolarAngleAxis dataKey="subject" tick={{ fill: labelColor, fontSize: 8, fontWeight: 'bold' }} />
                     <Radar name="Engine" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.2} />
                   </RadarChart>
                 </ResponsiveContainer>
@@ -255,7 +268,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
           {/* Mission Critical Call to Action */}
           <button
             onClick={() => (window as any).setPage('new_scan')}
-            className="w-full py-5 bg-primary-600 hover:bg-primary-500 text-white rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-2xl shadow-primary-600/30 active:scale-95 group overflow-hidden relative"
+            className="w-full py-5 bg-primary-600 hover:bg-primary-500 text-white rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-xl dark:shadow-2xl shadow-primary-600/20 dark:shadow-primary-600/30 active:scale-95 group overflow-hidden relative"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
             <span className="relative z-10 flex items-center justify-center gap-3">
@@ -265,7 +278,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
           </button>
 
           {/* Live Mission Logs */}
-          <div className="bg-gray-950/40 border border-white/5 rounded-[32px] p-6 shadow-inner group">
+          <div className="bg-slate-50 dark:bg-gray-950/40 border border-slate-200 dark:border-white/5 rounded-[32px] p-6 shadow-inner group transition-colors">
             <div className="flex items-center justify-between mb-4 px-2">
               <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] flex items-center gap-2">
                 <Terminal size={12} className="text-primary-500" />
