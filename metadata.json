@@ -1,0 +1,5 @@
+{
+  "name": "VIP SQLi Scanner v2.2 Dashboard",
+  "description": "A modern, real-time web dashboard for the VIP SQLi Scanner v2.2, featuring ML-enhanced detection monitoring, scan management, and vulnerability reporting.",
+  "requestFramePermissions": []
+}

