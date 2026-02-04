@@ -512,8 +512,24 @@ class MockScannerService {
 
       selectedTables.forEach(t => log('INFO', `Extracted table identity: ${t}`));
 
-      // Note: Mock data extraction removed - real scanner would extract actual data
-      const extractedPayload = {};
+      const mockData: Record<string, any[]> = {
+        'users': [
+          { id: 1, user: 'admin', pass: '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi' },
+          { id: 2, user: 'db_master', pass: '098f6bcd4621d373cade4e832627b4f6' }
+        ],
+        'configurations': [
+          { key: 'api_secret', value: 'sk_live_51M0...' },
+          { key: 'backup_node', value: '10.0.4.22' }
+        ],
+        'admin_logs': [
+          { event: 'login_success', target: 'admin', ip: '182.12.4.2' }
+        ]
+      };
+
+      const extractedPayload = selectedTables.reduce((acc, table) => {
+        if (mockData[table]) acc[table] = mockData[table];
+        return acc;
+      }, {} as any);
 
       details = `SQLi Scanner Report - ${url}\nSeverity: CRITICAL\n\n`;
       details += `VULNERABLE PARAMETERS:\n├── ${inputPoint}=[payload] [${technique}] [${dbType.split(' ')[0]}]\n\n`;
