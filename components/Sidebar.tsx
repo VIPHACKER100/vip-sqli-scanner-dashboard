@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, setPage, payloadCount, is
         <div>
           <h1 className="font-bold text-lg text-white leading-none tracking-tight">ADVANCED SQLi</h1>
           <span className="text-[10px] text-primary-500 font-mono font-bold mt-1 block tracking-wider uppercase">v2.2 Engine</span>
-          <p className="text-[8px] text-gray-400 mt-1.5 font-mono tracking-widest uppercase">by VIPHACKER.100</p>
+          <p className="text-[8px] text-gray-300 mt-1.5 font-mono tracking-widest uppercase">by VIPHACKER.100</p>
         </div>
       </div>
 
@@ -51,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, setPage, payloadCount, is
               onClick={() => setPage(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative group ${isActive
                 ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20'
-                : 'text-gray-400 hover:text-gray-100 hover:bg-white/5'
+                : 'text-gray-300 hover:text-white hover:bg-white/10'
                 }`}
             >
               <item.icon size={20} className={`${isActive ? 'text-white' : 'group-hover:scale-110 transition-transform'}`} />
@@ -72,20 +72,20 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, setPage, payloadCount, is
           </p>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-gray-400 font-medium">Detection Engine</span>
+              <span className="text-[10px] text-gray-300 font-medium">Detection Engine</span>
               <div className="flex items-center gap-2">
                 <span className={`w-1.5 h-1.5 rounded-full ${isSystemReady ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-amber-500 animate-pulse'}`}></span>
                 <span className="text-[10px] font-bold text-gray-300 uppercase tracking-tighter">{isSystemReady ? 'Online' : 'Loading'}</span>
               </div>
             </div>
             <div className="flex items-center justify-between font-mono">
-              <span className="text-[10px] text-gray-400">Payload Sync</span>
+              <span className="text-[10px] text-gray-300">Payload Sync</span>
               <span className="text-[10px] text-primary-400 font-bold bg-primary-400/10 px-1.5 py-0.5 rounded border border-primary-400/20">
                 {payloadCount.toLocaleString()}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-gray-400 font-medium">Telemetry Hub</span>
+              <span className="text-[10px] text-gray-300 font-medium">Telemetry Hub</span>
               <span className="text-[10px] font-bold text-green-500 animate-pulse">0xFD::ACTIVE</span>
             </div>
           </div>

@@ -24,7 +24,7 @@ const AnalyticsCard = ({ title, children, icon: Icon, subtitle }: any) => (
                     </div>
                     {title}
                 </h3>
-                {subtitle && <p className="text-[10px] text-gray-500 font-bold uppercase mt-2 tracking-widest">{subtitle}</p>}
+                {subtitle && <p className="text-[10px] text-gray-400 font-bold uppercase mt-2 tracking-widest">{subtitle}</p>}
             </div>
             <div className="flex gap-1.5">
                 {[1, 2, 3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-gray-800"></div>)}
@@ -63,18 +63,18 @@ const Analytics: React.FC<AnalyticsProps> = ({ results, stats }) => {
     const avgML = results.filter(r => r.mlConfidence).reduce((acc, r) => acc + r.mlConfidence!, 0) / (results.filter(r => r.mlConfidence).length || 1);
     const successRate = stats.total > 0 ? (stats.vulnerable / stats.total) * 100 : 0;
 
-    const COLORS = ['#3b82f6', '#a855f7', '#ef4444', '#f59e0b', '#10b981'];
+    const COLORS = ['#8b5cf6', '#a855f7', '#ef4444', '#f59e0b', '#10b981'];
 
     return (
         <div className="space-y-10 reveal-up pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-white/5 pb-8">
                 <div>
                     <h2 className="text-4xl font-bold text-white tracking-tighter italic uppercase">Intelligence Analytics</h2>
-                    <p className="text-gray-400 text-sm mt-2">Deep-sector technical metrics and vulnerability distribution landscape.</p>
+                    <p className="text-gray-300 text-sm mt-2">Deep-sector technical metrics and vulnerability distribution landscape.</p>
                 </div>
                 <div className="flex items-center gap-6">
                     <div className="flex flex-col items-end">
-                        <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em]">Engine Precision</p>
+                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Engine Precision</p>
                         <p className="text-2xl font-bold text-white font-mono tracking-tighter">{(avgML * 100).toFixed(2)}%</p>
                     </div>
                     <div className="h-10 w-px bg-white/10"></div>
@@ -150,7 +150,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ results, stats }) => {
                                     {results.slice(0, 20).map((entry, index) => (
                                         <Cell
                                             key={`cell-${index}`}
-                                            fill={entry.verdict === 'VULNERABLE' ? '#ef4444' : (entry.verdict === 'SUSPICIOUS' ? '#f59e0b' : '#3b82f6')}
+                                            fill={entry.verdict === 'VULNERABLE' ? '#ef4444' : (entry.verdict === 'SUSPICIOUS' ? '#f59e0b' : '#8b5cf6')}
                                             fillOpacity={0.8}
                                             className="hover:fill-opacity-100 transition-all duration-300"
                                         />
@@ -178,7 +178,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ results, stats }) => {
                             </div>
                             <h4 className="text-sm font-black text-white uppercase tracking-[0.2em]">{item.title}</h4>
                         </div>
-                        <p className="text-[11px] text-gray-500 leading-relaxed uppercase font-bold tracking-[0.1em] opacity-80 group-hover:opacity-100 transition-opacity">
+                        <p className="text-[11px] text-gray-400 leading-relaxed uppercase font-bold tracking-[0.1em] opacity-80 group-hover:opacity-100 transition-opacity">
                             {item.desc}
                         </p>
                     </div>

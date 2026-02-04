@@ -61,7 +61,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             <div className={`relative transition-all duration-100 flex flex-col items-center ${glitch ? 'translate-x-1.5 -translate-y-1 scale-105 skew-x-3 opacity-60 grayscale' : ''}`}>
                 <div className="relative mb-16 group">
                     <div className="absolute inset-0 bg-primary-500 blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
-                    <div className="relative flex items-center justify-center w-40 h-40 bg-gray-900/60 backdrop-blur-xl border border-white/10 rounded-[40px] shadow-[0_0_50px_rgba(59,130,246,0.2)] rotate-45 transform hover:rotate-0 transition-all duration-1000">
+                    <div className="relative flex items-center justify-center w-40 h-40 bg-gray-900/60 backdrop-blur-xl border border-white/10 rounded-[40px] shadow-[0_0_50px_rgba(139,92,246,0.2)] rotate-45 transform hover:rotate-0 transition-all duration-1000">
                         <Shield size={80} className="text-primary-500 -rotate-45 group-hover:rotate-0 transition-all duration-1000" strokeWidth={1} />
                         <div className="absolute inset-2 border border-primary-500/20 rounded-[32px] pointer-events-none"></div>
                     </div>
@@ -94,7 +94,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
                 </div>
                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden p-[1px] border border-white/5 shadow-inner">
                     <div
-                        className="h-full bg-primary-600 shadow-[0_0_20px_rgba(37,99,235,0.8)] transition-all duration-700 ease-out rounded-full"
+                        className="h-full bg-primary-600 shadow-[0_0_20px_rgba(139,92,246,0.8)] transition-all duration-700 ease-out rounded-full"
                         style={{ width: `${progress}%` }}
                     />
                 </div>

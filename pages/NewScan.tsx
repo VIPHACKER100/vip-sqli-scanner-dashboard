@@ -78,11 +78,11 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h2 className="text-3xl font-bold text-white tracking-tighter">Infiltrate New Targets</h2>
-          <p className="text-gray-400 text-sm">Deploy the SQLiHunter engine against target infrastructure.</p>
+          <p className="text-gray-300 text-sm">Deploy the SQLiHunter engine against target infrastructure.</p>
         </div>
 
         <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-4 flex flex-wrap gap-2 max-w-lg">
-          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block w-full mb-2 ml-1">Mission Presets</span>
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block w-full mb-2 ml-1">Mission Presets</span>
           {[
             { name: 'POST API', url: 'https://api.vulnerable.com/v1/auth', method: 'POST', body: '{"username": "admin", "password": "password"}' },
             { name: 'Standard SQLi', url: 'https://vulnerable-sqli.com/api.php?id=1', method: 'GET', body: '' },
@@ -130,7 +130,7 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
                   onChange={(e) => setConfig({ ...config, targetUrls: e.target.value })}
                   required
                 />
-                <div className="absolute bottom-4 right-6 flex items-center gap-2 text-[10px] font-mono text-gray-600">
+                <div className="absolute bottom-4 right-6 flex items-center gap-2 text-[10px] font-mono text-gray-400">
                   <Info size={12} />
                   <span>Auto-Spidery Active</span>
                 </div>
@@ -142,14 +142,14 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
             <ConfigCard title="REST Intelligence" icon={Network} colorClass="text-purple-400">
               <div className="space-y-6">
                 <div className="group/field">
-                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">HTTP Verbs</label>
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">HTTP Verbs</label>
                   <div className="flex gap-2">
                     {['GET', 'POST', 'PUT'].map(m => (
                       <button
                         key={m}
                         type="button"
                         onClick={() => setConfig({ ...config, method: m as any })}
-                        className={`flex-1 py-2 rounded-xl border font-mono text-[10px] font-bold transition-all ${config.method === m ? 'bg-primary-600/10 border-primary-500 text-primary-400 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'bg-gray-950/50 border-white/5 text-gray-600 hover:border-white/10'}`}
+                        className={`flex-1 py-2 rounded-xl border font-mono text-[10px] font-bold transition-all ${config.method === m ? 'bg-primary-600/10 border-primary-500 text-primary-400 shadow-[0_0_15px_rgba(139,92,246,0.2)]' : 'bg-gray-950/50 border-white/5 text-gray-600 hover:border-white/10'}`}
                       >
                         {m}
                       </button>
@@ -213,7 +213,7 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
                     ML-Heuristics
                     <span className="px-1.5 py-0.5 rounded-full text-[8px] font-black bg-purple-600 text-white tracking-tighter">AI_V2</span>
                   </span>
-                  <p className="text-[10px] text-gray-500 uppercase font-bold tracking-tighter">Bypasses character-based filters</p>
+                  <p className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Bypasses character-based filters</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -244,7 +244,7 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
 
               <div className="pt-6 border-t border-white/5">
                 <div className="flex justify-between items-end mb-5">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
                     <Gauge size={14} className="text-primary-500" />
                     Concurrency Matrix
                   </label>

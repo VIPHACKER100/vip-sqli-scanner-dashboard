@@ -66,7 +66,7 @@ const Terminal: React.FC<TerminalProps> = ({ logs, onClear }) => {
                     {logs.map((log) => (
                         <div key={log.id} className="reveal-up group">
                             <div className="flex items-start gap-3">
-                                <span className="text-gray-600 text-[10px] mt-0.5 whitespace-nowrap">
+                                <span className="text-gray-400 text-[10px] mt-0.5 whitespace-nowrap">
                                     {new Date(log.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                                 </span>
                                 <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border flex items-center gap-1 mt-0.5 ${getLevelStyles(log.level)}`}>
@@ -74,7 +74,7 @@ const Terminal: React.FC<TerminalProps> = ({ logs, onClear }) => {
                                     {log.level}
                                 </span>
                                 <div className="flex-1">
-                                    <p className="text-xs text-gray-300 leading-relaxed">{log.message}</p>
+                                    <p className="text-xs text-gray-200 leading-relaxed">{log.message}</p>
                                     {log.url && <p className="text-[10px] text-primary-500/70 mt-0.5 truncate max-w-full">TARGET :: {log.url}</p>}
                                     {log.payload && (
                                         <div className="mt-2 p-2 bg-gray-900 border border-white/5 rounded text-[11px] text-gray-400 overflow-x-auto">
@@ -87,7 +87,7 @@ const Terminal: React.FC<TerminalProps> = ({ logs, onClear }) => {
                     ))}
                     {logs.length === 0 && (
                         <div className="h-full flex flex-col items-center justify-center opacity-30 select-none">
-                            <TerminalIcon size={48} className="text-gray-600 mb-2" />
+                            <TerminalIcon size={48} className="text-gray-400 mb-2" />
                             <p className="text-xs uppercase tracking-widest font-bold">Console Waiting for Input...</p>
                         </div>
                     )}

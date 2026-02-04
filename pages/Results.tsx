@@ -90,7 +90,7 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
             <input
               type="text"
               placeholder="SEARCH SECURED INTELLIGENCE (URL/VECTOR)..."
-              className="w-full pl-14 pr-6 py-4 bg-gray-950 border border-white/5 rounded-[24px] text-gray-200 focus:border-primary-500/40 outline-none font-mono text-xs tracking-widest shadow-inner transition-all placeholder:text-gray-800"
+              className="w-full pl-14 pr-6 py-4 bg-gray-950 border border-white/5 rounded-[24px] text-gray-200 focus:border-primary-500/40 outline-none font-mono text-xs tracking-widest shadow-inner transition-all placeholder:text-gray-600"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -102,7 +102,7 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                 onClick={() => setFilter(f)}
                 className={`px-6 py-2.5 rounded-[20px] text-[10px] font-black uppercase tracking-widest transition-all ${filter === f
                   ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20'
-                  : 'text-gray-600 hover:text-gray-400 hover:bg-white/5'
+                  : 'text-gray-400 hover:text-white hover:bg-white/10'
                   }`}
               >
                 {f}
@@ -114,7 +114,7 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
         {/* Technical Data Web */}
         <div className="overflow-auto scrollbar-hide">
           <table className="w-full text-left border-collapse">
-            <thead className="bg-white/[0.02] text-gray-600 text-[10px] uppercase font-black tracking-[0.25em] sticky top-0 z-10 backdrop-blur-xl border-b border-white/5">
+            <thead className="bg-white/[0.02] text-gray-400 text-[10px] uppercase font-black tracking-[0.25em] sticky top-0 z-10 backdrop-blur-xl border-b border-white/5">
               <tr>
                 <th className="px-10 py-5">Classification</th>
                 <th className="px-10 py-5 text-center">Infiltration Point</th>
@@ -127,7 +127,7 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                   <td colSpan={3} className="px-10 py-24 text-center">
                     <div className="flex flex-col items-center gap-6 opacity-40">
                       <Globe size={48} className="text-gray-700 animate-pulse" />
-                      <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em]">No technical findings matched in this sector.</p>
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">No technical findings matched in this sector.</p>
                     </div>
                   </td>
                 </tr>
@@ -305,7 +305,7 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
           <div className="space-y-10 reveal-up italic">
             <div className="flex items-center justify-between border-b border-white/5 pb-8">
               <div className="flex items-center gap-4">
-                <div className={`w-3 h-3 rounded-full ${inspectingResult.verdict === 'VULNERABLE' ? 'bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'bg-primary-500/40 shadow-[0_0_10px_rgba(59,130,246,0.2)]'}`}></div>
+                <div className={`w-3 h-3 rounded-full ${inspectingResult.verdict === 'VULNERABLE' ? 'bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'bg-primary-500/40 shadow-[0_0_10px_rgba(139,92,246,0.2)]'}`}></div>
                 <span className="text-xl font-bold text-white uppercase tracking-tighter">{inspectingResult.verdict} FINDING IDENTIFIED</span>
               </div>
               <div className="flex flex-col items-end">
@@ -322,7 +322,7 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                 </h4>
                 <div className="p-8 bg-black border border-white/5 rounded-[32px] font-mono text-[11px] leading-relaxed relative group shadow-inner">
                   <div className="absolute top-0 right-0 p-8 opacity-5"><Globe size={80} /></div>
-                  <div className="text-blue-400">GET <span className="text-gray-300 italic">{inspectingResult.url}</span> HTTP/1.1</div>
+                  <div className="text-primary-400">GET <span className="text-gray-300 italic">{inspectingResult.url}</span> HTTP/1.1</div>
                   <div className="text-purple-400 mt-2">Host: <span className="text-gray-400 font-bold tracking-tight">target.infrastructure.net</span></div>
                   <div className="text-purple-400">User-Agent: <span className="text-gray-500 text-[10px]">SQLiHunter/v2.2-EliteAuthorizedAgent</span></div>
                   <div className="text-purple-400">X-Mission-ID: <span className="text-gray-500">0x{inspectingResult.id.slice(0, 8).toUpperCase()}</span></div>

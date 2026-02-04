@@ -16,9 +16,9 @@ const StatCard = ({ title, value, subtext, icon: Icon, colorClass, bgClass }: an
     </div>
     <div className="flex justify-between items-start relative z-10">
       <div>
-        <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-2 group-hover:text-gray-400 transition-colors font-mono">{title}</p>
+        <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 group-hover:text-gray-300 transition-colors font-mono">{title}</p>
         <h3 className="text-4xl font-bold text-white mb-1 tracking-tighter">{value}</h3>
-        {subtext && <p className="text-[10px] text-gray-500 font-mono group-hover:text-gray-400 transition-colors uppercase tracking-widest">{subtext}</p>}
+        {subtext && <p className="text-[10px] text-gray-400 font-mono group-hover:text-gray-300 transition-colors uppercase tracking-widest">{subtext}</p>}
       </div>
       <div className={`p-4 rounded-2xl ${bgClass} shadow-xl transform transition-all duration-500 group-hover:rotate-6`}>
         <Icon className={`w-6 h-6 ${colorClass}`} strokeWidth={1.5} />
@@ -37,7 +37,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h2 className="text-3xl font-bold text-white tracking-tighter italic">Mission Intelligence Hub</h2>
-          <p className="text-gray-400 text-sm">Real-time tactical metrics and high-value exfiltration telemetry.</p>
+          <p className="text-gray-300 text-sm">Real-time tactical metrics and high-value exfiltration telemetry.</p>
         </div>
         {isScanning && (
           <div className="flex items-center gap-4 bg-primary-600/10 border border-primary-500/30 px-6 py-3 rounded-2xl shadow-2xl shadow-primary-600/10 backdrop-blur-md">
@@ -51,7 +51,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Target Workload" value={stats.total} subtext={`Processed: ${stats.processed}`} icon={Activity} colorClass="text-blue-400" bgClass="bg-blue-400/10" />
+        <StatCard title="Target Workload" value={stats.total} subtext={`Processed: ${stats.processed}`} icon={Activity} colorClass="text-primary-400" bgClass="bg-primary-400/10" />
         <StatCard title="Defenses Solid" value={stats.safe} subtext="Negative Findings" icon={ShieldCheck} colorClass="text-green-400" bgClass="bg-green-400/10" />
         <StatCard title="Breaches Confirmed" value={stats.vulnerable} subtext="Exfiltration Active" icon={AlertTriangle} colorClass="text-red-400" bgClass="bg-red-400/10" />
         <StatCard title="Anomalous Hits" value={stats.suspicious} subtext="ML Signal Hits" icon={CheckCircle} colorClass="text-purple-400" bgClass="bg-purple-400/10" />
@@ -70,7 +70,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
                   <Activity size={18} className="text-primary-500" />
                   Operations Timeline
                 </h3>
-                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Real-time detection velocity baseline</p>
+                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Real-time detection velocity baseline</p>
               </div>
               <div className="flex gap-2">
                 <span className="px-2 py-1 bg-green-500/10 text-green-500 text-[9px] font-mono border border-green-500/20 rounded">SAFE</span>
@@ -135,7 +135,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
                       </div>
                       <div className="flex items-center gap-6 shrink-0">
                         <div className="text-right">
-                          <p className="text-[9px] font-bold text-gray-600 uppercase mb-0.5 tracking-tighter">Confidence</p>
+                          <p className="text-[9px] font-bold text-gray-400 uppercase mb-0.5 tracking-tighter">Confidence</p>
                           <p className="text-xs font-mono text-purple-400 font-bold">{(vuln.mlConfidence! * 100).toFixed(1)}%</p>
                         </div>
                         <button
@@ -170,22 +170,22 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
             </h3>
             <div className="space-y-6 flex-1 flex flex-col justify-center relative z-10">
               {[
-                { label: "Engine Throughput", value: isScanning ? 88 : 0, color: "bg-blue-500", icon: Activity },
+                { label: "Engine Throughput", value: isScanning ? 88 : 0, color: "bg-primary-500", icon: Activity },
                 { label: "WAF Evasion Mean", value: isScanning ? 94 : 100, color: "bg-green-500", icon: Globe },
                 { label: "ML Diff Accuracy", value: isScanning ? 91 : 0, color: "bg-purple-500", icon: Cpu },
                 { label: "Extraction Load", value: isScanning ? 42 : 5, color: "bg-amber-500", icon: Database }
               ].map((item, idx) => (
                 <div key={idx} className="space-y-3">
                   <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-[0.1em] text-gray-500 group-hover:text-gray-400 transition-colors">
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 text-gray-300">
                       <item.icon size={12} className="text-gray-700" />
                       {item.label}
                     </span>
-                    <span className="text-gray-300 font-mono tracking-tighter">{item.value}%</span>
+                    <span className="text-gray-200 font-mono tracking-tighter">{item.value}%</span>
                   </div>
                   <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden p-[1px] border border-white/[0.02]">
                     <div
-                      className={`h-full ${item.color} rounded-full transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(59,130,246,0.3)]`}
+                      className={`h-full ${item.color} rounded-full transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(139,92,246,0.3)]`}
                       style={{ width: `${item.value}%` }}
                     />
                   </div>
@@ -245,7 +245,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
                   ]}>
                     <PolarGrid stroke="#ffffff05" />
                     <PolarAngleAxis dataKey="subject" tick={{ fill: '#475569', fontSize: 8, fontWeight: 'bold' }} />
-                    <Radar name="Engine" dataKey="A" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} />
+                    <Radar name="Engine" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.2} />
                   </RadarChart>
                 </ResponsiveContainer>
               </div>
@@ -267,7 +267,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
           {/* Live Mission Logs */}
           <div className="bg-gray-950/40 border border-white/5 rounded-[32px] p-6 shadow-inner group">
             <div className="flex items-center justify-between mb-4 px-2">
-              <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] flex items-center gap-2">
+              <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] flex items-center gap-2">
                 <Terminal size={12} className="text-primary-500" />
                 Mission_Log::Live
               </span>
