@@ -1,4 +1,41 @@
-# VIP SQLi Scanner v2.2 - Complete Feature Set
+# 🛡️ VIP SQLi Scanner v2.2 - Advanced Forensic Dashboard
+> **The Ultimate Real-World SQL Injection Security Engine.**
+
+[![Security Status](https://img.shields.io/badge/Security-Authorized_Pentest-red.svg?style=for-the-badge&logo=shield)](https://github.com/VIPHACKER100/vip-sqli-scanner-dashboard)
+[![Technology](https://img.shields.io/badge/Stack-React_|_Node_|_TypeScript-blue.svg?style=for-the-badge&logo=react)](https://github.com/VIPHACKER100/vip-sqli-scanner-dashboard)
+[![XNODE Status](https://img.shields.io/badge/Sync-XNODE_Online-green.svg?style=for-the-badge&logo=cloud)](https://github.com/VIPHACKER100/vip-sqli-scanner-dashboard)
+
+---
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    User([Security Researcher]) -->|Configures| App[SQLi Scanner React App]
+    App -->|Mission Plan| Engine[Forensic Engine]
+    
+    subgraph "Local Secure Zone"
+        Engine -->|Relay| Bridge[Proxy Bridge v3001]
+        Bridge -->|Node.js| Gateway{CORS Gateway}
+    end
+    
+    subgraph "External Targets"
+        Gateway -->|HTTP Handshake| Target1[Production Target]
+        Gateway -->|Forensic Sweep| Target2[API Endpoint]
+    end
+    
+    subgraph "Exfiltration Telemetry"
+        Engine -->|Vulnerability confirmed| Webhook[Discord/Slack Hook]
+        Engine -->|Intelligence Sync| XNODE[Cloud Vault / XNODE]
+    end
+    
+    Webhook -->|Alert| Notify[Immediate Notification]
+    XNODE -->|Persist| Vault[(Master Intelligence DB)]
+```
+
+---
 
 ## 🎯 Core Features
 
@@ -67,6 +104,31 @@
 - **Database Fingerprinting**: Automatic version detection
 - **WAF Detection**: 9 firewall signatures (ModSecurity, CloudFlare, Imperva, F5, etc.)
 - **Response Analysis**: Length differentials, timing analysis, pattern matching
+
+---
+
+## 🛠️ Infrastructure Setup
+
+### 1. **Local Proxy Bridge (MANDATORY)**
+To bypass browser-level security restrictions (CORS/SOP), all real-world forensic scans must route through the Node.js bridge.
+
+```bash
+# Terminal 1: Application Server
+npm install
+npm run dev
+
+# Terminal 2: Proxy Gateway
+cd proxy
+npm install
+node server.js
+```
+The Bridge will initialize at `http://localhost:3001`.
+
+### 2. **Mission Configuration**
+1. Navigate to the **Settings** panel.
+2. Enable **Real-World Forensic** mode.
+3. Set your **Alert Telemetry Webhook** (Discord/Slack).
+4. Configure your **Master Vault Token** for Cloud Sync.
 
 ---
 

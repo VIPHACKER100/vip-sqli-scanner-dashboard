@@ -153,6 +153,10 @@ class RealScannerService implements IScanner {
       }
     }
 
+    if (verdict === 'VULNERABLE' && settings?.webhookUrl) {
+      this.sendExfiltrationAlert(url, successfulPayload, bestHeuristic, settings.webhookUrl);
+    }
+
     return {
       id: Math.random().toString(36).substring(2, 11),
       url,
@@ -181,6 +185,37 @@ class RealScannerService implements IScanner {
       return { success: true, ...(await resp.json()) };
     } catch (e) {
       return { success: false };
+    }
+  }
+
+  private async sendExfiltrationAlert(url: string, payload: string, heuristic: any, webhookUrl: string) {
+    try {
+      const content = {
+        embeds: [{
+          title: "🚨 SQL Injection Vulnerability Confirmed",
+          color: 15158332,
+          fields: [
+            { name: "Target", value: `\`${url}\``, inline: false },
+            { name: "Payload", value: `\`${payload}\``, inline: false },
+            { name: "Confidence", value: `${(heuristic.confidence * 100).toFixed(1)}%`, inline: true },
+            { name: "Grade", value: heuristic.grade, inline: true },
+            { name: "Evidence", value: heuristic.reasoning[0], inline: false }
+          ],
+          footer: { text: "VIP SQLi Scanner Forensic Intelligence" },
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      // Route through Proxy Bridge for CORS bypass
+      await fetch(`${PROXY_URL.replace('/proxy', '/alert')}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ webhookUrl, payload: content })
+      });
+      
+      this.emitLog('INFO', `Exfiltration Telemetry dispatched to remote webhook.`);
+    } catch (e) {
+      this.emitLog('ERROR', `Telemetry Failure: Could not reach exfiltration endpoint.`);
     }
   }
 

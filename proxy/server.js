@@ -77,6 +77,34 @@ app.post('/proxy', async (req, res) => {
 });
 
 // -------------------------------------------------------------------------
+// EXFILTRATION HUB :: TELEMETRY RELAY
+// -------------------------------------------------------------------------
+
+app.post('/alert', async (req, res) => {
+  const { webhookUrl, payload } = req.body;
+
+  if (!webhookUrl || !payload) {
+    return res.status(400).json({ error: 'Exfiltration Telemetry compromised: Missing endpoint or payload.' });
+  }
+
+  console.log(`[ALERT] Telemetry Synchronizing with remote Vault...`);
+
+  try {
+    const response = await axios.post(webhookUrl, payload, {
+      timeout: 10000,
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    console.log(`[ALERT] Telemetry Sychronized: ${response.status}`);
+    return res.json({ success: true, status: response.status });
+
+  } catch (error) {
+    console.error(`[ALERT] Telemetry Failure: ${error.message}`);
+    return res.status(502).json({ error: 'Telemetry Interrupted', message: error.message });
+  }
+});
+
+// -------------------------------------------------------------------------
 // HEALTH CHECK :: SYSTEM INTEGRITY
 // -------------------------------------------------------------------------
 
