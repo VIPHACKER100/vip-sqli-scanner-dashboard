@@ -11,11 +11,14 @@ export const analyzeVulnerability = (
   const reasoning: string[] = [];
   let score = 0;
 
-  // 1. Timing Delta (Max 40 points)
+  // 1. Timing Delta (Max 80 points)
   const timeDelta = testResponse.duration - originalResponse.duration;
-  if (timeDelta > 4000) {
-    score += 40;
+  if (timeDelta > 4500) {
+    score += 80;
     reasoning.push(`Significant latency deviation detected (Δ${timeDelta}ms). Highly indicative of Time-Blind SQLi.`);
+  } else if (timeDelta > 2000) {
+    score += 40;
+    reasoning.push(`Considerable latency deviation detected (Δ${timeDelta}ms). Highly indicative of Time-Blind SQLi.`);
   } else if (timeDelta > 1000) {
     score += 15;
     reasoning.push(`Minor latency jitter detected (Δ${timeDelta}ms). Possible network noise or partial sleep.`);
@@ -39,7 +42,7 @@ export const analyzeVulnerability = (
   
   const foundErrors = sqlErrors.filter(err => testResponse.body.includes(err));
   if (foundErrors.length > 0) {
-    score += 40;
+    score += 60;
     reasoning.push(`Database diagnostic signature(s) detected: [${foundErrors.join(', ')}]. Highly indicative of Error-Based SQLi.`);
   }
 
