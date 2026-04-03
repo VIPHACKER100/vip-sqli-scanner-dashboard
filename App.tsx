@@ -32,7 +32,10 @@ const DEFAULT_SETTINGS: ScannerSettings = {
     ldap: false
   },
   customPayloads: [],
-  scannerMode: 'mock'
+  scannerMode: 'mock',
+  webhookUrl: 'https://hooks.slack.com/services/SQLI/HUNTER/ALERTS',
+  syncEndpointNode: 'https://vault.viphacker.internal/api/v2',
+  vaultToken: 'SQ-HUNTER-XNODE-PRIME-001-ALPHA'
 };
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -45,7 +48,18 @@ const App: React.FC = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [settings, setSettings] = useState<ScannerSettings>(() => {
     const saved = localStorage.getItem('sqli_hunter_settings');
-    return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+    if (!saved) return DEFAULT_SETTINGS;
+    try {
+      const parsed = JSON.parse(saved);
+      return {
+        ...DEFAULT_SETTINGS,
+        ...parsed,
+        surfaceCoverage: { ...DEFAULT_SETTINGS.surfaceCoverage, ...(parsed.surfaceCoverage || {}) },
+        enabledPlugins: { ...DEFAULT_SETTINGS.enabledPlugins, ...(parsed.enabledPlugins || {}) }
+      };
+    } catch (e) {
+      return DEFAULT_SETTINGS;
+    }
   });
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {

@@ -54,6 +54,9 @@ export interface ScannerSettings {
     description: string;
   }[];
   scannerMode: 'mock' | 'real';
+  webhookUrl?: string;
+  syncEndpointNode?: string;
+  vaultToken?: string;
 }
 
 export const PROXY_URL = 'http://localhost:3001/proxy';

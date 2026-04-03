@@ -1,5 +1,5 @@
-import React from 'react';
-import { Save, Bell, Cloud, Database, Cpu, Globe, Shield, Terminal, Zap, Fingerprint, Lock, ShieldAlert, Sliders, RefreshCw } from 'lucide-react';
+import React, { useState } from 'react';
+import { Save, Bell, Cloud, Database, Cpu, Globe, Shield, Terminal, Zap, Fingerprint, Lock, ShieldAlert, Sliders, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
 import { ScannerSettings } from '../types';
 
 interface SettingsProps {
@@ -8,7 +8,7 @@ interface SettingsProps {
 }
 
 const SettingsCard = ({ title, icon: Icon, children, colorClass, subtitle }: any) => (
-  <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[40px] overflow-hidden shadow-xl dark:shadow-2xl transition-all duration-300 hover:border-primary-500/30 group relative transition-colors">
+  <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[40px] overflow-hidden shadow-xl dark:shadow-2xl transition-all duration-300 hover:border-primary-500/30 group relative mb-10 last:mb-0">
     <div className="p-8 border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.01] flex items-center justify-between">
       <div className="flex items-center gap-5">
         <div className={`p-3.5 rounded-2xl bg-gray-900 border border-white/10 group-hover:scale-110 transition-transform ${colorClass} shadow-xl`}>
@@ -23,13 +23,17 @@ const SettingsCard = ({ title, icon: Icon, children, colorClass, subtitle }: any
         {[1, 2, 3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-white"></div>)}
       </div>
     </div>
-    <div className="p-10 relative z-10">
+    <div className="p-10 relative z-10 text-gray-800 dark:text-gray-200">
       {children}
     </div>
   </div>
 );
 
 const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
+  const [newPayloadCat, setNewPayloadCat] = useState('');
+  const [newPayloadVal, setNewPayloadVal] = useState('');
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+
   const handleToggleSurface = (key: keyof ScannerSettings['surfaceCoverage']) => {
     setSettings({
       ...settings,
@@ -38,6 +42,29 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
         [key]: !settings.surfaceCoverage[key]
       }
     });
+  };
+
+  const handleAddPayload = () => {
+    if (newPayloadCat && newPayloadVal) {
+      setSettings({
+        ...settings,
+        customPayloads: [
+          ...settings.customPayloads,
+          { id: Date.now().toString(), category: newPayloadCat, payload: newPayloadVal, description: 'User added vector' }
+        ]
+      });
+      setNewPayloadCat('');
+      setNewPayloadVal('');
+    }
+  };
+
+  const handleFinalize = () => {
+    setSaveStatus('saving');
+    // Simulate API call/save
+    setTimeout(() => {
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }, 1200);
   };
 
   return (
@@ -92,6 +119,8 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                   <Terminal className="absolute left-5 top-1/2 -translate-y-1/2 text-primary-500/40" size={16} />
                   <input
                     type="text"
+                    aria-label="Mission Persona User Agent"
+                    placeholder="User-Agent String"
                     className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-white/5 rounded-2xl pl-14 pr-6 py-4 text-gray-900 dark:text-gray-200 focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 outline-none text-xs font-mono transition-all shadow-inner"
                     value={settings.userAgent}
                     onChange={(e) => setSettings({ ...settings, userAgent: e.target.value })}
@@ -103,7 +132,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                 <div className="flex justify-between items-end mb-5">
                   <label className="block text-[10px] font-black text-gray-600 uppercase tracking-[0.2em] group-hover/field:text-primary-400 transition-colors">Pulse Rate Limit</label>
                   <div className="text-right">
-                    <span className="text-xl font-bold text-white font-mono tracking-tighter">{(settings.rateLimit / 1000).toFixed(1)}</span>
+                    <span className="text-xl font-bold dark:text-white font-mono tracking-tighter">{(settings.rateLimit / 1000).toFixed(1)}</span>
                     <span className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">s/REQ</span>
                   </div>
                 </div>
@@ -113,6 +142,8 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                     min="100"
                     max="5000"
                     step="100"
+                    aria-label="Pulse Rate Limit"
+                    title="Adjust pulse rate limit"
                     className="w-full h-1.5 bg-gray-950 rounded-full appearance-none cursor-pointer accent-primary-600 shadow-inner"
                     value={settings.rateLimit}
                     onChange={(e) => setSettings({ ...settings, rateLimit: parseInt(e.target.value) })}
@@ -162,10 +193,11 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                   <div className="relative flex-1">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-700" size={14} />
                     <input
-                      type="password"
-                      value="https://hooks.slack.com/services/SQLI/HUNTER/ALERTS"
-                      className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-white/5 rounded-2xl pl-12 pr-4 py-4 text-gray-500 dark:text-gray-600 text-[10px] font-mono outline-none shadow-inner"
-                      readOnly
+                      type="text"
+                      placeholder="https://hooks.slack.com/services/..."
+                      value={settings.webhookUrl || ''}
+                      onChange={(e) => setSettings({ ...settings, webhookUrl: e.target.value })}
+                      className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-white/5 rounded-2xl pl-12 pr-4 py-4 text-gray-500 dark:text-gray-300 text-[10px] font-mono outline-none shadow-inner focus:border-amber-500/30"
                     />
                   </div>
                   <button className="px-8 py-2 bg-white/5 hover:bg-white/10 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 transition-all active:scale-95 shadow-xl">Test_Line</button>
@@ -193,6 +225,8 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                     type="text"
                     className="w-full bg-gray-950 border border-white/5 rounded-2xl px-6 py-4 text-gray-200 text-xs font-mono outline-none focus:border-green-500/40 transition-all font-bold tracking-tight shadow-inner"
                     placeholder="https://vault.viphacker.internal/api/v2"
+                    value={settings.syncEndpointNode || ''}
+                    onChange={(e) => setSettings({ ...settings, syncEndpointNode: e.target.value })}
                   />
                 </div>
                 <div className="group/field">
@@ -201,9 +235,10 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                     <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-700" size={14} />
                     <input
                       type="password"
-                      value="••••••••••••••••••••••••"
-                      className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-white/5 rounded-2xl pl-14 pr-6 py-4 text-gray-600 dark:text-gray-400 text-xs font-mono outline-none shadow-inner"
-                      readOnly
+                      placeholder="SQ-HUNTER-XNODE-..."
+                      className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-white/5 rounded-2xl pl-14 pr-6 py-4 text-gray-600 dark:text-gray-400 text-xs font-mono outline-none shadow-inner focus:border-green-500/30"
+                      value={settings.vaultToken || ''}
+                      onChange={(e) => setSettings({ ...settings, vaultToken: e.target.value })}
                     />
                   </div>
                 </div>
@@ -216,31 +251,20 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
             <div className="space-y-6">
               <div className="flex flex-col gap-4 p-4 bg-gray-950/40 border border-white/5 rounded-3xl">
                 <input 
-                  id="new-payload-cat"
                   placeholder="Category (e.g. UNION Based)" 
-                  className="bg-transparent border-b border-white/10 p-2 text-xs outline-none focus:border-primary-500 transition-colors"
+                  value={newPayloadCat}
+                  onChange={(e) => setNewPayloadCat(e.target.value)}
+                  className="bg-transparent border-b border-white/10 p-2 text-xs outline-none focus:border-primary-500 transition-colors text-white"
                 />
                 <input 
-                  id="new-payload-val"
                   placeholder="SQL Payload" 
-                  className="bg-transparent border-b border-white/10 p-2 text-xs font-mono outline-none focus:border-primary-500 transition-colors"
+                  value={newPayloadVal}
+                  onChange={(e) => setNewPayloadVal(e.target.value)}
+                  className="bg-transparent border-b border-white/10 p-2 text-xs font-mono outline-none focus:border-primary-500 transition-colors text-white"
                 />
                 <button 
-                  onClick={() => {
-                    const cat = (document.getElementById('new-payload-cat') as HTMLInputElement).value;
-                    const val = (document.getElementById('new-payload-val') as HTMLInputElement).value;
-                    if (cat && val) {
-                      setSettings({
-                        ...settings,
-                        customPayloads: [
-                          ...settings.customPayloads,
-                          { id: Date.now().toString(), category: cat, payload: val, description: 'User added vector' }
-                        ]
-                      });
-                      (document.getElementById('new-payload-cat') as HTMLInputElement).value = '';
-                      (document.getElementById('new-payload-val') as HTMLInputElement).value = '';
-                    }
-                  }}
+                  id="register-vector-btn"
+                  onClick={handleAddPayload}
                   className="mt-2 py-3 bg-primary-600 hover:bg-primary-500 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-lg active:scale-95"
                 >
                   Register Vector
@@ -253,7 +277,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                 ) : (
                   settings.customPayloads.map(p => (
                     <div key={p.id} className="flex items-center justify-between p-3 bg-white/[0.02] border border-white/5 rounded-xl group/item">
-                      <div className="flex flex-col">
+                      <div className="flex flex-col overflow-hidden">
                         <span className="text-[8px] font-black text-primary-500 uppercase tracking-widest">{p.category}</span>
                         <span className="text-[10px] font-mono text-gray-400 truncate max-w-[200px]">{p.payload}</span>
                       </div>
@@ -290,8 +314,8 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
               This protocol initiates a full localized wipe of the intelligence cache, session metadata, and instance identity. This mission reset is irreversible.
             </p>
             <button
-              onClick={() => (window as any).factoryReset()}
-              className="w-full py-5 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-500/20 rounded-3xl text-[10px] font-black uppercase tracking-[0.3em] transition-all shadow-xl hover:shadow-red-600/30 active:scale-95 relative z-10"
+              onClick={() => (window as any).factoryReset && (window as any).factoryReset()}
+              className="w-full py-5 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-500/20 rounded-3xl text-[10px] font-black uppercase tracking-[0.3em] transition-all shadow-xl hover:shadow-red-600/30 active:scale-95 relative z-10 font-bold"
             >
               Purge All System Intelligence
             </button>
@@ -306,21 +330,38 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
             <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] mb-1">Architecture</span>
             <span className="text-sm font-mono text-gray-400 font-bold tracking-tighter uppercase">V2.2.4-STABLE::XNODE</span>
           </div>
-          <div className="w-px h-10 bg-white/10"></div>
+          <div className="w-px h-10 bg-white/10 hidden md:block"></div>
           <div className="flex flex-col">
             <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] mb-1">Sync Status</span>
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-              <span className="text-sm font-mono text-gray-500 font-bold tracking-tighter uppercase italic">Live // 14:02 UTC</span>
+              <span className="text-sm font-mono text-gray-500 font-bold tracking-tighter uppercase italic">Live // {new Date().getUTCHours()}:{new Date().getUTCMinutes().toString().padStart(2, '0')} UTC</span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-6 w-full lg:w-auto">
-          <button className="flex-1 lg:flex-none px-8 py-3 text-gray-500 hover:text-white text-[10px] font-black uppercase tracking-[0.2em] transition-colors">Discard_Mission_Plan</button>
-          <button className="flex-1 lg:flex-none flex items-center justify-center gap-4 px-12 py-5 bg-primary-600 hover:bg-primary-500 text-white font-black rounded-3xl transition-all shadow-2xl shadow-primary-600/30 active:scale-95 group relative overflow-hidden">
+          <button 
+            onClick={() => window.location.reload()}
+            className="flex-1 lg:flex-none px-8 py-3 text-gray-500 hover:text-white text-[10px] font-black uppercase tracking-[0.2em] transition-colors"
+          >
+            Discard_Mission_Plan
+          </button>
+          <button 
+            disabled={saveStatus !== 'idle'}
+            onClick={handleFinalize}
+            className={`flex-1 lg:flex-none flex items-center justify-center gap-4 px-12 py-5 font-black rounded-3xl transition-all shadow-2xl active:scale-95 group relative overflow-hidden ${
+              saveStatus === 'saved' ? 'bg-green-600 shadow-green-600/30' : 
+              saveStatus === 'saving' ? 'bg-primary-700 opacity-80' : 'bg-primary-600 hover:bg-primary-500 shadow-primary-600/30'
+            }`}
+          >
             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-            <Sliders size={18} className="relative z-10" />
-            <span className="text-xs uppercase tracking-[0.2em] relative z-10 italic">Finalize Calibration</span>
+            {saveStatus === 'saved' ? <CheckCircle size={18} className="relative z-10" /> : 
+             saveStatus === 'saving' ? <RefreshCw size={18} className="relative z-10 animate-spin" /> : 
+             <Sliders size={18} className="relative z-10" />}
+            <span className="text-xs uppercase tracking-[0.2em] relative z-10 italic">
+              {saveStatus === 'saved' ? 'Calibration Finalized' : 
+               saveStatus === 'saving' ? 'Synchronizing...' : 'Finalize Calibration'}
+            </span>
           </button>
         </div>
       </div>

@@ -2,9 +2,24 @@
 
 ## Overview
 
-The VIP SQLi Scanner now includes a comprehensive **Parameter Fuzzing Engine** that automatically discovers and tests injection points across multiple input vectors. This feature enables automated vulnerability discovery without manual parameter identification.
+The VIP SQLi Scanner now includes a comprehensive **Parameter Fuzzing Engine** that automatically discovers and tests injection points across multiple input vectors. **Phase 3** introduces the **Proxy Bridge Utility**, enabling real-world forensic scanning by bypassing browser security restrictions (CORS/SOP).
 
 ---
+
+## 🛡️ Real-World Forensic Suite
+
+### 🌐 Proxy Bridge Utility
+To enable scanning of production systems, you must activate the local gateway:
+1. Open a terminal in the root directory.
+2. Navigate to `proxy/` folder.
+3. Run `node server.js`.
+4. This starts a high-performance bridge (Port 3001) that routes all scanner requests through a secure Node.js backend.
+
+### 📡 Exfiltration Telemetry
+Connect your scanning instance to external alerting systems:
+- **Webhooks**: Direct integration with Discord and Slack.
+- **XNODE Sync**: Continuous synchronization with the Master Intelligence Vault.
+- **Forensic Logs**: Detailed timing and response differential analysis.
 
 ## Features
 
@@ -31,6 +46,7 @@ High-risk parameters are tested first:
 | **URL Encoding** | `%27%20OR%201%3D1--` | Bypass basic filters |
 | **Double Encoding** | `%2527%2520OR...` | Evade double-decode WAFs |
 | **Hex Encoding** | `0x27204f52...` | Numeric context bypass |
+| **Base64 Fuzz** | `' OR 1=1--` | Base64 encoded payload delivery |
 | **Unicode** | `\u0027 OR 1=1--` | Character set evasion |
 | **Null Byte** | `' OR 1=1--\x00` | Truncation attacks |
 | **Comment Variations** | `--`, `#`, `/**/`, `;%00` | Comment-based bypass |
