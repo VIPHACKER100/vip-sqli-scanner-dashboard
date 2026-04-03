@@ -31,6 +31,13 @@ export interface ScanResult {
     pocRequest?: string;
     extractedData?: any;
   };
+  forensics?: {
+    payload?: string;
+    responseStatus?: number;
+    responseSize?: number;
+    errorSnippet?: string;
+    requestMethod?: string;
+  };
   logs?: LogEntry[];
 }
 

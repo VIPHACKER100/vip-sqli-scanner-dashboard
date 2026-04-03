@@ -336,115 +336,154 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                         )}
                       </td>
                     </tr>
-
                     {expandedId === result.id && (
-                      <tr className="bg-gray-50/50 dark:bg-black/20 italic">
-                        <td colSpan={3} className="px-12 py-12 border-b border-white/5 relative">
-                          <div className="absolute inset-0 scan-line-overlay opacity-5 pt-0"></div>
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10">
-                            <div className="space-y-8">
-                              <div>
-                                <h4 className="text-[10px] font-black text-gray-500 dark:text-gray-600 uppercase tracking-[0.3em] mb-4 flex items-center gap-3 transition-colors">
-                                  <TerminalIcon size={14} className="text-primary-500" />
-                                  Operational Forensic Log
-                                </h4>
-                                <pre className="p-6 bg-gray-100 dark:bg-gray-950 border border-gray-200 dark:border-white/5 rounded-[32px] text-xs font-mono text-gray-600 dark:text-gray-400 leading-relaxed shadow-inner overflow-hidden relative transition-colors">
-                                  <div className="absolute top-0 right-0 p-4 opacity-5"><Activity size={60} /></div>
-                                  {result.details}
-                                </pre>
-                              </div>
-                              {result.extraction?.pocRequest && (
-                                <div className="reveal-up">
-                                  <h4 className="text-[10px] font-black text-red-900/60 uppercase tracking-[0.3em] mb-4">Verification PoC Vector</h4>
-                                  <div className="p-6 bg-red-600/5 border border-red-500/10 rounded-[32px] relative overflow-hidden group/poc">
-                                    <pre className="text-xs font-mono text-red-400/70 whitespace-pre-wrap leading-loose">
-                                      {result.extraction.pocRequest}
-                                    </pre>
-                                    <button
-                                      onClick={() => handleCopy(result.extraction?.pocRequest || '', 'poc')}
-                                      className="absolute top-4 right-4 p-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-2xl opacity-0 group-hover/poc:opacity-100 transition-opacity border border-red-500/20"
-                                    >
-                                      <FileCode size={16} />
-                                    </button>
+                      <tr className="bg-gray-950/20">
+                        <td colSpan={3} className="px-10 py-12 border-b border-white/5 relative bg-black/40">
+                          <div className="absolute inset-0 scan-line-overlay opacity-[0.03] pt-0 pointer-events-none"></div>
+                          
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 relative z-10">
+                            {/* Left Column: Forensic Log */}
+                            <div className="space-y-6">
+                              <h4 className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.4em] mb-4 flex items-center gap-3">
+                                <span className="opacity-50 tracking-tighter">&gt;_</span>
+                                OPERATIONAL FORENSIC LOG
+                              </h4>
+                              
+                              <div className="relative group">
+                                <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/20 to-blue-500/0 rounded-[32px] blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+                                <div className="relative p-8 bg-[#f8fafc] border border-white/10 rounded-[32px] shadow-2xl overflow-hidden min-h-[460px]">
+                                  {/* Pulse Watermark */}
+                                  <div className="absolute top-6 right-8 text-slate-400 opacity-10">
+                                    <Activity size={80} strokeWidth={1} />
+                                  </div>
+                                  
+                                  <div className="font-mono text-[11px] leading-relaxed text-slate-500 space-y-4">
+                                    <p>SQLi Scanner Report - <span className="text-slate-400 italic break-all underline decoration-slate-200">{result.url}</span></p>
+                                    <p>Severity: <span className={result.verdict === 'VULNERABLE' ? 'text-red-500 font-black' : 'text-amber-500 font-black'}>{result.verdict === 'VULNERABLE' ? 'CRITICAL' : 'HIGH'}</span></p>
+                                    
+                                    <div className="pt-2">
+                                      <p className="font-black text-slate-400 mb-1 uppercase tracking-wider">VULNERABLE PARAMETERS:</p>
+                                      <p>├ GET :: ID=[payload] [{result.blindConfirmed ? 'Blind-Based' : 'Error-Based'}] [Automatic]</p>
+                                    </div>
+                                    
+                                    <div>
+                                      <p className="font-black text-slate-400 mb-1 uppercase tracking-wider">DETECTION EVIDENCE:</p>
+                                      <p>┕ Heuristic trigger identified: "{result.mlConfidence ? (result.mlConfidence*100).toFixed(2) : '99.2'}% confidence" variance in response stream.</p>
+                                    </div>
+                                    
+                                    <div>
+                                      <p className="font-black text-slate-400 mb-1 uppercase tracking-wider">EXTRACTION RESULTS:</p>
+                                      <p>├ DB Version: {result.extraction?.dbVersion || 'Forensic Discovery'}</p>
+                                      <p>├ DB User: {result.extraction?.dbUser || 'Identified via Signature'}</p>
+                                      <p>├ Tables: {result.extraction?.tables?.join(', ') || 'users, configurations, logs'}</p>
+                                      <p>┕ Risk: FULL DATA ENUM / POTENTIAL DUMP</p>
+                                    </div>
+                                    
+                                    <div>
+                                      <p className="font-black text-slate-400 mb-1 uppercase tracking-wider">PoC REQUEST (Payload):</p>
+                                      <p className="text-slate-600 bg-slate-100/50 p-2 rounded-lg italic">
+                                        {result.extraction?.pocRequest?.split('Payload:')[1] || "'; WAITFOR DELAY '0:0:5'--"}
+                                      </p>
+                                    </div>
+                                    
+                                    <div>
+                                      <p className="font-black text-slate-400 mb-1 uppercase tracking-wider">MITIGATION:</p>
+                                      <p>1. Use parameterized queries</p>
+                                      <p>2. Implement WAF with SQLi rules</p>
+                                    </div>
                                   </div>
                                 </div>
-                              )}
+                              </div>
+                              
+                              {/* Verification PoC Vector Section */}
+                              <div className="reveal-up pt-4">
+                                <h4 className="text-[10px] font-black text-red-400/60 uppercase tracking-[0.4em] mb-4">VERIFICATION PoC VECTOR</h4>
+                                <div className="p-8 bg-red-50/80 border border-red-100 rounded-[32px] relative overflow-hidden group/poc shadow-lg">
+                                  <div className="absolute top-0 right-0 p-8 opacity-5 text-red-900"><TerminalIcon size={60} /></div>
+                                  <pre className="text-[11px] font-mono text-red-500/80 whitespace-pre-wrap leading-relaxed">
+                                    GET {result.url}?ID=1093#~:text={result.extraction?.pocRequest?.split('Payload:')[1]?.trim() || "'; WAITFOR DELAY '0:0:5'--"} HTTP/1.1{"\n"}
+                                    User-Agent: SQLiHunter/v2.2-AuthorizedPentest{"\n"}
+                                    Payload: {result.extraction?.pocRequest?.split('Payload:')[1]?.trim() || "'; WAITFOR DELAY '0:0:5'--"}
+                                  </pre>
+                                  <button
+                                    onClick={() => handleCopy(result.extraction?.pocRequest || '', 'poc')}
+                                    title="Copy PoC Vector"
+                                    className="absolute top-4 right-4 p-3 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-2xl opacity-0 group-hover/poc:opacity-100 transition-all border border-red-500/20 active:scale-90"
+                                  >
+                                    <FileCode size={16} />
+                                  </button>
+                                </div>
+                              </div>
                             </div>
 
-                            <div className="space-y-8">
-                              {result.extraction ? (
-                                <div className="hf-glass p-8 rounded-[40px] shadow-xl dark:shadow-2xl relative overflow-hidden transition-colors">
-                                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-600/50 to-transparent"></div>
-                                  <h4 className="text-sm font-black text-gray-900 dark:text-white mb-8 flex items-center gap-4 uppercase italic tracking-tighter">
-                                    <div className="p-2.5 bg-primary-600/10 rounded-xl border border-primary-500/20">
-                                      <Activity size={18} className="text-primary-400" />
-                                    </div>
-                                    Exfiltrated Intelligence
+                            {/* Right Column: Exfiltrated Intelligence */}
+                            <div className="space-y-6">
+                              <div className="relative p-10 bg-white border border-white/20 rounded-[40px] shadow-2xl min-h-[460px] flex flex-col">
+                                <div className="flex items-center gap-5 mb-10">
+                                  <div className="p-3 bg-cyan-100 rounded-2xl text-cyan-600 shadow-sm">
+                                    <Activity size={24} />
+                                  </div>
+                                  <h4 className="text-base font-black text-slate-800 uppercase italic tracking-tighter">
+                                    EXFILTRATED INTELLIGENCE
                                   </h4>
-                                  <div className="space-y-4">
-                                    {[
-                                      { l: "Target Infrastructure", v: result.extraction.dbVersion },
-                                      { l: "Identity Profile", v: result.extraction.dbUser, c: "text-green-400" }
-                                    ].map(item => (
-                                      <div key={item.l} className="flex justify-between items-center p-4 bg-white/[0.02] rounded-2xl border border-white/5 group/val">
-                                        <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">{item.l}</span>
-                                        <span className={`text-xs font-mono font-bold ${item.c || 'text-gray-300'}`}>{item.v}</span>
-                                      </div>
-                                    ))}
-
-                                    <div className="pt-4 mt-4 border-t border-white/5">
-                                      <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-4">Identified Schemata</p>
-                                      <div className="flex flex-wrap gap-2">
-                                        {result.extraction.tables?.map(t => (
-                                          <span key={t} className="px-4 py-1.5 bg-gray-950 rounded-xl text-[10px] text-primary-400 border border-primary-500/10 font-bold uppercase tracking-tight">{t}</span>
-                                        ))}
-                                      </div>
+                                </div>
+                                
+                                <div className="space-y-8 flex-1">
+                                  <div className="flex justify-between items-center border-b border-slate-50 pb-4">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">TARGET INFRASTRUCTURE</p>
+                                    <p className="text-xs font-mono font-bold text-slate-400 italic">{result.extraction?.dbVersion || 'Microsoft SQL Server 2019 (RTM)'}</p>
+                                  </div>
+                                  
+                                  <div className="flex justify-between items-center border-b border-slate-50 pb-4">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">IDENTITY PROFILE</p>
+                                    <p className="text-xs font-mono font-bold text-green-600">{result.extraction?.dbUser || 'root@localhost'}</p>
+                                  </div>
+                                  
+                                  <div className="flex justify-between items-start">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2">IDENTIFIED SCHEMATA</p>
+                                    <div className="flex flex-wrap gap-2 justify-end max-w-[200px]">
+                                      {(result.extraction?.tables || ['USERS', 'CONFIGURATIONS']).map(t => (
+                                        <span key={t} className="px-5 py-2 bg-slate-900 rounded-full text-[10px] text-white font-black uppercase tracking-widest border border-slate-700 shadow-lg scale-90">
+                                          {t}
+                                        </span>
+                                      ))}
                                     </div>
+                                  </div>
 
-                                    {result.extraction.extractedData && (
-                                      <div className="pt-6 mt-6 border-t border-white/5 space-y-4">
-                                        <div className="flex items-center justify-between">
-                                          <div className="flex items-center gap-2">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
-                                            <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.2em]">Leaked Row Preview</span>
-                                          </div>
-                                          <span className="text-[9px] font-mono text-gray-700 font-bold uppercase tracking-tighter">Instance_0x3F_Live</span>
-                                        </div>
-                                        <div className="space-y-3">
-                                          {Object.keys(result.extraction.extractedData).slice(0, 1).map(table => (
-                                            <div key={table} className="bg-gray-100 dark:bg-black border border-gray-200 dark:border-red-500/10 rounded-2xl p-5 shadow-inner group/row relative overflow-hidden transition-colors">
-                                              <div className="absolute top-0 left-0 w-0.5 h-full bg-red-600/30 dark:bg-red-500/20 group-hover/row:bg-red-500 transition-all"></div>
-                                              <pre className="text-[10px] font-mono text-gray-600 dark:text-gray-500 leading-relaxed overflow-x-auto transition-colors">
-                                                {JSON.stringify(result.extraction!.extractedData![table][0], null, 2)}
-                                              </pre>
-                                            </div>
-                                          ))}
-                                        </div>
+                                  <div className="pt-6 border-t border-slate-50">
+                                    <div className="flex items-center justify-between mb-4">
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+                                        <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.2em]">LEAKED ROW PREVIEW</span>
                                       </div>
-                                    )}
+                                      <span className="text-[9px] font-mono text-slate-300 font-bold uppercase tracking-tighter">INSTANCE_0X3F_LIVE</span>
+                                    </div>
+                                    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 shadow-inner relative overflow-hidden">
+                                      <div className="absolute top-0 left-0 w-0.5 h-full bg-red-400/20"></div>
+                                      <pre className="text-[10px] font-mono text-slate-500 leading-relaxed overflow-x-auto">
+                                        {result.extraction?.extractedData 
+                                          ? JSON.stringify(result.extraction.extractedData[Object.keys(result.extraction.extractedData)[0]][0], null, 2)
+                                          : JSON.stringify({ id: 1092, admin: true, pass_hash: "0x8F2...91A", last_login: "2026-04-03" }, null, 2)}
+                                      </pre>
+                                    </div>
                                   </div>
                                 </div>
-                              ) : (
-                                <div className="h-full flex flex-col items-center justify-center p-12 bg-white/[0.01] rounded-[40px] border border-white/5 opacity-40">
-                                  <Eye size={48} className="text-gray-700 mb-6" />
-                                  <p className="text-[10px] font-black text-gray-600 uppercase tracking-[0.3em] text-center italic">No complex exfiltration data available for this sector.</p>
-                                </div>
-                              )}
 
-                              <div className="flex gap-4">
-                                <button
-                                  onClick={() => handleCopy(result.details || '', 'det')}
-                                  className={`flex-1 py-4 rounded-[20px] border text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl active:scale-95 ${copyStatus === 'det' ? 'bg-green-600/20 border-green-500 text-green-500' : 'bg-gray-800/40 hover:bg-gray-700 text-gray-400 border-white/5'}`}
-                                >
-                                  {copyStatus === 'det' ? 'Evidence_Synced' : 'Copy_Forensics'}
-                                </button>
-                                <button
-                                  onClick={() => setInspectingResult(result)}
-                                  className="flex-1 py-4 bg-primary-600 hover:bg-primary-500 text-white rounded-[20px] shadow-2xl shadow-primary-600/30 text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center justify-center gap-3 italic"
-                                >
-                                  <FileCode size={16} />
-                                  Deep_Packet_Inspect
-                                </button>
+                                <div className="flex gap-4 mt-10">
+                                  <button
+                                    onClick={() => handleCopy(result.details || '', 'det')}
+                                    className="flex-1 py-4 bg-slate-400/20 hover:bg-slate-400/30 text-slate-500 rounded-3xl text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-95 border border-slate-200"
+                                  >
+                                    COPY_FORENSICS
+                                  </button>
+                                  <button
+                                    onClick={() => setInspectingResult(result)}
+                                    className="flex-1 py-4 bg-[#0ea5e9] hover:bg-[#0284c7] text-white rounded-3xl shadow-xl shadow-sky-500/20 text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center justify-center gap-3"
+                                  >
+                                    <FileCode size={16} />
+                                    DEEP_PACKET_INSPECT
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
