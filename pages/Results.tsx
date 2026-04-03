@@ -3,6 +3,9 @@ import { ScanResult } from '../types';
 import { Download, Search, AlertTriangle, ShieldCheck, HelpCircle, Terminal as TerminalIcon, FileCode, Check, Filter, Globe, Activity, Eye, Package } from 'lucide-react';
 import Modal from '../components/Modal';
 
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 interface ResultsProps {
   results: ScanResult[];
 }
@@ -70,6 +73,123 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
     document.body.removeChild(link);
   };
 
+  const handleExportPdf = () => {
+    if (results.length === 0) return;
+    const doc = new jsPDF();
+    const timestamp = new Date().toLocaleString();
+    const vulnerableCount = results.filter(r => r.verdict === 'VULNERABLE').length;
+
+    // Header
+    doc.setFillColor(2, 6, 23);
+    doc.rect(0, 0, 210, 40, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.text('VIP SQLi SCANNER :: FORENSIC REPORT', 15, 20);
+    doc.setFontSize(10);
+    doc.text(`DATE: ${timestamp} | MISSION: GLOBAL_FORENSICS`, 15, 30);
+
+    // Summary Table
+    autoTable(doc, {
+      startY: 50,
+      head: [['Metric', 'Value Status']],
+      body: [
+        ['Total Targets', results.length.toString()],
+        ['Breaches Identified', { content: vulnerableCount.toString(), styles: { textColor: [239, 68, 68], fontStyle: 'bold' } }],
+        ['Success Rate', `${((vulnerableCount / results.length) * 100).toFixed(1)}%`],
+        ['Engine Version', 'v2.2.4-STABLE::XNODE']
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [15, 23, 42] }
+    });
+
+    // Detail Results Table
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 20,
+      head: [['#', 'Verdict', 'Target Trajectory (URL)', 'Intelligence Signature']],
+      body: results.map((r, i) => [
+        (i + 1).toString(),
+        r.verdict,
+        r.url,
+        r.details?.substring(0, 100) || 'N/A'
+      ]),
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [15, 23, 42] },
+      columnStyles: {
+        1: { cellWidth: 30, fontStyle: 'bold' }
+      }
+    });
+
+    doc.save(`VIP_Forensic_Report_${new Date().toISOString().slice(0, 10)}.pdf`);
+  };
+
+  const handleExportHtml = () => {
+    if (results.length === 0) return;
+    const timestamp = new Date().toLocaleString();
+    const vulnerableCount = results.filter(r => r.verdict === 'VULNERABLE').length;
+    
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VIP SQLi Scanner - Forensic Intelligence Report</title>
+    <style>
+        body { font-family: 'Inter', -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, sans-serif; background: #020617; color: #f3f4f6; margin: 0; padding: 40px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { border-bottom: 2px solid #1e293b; padding-bottom: 20px; margin-bottom: 40px; }
+        h1 { color: #f3f4f6; text-transform: uppercase; font-style: italic; letter-spacing: -1px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: #0f172a; padding: 20px; border-radius: 20px; border: 1px solid #1e293b; }
+        .stat-title { font-size: 10px; text-transform: uppercase; color: #64748b; font-weight: 900; letter-spacing: 2px; }
+        .stat-value { font-size: 24px; font-weight: 700; margin-top: 5px; color: #38bdf8; }
+        .result-item { background: #0f172a; border: 1px solid #1e293b; border-radius: 24px; padding: 30px; margin-bottom: 20px; }
+        .verdict-VULNERABLE { color: #ef4444; border-left: 4px solid #ef4444; }
+        .verdict-SAFE { color: #0ea5e9; border-left: 4px solid #0ea5e9; }
+        .verdict-SUSPICIOUS { color: #f59e0b; border-left: 4px solid #f59e0b; }
+        .url { font-family: monospace; font-size: 14px; margin: 10px 0; display: block; word-break: break-all; }
+        pre { background: #020617; padding: 20px; border-radius: 12px; font-size: 12px; overflow-x: auto; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Forensic Intelligence Report</h1>
+            <p style="color: #64748b;">Generated on ${timestamp} | System: VIP_SQLi_Scanner_v2.2</p>
+        </div>
+        <div class="stat-grid">
+            <div class="stat-card"><div class="stat-title">Total Targets</div><div class="stat-value">${results.length}</div></div>
+            <div class="stat-card"><div class="stat-title">Breaches Identified</div><div class="stat-value" style="color: #ef4444;">${vulnerableCount}</div></div>
+            <div class="stat-card"><div class="stat-title">Success Rate</div><div class="stat-value">${((vulnerableCount/results.length)*100).toFixed(1)}%</div></div>
+        </div>
+        ${results.map((r, i) => `
+            <div class="result-item verdict-${r.verdict}">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 2px;">Target #${i+1} [${r.verdict}]</span>
+                    <span style="font-size: 10px; color: #64748b;">${new Date(r.timestamp).toLocaleTimeString()}</span>
+                </div>
+                <span class="url">${r.url}</span>
+                <pre>${r.details || 'No forensic data recorded.'}</pre>
+                ${r.extraction ? `
+                    <div style="margin-top: 20px; border-top: 1px solid #1e293b; padding-top: 20px;">
+                        <p style="font-size: 10px; font-weight: 900; text-transform: uppercase;">Exfiltrated Data</p>
+                        <p style="font-size: 12px; color: #38bdf8;">DB: ${r.extraction.dbVersion} | User: ${r.extraction.dbUser}</p>
+                    </div>
+                ` : ''}
+            </div>
+        `).join('')}
+    </div>
+</body>
+</html>`;
+
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `VIP_Intelligence_Report_${new Date().toISOString().slice(0,10)}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setCopyStatus(id);
@@ -93,12 +213,20 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
           </div>
           <div className="flex bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-3xl p-1 gap-1">
             <button
-              onClick={() => handleExport('txt')}
-              className="flex items-center gap-3 px-6 py-3 bg-primary-600/10 hover:bg-primary-600 text-primary-600 dark:text-primary-400 hover:text-white rounded-[20px] transition-all font-black text-[10px] uppercase tracking-widest active:scale-95 group"
-              title="Download Text Report"
+              onClick={() => handleExportPdf()}
+              className="flex items-center gap-3 px-6 py-3 bg-red-600/10 hover:bg-red-600 text-red-600 dark:text-red-400 hover:text-white rounded-[20px] transition-all font-black text-[10px] uppercase tracking-widest active:scale-95 group shadow-xl"
+              title="Download PDF Forensic Report"
             >
               <Download size={14} />
-              TXT_INTEL
+              PDF_INTEL
+            </button>
+            <button
+              onClick={() => handleExportHtml()}
+              className="flex items-center gap-3 px-6 py-3 bg-emerald-600/10 hover:bg-emerald-600 text-emerald-600 dark:text-emerald-400 hover:text-white rounded-[20px] transition-all font-black text-[10px] uppercase tracking-widest active:scale-95 group"
+              title="Download HTML Master Report"
+            >
+              <Download size={14} />
+              MASTER_HFR
             </button>
             <button
               onClick={() => handleExport('json')}

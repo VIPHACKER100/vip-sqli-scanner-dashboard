@@ -1,4 +1,4 @@
-import { ScanResult, ScanStats, Verdict, ScanConfig, LogEntry, LogLevel, ScannerSettings } from '../types';
+import { ScanResult, ScanStats, Verdict, ScanConfig, LogEntry, LogLevel, ScannerSettings, IScanner } from '../types';
 import { PAYLOADS } from './payloads';
 import { fuzzerService } from './fuzzer';
 
@@ -46,7 +46,7 @@ const HIGH_RISK_PARAMS = new Set([
   'ref', 'reference', 'refid', 'type', 'mode', 'status'
 ]);
 
-class MockScannerService {
+class MockScannerService implements IScanner {
   private intervalId: number | null = null;
   private listeners: ((stats: ScanStats, newResult?: ScanResult) => void)[] = [];
   private logListeners: ((log: LogEntry) => void)[] = [];
@@ -225,6 +225,12 @@ class MockScannerService {
 
     // --- Phase 0: Connectivity Check ---
     log('INFO', `Phase 0 Connectivity: Verifying status of ${url}`);
+    
+    // Inject Custom Payloads into discovery phase logs if they exist
+    if (settings?.customPayloads.length && settings.customPayloads.length > 0) {
+      log('INFO', `Payload Manager: Loading ${settings.customPayloads.length} custom vectors into active matrix...`);
+      settings.customPayloads.forEach(p => log('EXEC', `Loaded Vector: [${p.category}] ${p.payload.substring(0, 20)}...`));
+    }
     const pingSuccess = Math.random() > 0.05; // 95% success rate for simulation
 
     if (!pingSuccess) {
@@ -590,4 +596,4 @@ class MockScannerService {
   }
 }
 
-export const scannerService = new MockScannerService();
+export const mockScannerService: IScanner = new MockScannerService();

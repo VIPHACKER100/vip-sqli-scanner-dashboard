@@ -1,20 +1,32 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @layer base {
+  :root {
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 262 83% 58%;
+    --background: 222 47% 4%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 4%;
+    --card-foreground: 210 40% 98%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 199 89% 48%;
+  }
+
   body {
-    @apply bg-slate-50 text-slate-900 transition-colors duration-500 antialiased selection:bg-primary-500/30;
+    @apply bg-[#020617] text-slate-100 transition-colors duration-500 antialiased selection:bg-primary-500/30;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(213, 100%, 12%, 0.15) 0, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(260, 100%, 12%, 0.15) 0, transparent 50%);
   }
 
   .dark body {
-    @apply bg-slate-950 text-slate-100;
+    @apply bg-[#020617] text-slate-100;
   }
 }
 
 @layer components {
   .hf-glass {
-    @apply bg-white/70 dark:bg-slate-900/40 backdrop-blur-2xl border border-white/20 dark:border-white/5 shadow-sm dark:shadow-2xl transition-all duration-500;
+    @apply bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl transition-all duration-500;
   }
 
   .hf-glass-hover {

@@ -12,7 +12,7 @@ import ToastContainer, { ToastMessage } from './components/Toast';
 import Terminal from './components/Terminal';
 import SplashScreen from './components/SplashScreen';
 import { Page, ScanResult, ScanStats, ScanConfig, ScannerSettings, LogEntry } from './types';
-import { scannerService } from './services/mockScanner';
+import { scannerService } from './services/scannerService';
 import { initPayloads } from './services/payloads';
 import { ShieldAlert } from 'lucide-react';
 
@@ -30,8 +30,12 @@ const DEFAULT_SETTINGS: ScannerSettings = {
     nosql: true,
     waf: true,
     ldap: false
-  }
+  },
+  customPayloads: [],
+  scannerMode: 'mock'
 };
+
+import { motion, AnimatePresence } from 'framer-motion';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>(Page.DASHBOARD);
@@ -175,26 +179,42 @@ const App: React.FC = () => {
   };
 
   const renderContent = () => {
-    switch (currentPage) {
-      case Page.DASHBOARD:
-        return <DashboardHome stats={stats} scanHistory={scanHistory} results={results} theme={theme} />;
-      case Page.NEW_SCAN:
-        return <NewScan onStartScan={handleStartScan} setPage={setCurrentPage} theme={theme} />;
-      case Page.ANALYTICS:
-        return <Analytics results={results} stats={stats} theme={theme} />;
-      case Page.RESULTS:
-        return <Results results={results} theme={theme} />;
-      case Page.PLUGINS:
-        return <Plugins settings={settings} setSettings={setSettings} theme={theme} />;
-      case Page.SETTINGS:
-        return <Settings settings={settings} setSettings={setSettings} theme={theme} />;
-      case Page.DOCS:
-        return <Documentation theme={theme} />;
-      case Page.ABOUT:
-        return <About />;
-      default:
-        return <DashboardHome stats={stats} scanHistory={scanHistory} results={results} theme={theme} />;
-    }
+    const pageProps = { theme };
+    
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentPage}
+          initial={{ opacity: 0, y: 10, filter: 'blur(10px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, y: -10, filter: 'blur(10px)' }}
+          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+        >
+          {(() => {
+            switch (currentPage) {
+              case Page.DASHBOARD:
+                return <DashboardHome stats={stats} scanHistory={scanHistory} results={results} {...pageProps} />;
+              case Page.NEW_SCAN:
+                return <NewScan onStartScan={handleStartScan} setPage={setCurrentPage} {...pageProps} />;
+              case Page.ANALYTICS:
+                return <Analytics results={results} stats={stats} {...pageProps} />;
+              case Page.RESULTS:
+                return <Results results={results} {...pageProps} />;
+              case Page.PLUGINS:
+                return <Plugins settings={settings} setSettings={setSettings} {...pageProps} />;
+              case Page.SETTINGS:
+                return <Settings settings={settings} setSettings={setSettings} {...pageProps} />;
+              case Page.DOCS:
+                return <Documentation {...pageProps} />;
+              case Page.ABOUT:
+                return <About />;
+              default:
+                return <DashboardHome stats={stats} scanHistory={scanHistory} results={results} {...pageProps} />;
+            }
+          })()}
+        </motion.div>
+      </AnimatePresence>
+    );
   };
 
   if (showSplash) {

@@ -47,7 +47,16 @@ export interface ScannerSettings {
     waf: boolean;
     ldap: boolean;
   };
+  customPayloads: {
+    id: string;
+    category: string;
+    payload: string;
+    description: string;
+  }[];
+  scannerMode: 'mock' | 'real';
 }
+
+export const PROXY_URL = 'http://localhost:3001/proxy';
 
 export interface ScanStats {
   total: number;
@@ -91,4 +100,12 @@ export enum Page {
   SETTINGS = 'settings',
   DOCS = 'docs',
   ABOUT = 'about'
+}
+
+// Scanner Strategy Interface
+export interface IScanner {
+  subscribe(callback: (stats: ScanStats, newResult?: ScanResult) => void): () => void;
+  subscribeToLogs(callback: (log: LogEntry) => void): () => void;
+  startScan(urls: string[], config: ScanConfig, settings?: ScannerSettings): void;
+  stopScan(): void;
 }

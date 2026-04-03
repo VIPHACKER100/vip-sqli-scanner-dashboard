@@ -315,6 +315,22 @@ class FuzzerService {
                 payload: unicodePayload,
                 mutation: 'unicode_encoded'
             });
+
+            // Base64 Encoding
+            try {
+                const base64Payload = btoa(payload);
+                mutations.push({
+                    payload: base64Payload,
+                    mutation: 'base64_encoded'
+                });
+            } catch (e) {}
+
+            // Hex String Encoding
+            const hexStr = payload.split('').map(c => c.charCodeAt(0).toString(16)).join('');
+            mutations.push({
+                payload: '0x' + hexStr,
+                mutation: 'hex_string_encoded'
+            });
         }
 
         // Null Byte Injection

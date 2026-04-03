@@ -62,6 +62,31 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
           <SettingsCard title="Scanner Core" subtitle="Advanced Engine Tuning" icon={Cpu} colorClass="text-primary-400">
             <div className="space-y-10">
               <div className="group/field">
+                <label className="block text-[10px] font-black text-gray-600 uppercase tracking-[0.2em] mb-4 group-hover/field:text-primary-400 transition-colors">Scanner Engine Mode</label>
+                <div className="flex bg-gray-950 p-1.5 rounded-2xl border border-white/5">
+                  <button 
+                    onClick={() => setSettings({ ...settings, scannerMode: 'mock' })}
+                    className={`flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${settings.scannerMode === 'mock' ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20' : 'text-gray-500 hover:text-gray-400'}`}
+                  >
+                    Simulated Intelligence
+                  </button>
+                  <button 
+                    onClick={() => setSettings({ ...settings, scannerMode: 'real' })}
+                    className={`flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${settings.scannerMode === 'real' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'text-gray-500 hover:text-gray-400'}`}
+                  >
+                    Real-World Forensic
+                  </button>
+                </div>
+                {settings.scannerMode === 'real' && (
+                  <div className="mt-4 p-4 bg-red-600/5 border border-red-500/20 rounded-2xl">
+                    <p className="text-[9px] text-red-500 font-black uppercase tracking-widest leading-loose">
+                      [BRIDGE REQUIRED] Real-world mode requires the local proxy bridge to be active at http://localhost:3001. Ensure `node proxy/server.js` is running.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="group/field">
                 <label className="block text-[10px] font-black text-gray-600 uppercase tracking-[0.2em] mb-4 group-hover/field:text-primary-400 transition-colors">Mission Persona (User-Agent)</label>
                 <div className="relative">
                   <Terminal className="absolute left-5 top-1/2 -translate-y-1/2 text-primary-500/40" size={16} />
@@ -182,6 +207,70 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+          </SettingsCard>
+
+          {/* Custom Payloads */}
+          <SettingsCard title="Custom Vectors" subtitle="User-Defined Payloads" icon={Database} colorClass="text-primary-400">
+            <div className="space-y-6">
+              <div className="flex flex-col gap-4 p-4 bg-gray-950/40 border border-white/5 rounded-3xl">
+                <input 
+                  id="new-payload-cat"
+                  placeholder="Category (e.g. UNION Based)" 
+                  className="bg-transparent border-b border-white/10 p-2 text-xs outline-none focus:border-primary-500 transition-colors"
+                />
+                <input 
+                  id="new-payload-val"
+                  placeholder="SQL Payload" 
+                  className="bg-transparent border-b border-white/10 p-2 text-xs font-mono outline-none focus:border-primary-500 transition-colors"
+                />
+                <button 
+                  onClick={() => {
+                    const cat = (document.getElementById('new-payload-cat') as HTMLInputElement).value;
+                    const val = (document.getElementById('new-payload-val') as HTMLInputElement).value;
+                    if (cat && val) {
+                      setSettings({
+                        ...settings,
+                        customPayloads: [
+                          ...settings.customPayloads,
+                          { id: Date.now().toString(), category: cat, payload: val, description: 'User added vector' }
+                        ]
+                      });
+                      (document.getElementById('new-payload-cat') as HTMLInputElement).value = '';
+                      (document.getElementById('new-payload-val') as HTMLInputElement).value = '';
+                    }
+                  }}
+                  className="mt-2 py-3 bg-primary-600 hover:bg-primary-500 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-lg active:scale-95"
+                >
+                  Register Vector
+                </button>
+              </div>
+
+              <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                {settings.customPayloads.length === 0 ? (
+                  <p className="text-[10px] text-gray-600 italic text-center py-4 uppercase tracking-widest">No custom vectors initialized.</p>
+                ) : (
+                  settings.customPayloads.map(p => (
+                    <div key={p.id} className="flex items-center justify-between p-3 bg-white/[0.02] border border-white/5 rounded-xl group/item">
+                      <div className="flex flex-col">
+                        <span className="text-[8px] font-black text-primary-500 uppercase tracking-widest">{p.category}</span>
+                        <span className="text-[10px] font-mono text-gray-400 truncate max-w-[200px]">{p.payload}</span>
+                      </div>
+                      <button 
+                        onClick={() => {
+                          setSettings({
+                            ...settings,
+                            customPayloads: settings.customPayloads.filter(cp => cp.id !== p.id)
+                          });
+                        }}
+                        className="p-1 px-3 text-red-500 hover:bg-red-500/10 rounded-lg text-[8px] font-black uppercase tracking-widest opacity-0 group-hover/item:opacity-100 transition-all border border-red-500/20"
+                      >
+                        Purge
+                      </button>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </SettingsCard>
