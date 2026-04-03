@@ -31,14 +31,14 @@ const CloneGuide: React.FC = () => {
       icon: <Globe className="w-5 h-5 text-blue-500" />
     },
     {
-      title: 'Start Proxy Bridge (Optional but Recommended)',
-      description: 'Start the Node.js Proxy Bridge to bypass CORS restrictions for the Real Scanner.',
+      title: 'Start Proxy Bridge (MANDATORY)',
+      description: 'Start the Node.js Proxy Bridge to bypass CORS and SOP security restrictions for Real-World Forensic scans.',
       command: 'cd proxy && npm install && node server.js',
       icon: <Shield className="w-5 h-5 text-red-500" />
     },
     {
       title: 'Run Development Server',
-      description: 'Start the Vite development server to launch the dashboard interface.',
+      description: 'Launch the Vite development server to experience the VIP SQLi Intelligence Dashboard.',
       command: 'npm run dev',
       icon: <Play className="w-5 h-5 text-green-500" />
     }
@@ -66,7 +66,7 @@ const CloneGuide: React.FC = () => {
             className="bg-white dark:bg-gray-900 rounded-xl p-6 border border-slate-200 dark:border-white/10 shadow-sm relative overflow-hidden"
           >
             <div className="absolute top-0 left-0 w-1 rounded-l-xl h-full bg-slate-200 dark:bg-white/5">
-              <div className="w-full bg-primary-500 absolute top-0" style={{ height: '30%', top: '35%' }}></div>
+              <div className="w-full bg-primary-500 absolute top-1/4 h-1/3"></div>
             </div>
             
             <div className="pl-4">

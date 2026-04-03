@@ -40,49 +40,65 @@ graph TD
 ## 🎯 Core Features
 
 ### 1. **Advanced SQL Injection Detection**
+
 - **1,000+ Unique Payloads** across 13 categories
 - **50+ Database Error Signatures** (MySQL, PostgreSQL, MSSQL, Oracle, SQLite, DB2, etc.)
 - **Context-Aware Payload Selection** based on URL patterns and database types
 - **Smart Technique Detection**: Boolean Blind, Error-Based, Time-Based, Union-Based, Stacked Queries
 
 ### 2. **Parameter Fuzzing Engine** 🆕
+
 - **Automatic Parameter Discovery** across GET, POST, headers, cookies, and path
 - **15+ Payload Mutations**: URL encoding, hex, unicode, null bytes, case variations
 - **4 Fuzzing Strategies**: Smart, Sequential, Parallel, Recursive
 - **High-Risk Parameter Prioritization**: Automatically identifies and tests critical params first
 
-### 3. **ML-Powered Detection**
-- **Machine Learning Heuristics** for anomaly detection
-- **Response Pattern Analysis** for blind SQLi confirmation
-- **Confidence Scoring** for vulnerability assessment
-- **Character-Based Filter Bypass** detection
+### 3. **ML-Powered Forensic Engine (v2.2.4)** 🆕
 
-### 4. **Advanced Plugin System**
+- **Neural Classifier Scoring**: Simulates deep learning intent analysis on injection vectors.
+- **Shannon Entropy Variance**: Measures DOM structural collapse and data leakage via entropy drift.
+- **Statistical Latency Profiling**: Identifies time-blind vulnerabilities using multi-layer request jitter analysis.
+- **Confidence Scoring Matrix**: Comprehensive 0-100% assessment with detailed "Forensic Reasoning" logs.
+
+### 4. **Blind SQLi Confirmation Engine** 🆕
+
+- **Multi-Round Timing Probes**: Executes triple-redundant `SLEEP`/`DELAY` injections to eliminate false positives.
+- **Boolean Differential Mapping**: Byte-perfect comparison of `TRUE` vs `FALSE` response states.
+- **Intelligent Grading**: Categorizes findings as `CONFIRMED`, `PROBABLE`, or `POSSIBLE` based on probe success.
+- **Real-Time Instrumentation**: Displays round-by-round probing metrics in the live terminal.
+
+### 5. **Advanced Plugin System**
+
 - **GraphQL Intelligence**: Schema introspection and field disclosure
 - **NoSQL Injection**: BSON operator bypass detection
 - **LDAP Forge**: Directory service injection testing
 - **WAF Stealth**: Firewall evasion with encoding and fragmentation
 
-### 5. **Professional Scanning & Exfiltration** 🆕
+### 6. **Professional Scanning & Exfiltration** 🆕
+
 - **Proxy Bridge Utility**: Bypasses CORS and SOP via local node gateway (`node proxy/server.js`)
 - **Real-World Forensic Mode**: Executes actual network requests against live targets
 - **Alert Telemetry**: Instant exfiltration notifications via Discord/Slack webhooks
-- **Cloud Vault Sync**: Encrypted intelligence synchronization with remote XNODE endpoints
-- **Master Vault Token**: Secured identity management for distributed scanning
+- **Cloud Vault Sync**: Encrypted intelligence synchronization with remote XNODE endpoints.
+- **Master Vault Token**: Secured identity management for distributed scanning.
+- **Payload Import/Export**: JSON/TXT support for managing custom research libraries. 🆕
+- **Real Data Forensics**: Captures actual payloads, HTTP status codes, response sizes, and SQL error snippets for every finding. 🆕
 
 ---
 
 ## 📊 Technical Specifications
 
 ### Exfiltration Telemetry
+
 - **Webhook Integration**: Discord, Slack, Custom Hooks
 - **Sync Protocol**: HTTPS/TLS 1.3 encrypted XNODE sync
 - **Auth**: Master Vault Token (256-bit entropy)
 - **Local Proxy**: High-concurrency Node.js bridge (Port 3001)
 
 ### Payload Database
+
 | Category | Payloads | Database Support |
-|----------|----------|-----------------|
+| :--- | :--- | :--- |
 | Boolean Based | 95 | MySQL, PostgreSQL, MSSQL, Oracle |
 | Error Based | 70 | All major DBMS |
 | Time Based | 95 | MySQL, PostgreSQL, MSSQL, Oracle |
@@ -284,7 +300,10 @@ Encoding Variants: [ON] - URL, hex, unicode
 - ✅ 50+ comprehensive error signatures (was 7)
 - ✅ Context-aware payload selection
 - ✅ Smart database fingerprinting
-- ✅ Realistic detection evidence
+- ✅ Realistic detection evidence (Captures status, size, and error snippets)
+- ✅ **ML Analyzer v2**: Entropy and Neural-intent analysis engine
+- ✅ **Blind SQLi Engine**: Multi-phase confirmation layer
+- ✅ **Import/Export Utility**: Custom vector library management
 
 ### Fuzzing Engine
 - ✅ Automatic parameter discovery
@@ -338,9 +357,9 @@ Encoding Variants: [ON] - URL, hex, unicode
 ## 🔮 Roadmap
 
 ### Planned Features
-- [ ] Custom payload import/export
-- [ ] Blind SQLi confirmation engine
-- [ ] Advanced reporting (PDF, HTML)
+- [x] Custom payload import/export
+- [x] Blind SQLi confirmation engine
+- [ ] Advanced reporting (PDF, HTML) - Finalizing layouts
 - [ ] Scan scheduling and automation
 - [ ] Multi-target parallel scanning
 - [ ] Response diff analysis

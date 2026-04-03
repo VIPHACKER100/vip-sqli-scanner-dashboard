@@ -363,12 +363,17 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                                     
                                     <div className="pt-2">
                                       <p className="font-black text-slate-400 mb-1 uppercase tracking-wider">VULNERABLE PARAMETERS:</p>
-                                      <p>├ GET :: ID=[payload] [{result.blindConfirmed ? 'Blind-Based' : 'Error-Based'}] [Automatic]</p>
+                                      <p>├ {result.forensics?.requestMethod || 'GET'} :: ID=[{result.forensics?.payload || 'payload'}] [{result.blindConfirmed ? 'Blind-Based' : 'Error-Based'}] [Automatic]</p>
                                     </div>
                                     
                                     <div>
                                       <p className="font-black text-slate-400 mb-1 uppercase tracking-wider">DETECTION EVIDENCE:</p>
-                                      <p>┕ Heuristic trigger identified: "{result.mlConfidence ? (result.mlConfidence*100).toFixed(2) : '99.2'}% confidence" variance in response stream.</p>
+                                      <p>┕ {result.forensics?.errorSnippet 
+                                          ? `SQL Error identified: ${result.forensics.errorSnippet}` 
+                                          : `Heuristic trigger identified: "${result.mlConfidence ? (result.mlConfidence*100).toFixed(2) : '99.2'}% confidence" variance in response stream.`}</p>
+                                      {result.forensics?.responseStatus && (
+                                        <p className="pl-4 text-[10px] text-slate-400 mt-1">HTTP Status: {result.forensics.responseStatus} | Length: {result.forensics.responseSize} bytes</p>
+                                      )}
                                     </div>
                                     
                                     <div>

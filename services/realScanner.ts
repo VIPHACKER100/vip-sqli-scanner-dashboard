@@ -2,6 +2,13 @@ import { ScanResult, ScanStats, Verdict, ScanConfig, LogEntry, LogLevel, Scanner
 import { MLAnalyzer, MLEngineResult } from './mlEngine';
 import { blindSqliEngine, BlindConfirmResult } from './blindSqliEngine';
 
+const SQL_ERROR_SIGNATURES = [
+  'SQL syntax', 'mysql_fetch', 'ORA-', 'PostgreSQL query failed', 
+  'SQLiteException', 'unexpected end of SQL', 'Unclosed quotation mark',
+  'warning: pg_query()', 'valid PostgreSQL result', 'driver does not support',
+  'System.Data.SqlClient.SqlException', 'org.hibernate.exception.SQLGrammarException'
+];
+
 class RealScannerService implements IScanner {
   private listeners: ((stats: ScanStats, newResult?: ScanResult) => void)[] = [];
   private logListeners: ((log: LogEntry) => void)[] = [];
@@ -121,6 +128,7 @@ class RealScannerService implements IScanner {
     let verdict: Verdict = 'SAFE';
     let bestMLResult: MLEngineResult | null = null;
     let successfulPayload = '';
+    let forensics: ScanResult['forensics'] = {};
 
     // 2. Test Vectors
     for (const pInfo of payloads.slice(0, 5)) {
@@ -147,6 +155,22 @@ class RealScannerService implements IScanner {
         if (!bestMLResult || mlResult.confidence > bestMLResult.confidence) {
           bestMLResult = mlResult;
           successfulPayload = pInfo.payload;
+          
+          // Capture Forensics
+          let errorSnippet = '';
+          const matchedError = SQL_ERROR_SIGNATURES.find(sig => currentBody.includes(sig));
+          if (matchedError) {
+            const idx = currentBody.indexOf(matchedError);
+            errorSnippet = currentBody.substring(Math.max(0, idx - 20), Math.min(currentBody.length, idx + 60)).trim();
+          }
+
+          forensics = {
+            payload: pInfo.payload,
+            requestMethod: config.method,
+            responseStatus: response.status,
+            responseSize: currentBody.length,
+            errorSnippet: matchedError ? `[Matched: ${matchedError}] ...${errorSnippet}...` : undefined
+          };
           
           if (mlResult.grade === 'CRITICAL' || mlResult.grade === 'HIGH') {
             verdict = 'VULNERABLE';
@@ -196,6 +220,7 @@ class RealScannerService implements IScanner {
       mlConfidence: bestMLResult ? bestMLResult.confidence : undefined,
       blindConfirmed: blindResult?.confirmed ?? false,
       blindGrade: blindResult?.grade ?? undefined,
+      forensics,
       extraction: verdict === 'VULNERABLE' ? {
         dbVersion: 'Forensic Signature Match',
         dbUser: 'Restricted Info',
