@@ -7,6 +7,7 @@ import Results from './pages/Results';
 import Plugins from './pages/Plugins';
 import Settings from './pages/Settings';
 import Documentation from './pages/Documentation';
+import CloneGuide from './pages/CloneGuide';
 import About from './pages/About';
 import ToastContainer, { ToastMessage } from './components/Toast';
 import Terminal from './components/Terminal';
@@ -220,6 +221,8 @@ const App: React.FC = () => {
                 return <Settings settings={settings} setSettings={setSettings} {...pageProps} />;
               case Page.DOCS:
                 return <Documentation {...pageProps} />;
+              case Page.CLONE_GUIDE:
+                return <CloneGuide />;
               case Page.ABOUT:
                 return <About />;
               default:

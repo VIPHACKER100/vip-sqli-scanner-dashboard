@@ -11,7 +11,8 @@ import {
   BookOpen,
   Sun,
   Moon,
-  User
+  User,
+  Terminal
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -31,6 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, setPage, payloadCount, is
     { id: Page.RESULTS, label: 'Scan Results', icon: FileText },
     { id: Page.SETTINGS, label: 'Settings', icon: Settings },
     { id: Page.DOCS, label: 'Protocols', icon: BookOpen },
+    { id: Page.CLONE_GUIDE, label: 'Clone Guide', icon: Terminal },
     { id: Page.ABOUT, label: 'Operative', icon: User },
   ];
 

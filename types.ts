@@ -102,6 +102,7 @@ export enum Page {
   PLUGINS = 'plugins',
   SETTINGS = 'settings',
   DOCS = 'docs',
+  CLONE_GUIDE = 'clone_guide',
   ABOUT = 'about'
 }
 
