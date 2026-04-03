@@ -1,5 +1,5 @@
 import { ScanResult, ScanStats, Verdict, ScanConfig, LogEntry, LogLevel, ScannerSettings, IScanner, PROXY_URL } from '../types';
-import { analyzeVulnerability } from './heuristics';
+import { MLAnalyzer, MLEngineResult } from './mlEngine';
 
 class RealScannerService implements IScanner {
   private listeners: ((stats: ScanStats, newResult?: ScanResult) => void)[] = [];
@@ -118,7 +118,7 @@ class RealScannerService implements IScanner {
     this.emitLog('INFO', `Baseline confirmed. Response: ${baseline.status} (${baseline.duration}ms).`);
 
     let verdict: Verdict = 'SAFE';
-    let bestHeuristic: any = null;
+    let bestMLResult: MLEngineResult | null = null;
     let successfulPayload = '';
 
     // 2. Test Vectors
@@ -131,20 +131,25 @@ class RealScannerService implements IScanner {
       if (!response.success) continue;
 
       const currentBody = typeof response.body === 'string' ? response.body : JSON.stringify(response.body);
-      const heuristic = analyzeVulnerability(baselineData, {
+      const mlResult = MLAnalyzer.analyze(baselineData, {
         duration: response.duration,
         bodyLength: currentBody.length,
         body: currentBody
-      });
+      }, pInfo.payload);
 
-      if (heuristic.confidence > 0.3) {
-        if (!bestHeuristic || heuristic.confidence > bestHeuristic.confidence) {
-          bestHeuristic = heuristic;
+      // Log the advanced ML metrics if confidence is somewhat interesting.
+      if (mlResult.confidence > 0.4) {
+         this.emitLog('EXEC', `[ML Model] Entropy: ${mlResult.features.entropy} - Neural Score: ${mlResult.features.neuralScore} - Confidence: ${(mlResult.confidence * 100).toFixed(1)}%`);
+      }
+
+      if (mlResult.confidence > 0.3) {
+        if (!bestMLResult || mlResult.confidence > bestMLResult.confidence) {
+          bestMLResult = mlResult;
           successfulPayload = pInfo.payload;
           
-          if (heuristic.grade === 'CRITICAL' || heuristic.grade === 'HIGH') {
+          if (mlResult.grade === 'CRITICAL' || mlResult.grade === 'HIGH') {
             verdict = 'VULNERABLE';
-            this.emitLog('VULN', `CRITICAL: ${heuristic.reasoning[0]}`, url, pInfo.payload);
+            this.emitLog('VULN', `CRITICAL: ${mlResult.reasoning[0]}`, url, pInfo.payload);
             break; 
           } else {
             verdict = 'SUSPICIOUS';
@@ -154,7 +159,7 @@ class RealScannerService implements IScanner {
     }
 
     if (verdict === 'VULNERABLE' && settings?.webhookUrl) {
-      this.sendExfiltrationAlert(url, successfulPayload, bestHeuristic, settings.webhookUrl);
+      this.sendExfiltrationAlert(url, successfulPayload, bestMLResult, settings.webhookUrl);
     }
 
     return {
@@ -162,8 +167,8 @@ class RealScannerService implements IScanner {
       url,
       verdict,
       timestamp: new Date().toISOString(),
-      details: bestHeuristic ? bestHeuristic.reasoning.join('\n') : 'No anomalous variance identified during forensic sweep.',
-      mlConfidence: bestHeuristic ? bestHeuristic.confidence : undefined,
+      details: bestMLResult ? bestMLResult.reasoning.join('\n') : 'No anomalous variance identified during forensic sweep.',
+      mlConfidence: bestMLResult ? bestMLResult.confidence : undefined,
       extraction: verdict === 'VULNERABLE' ? {
         dbVersion: 'Forensic Signature Match',
         dbUser: 'Restricted Info',
