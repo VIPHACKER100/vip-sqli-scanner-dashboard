@@ -309,6 +309,11 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                             <div className="flex items-center gap-3 mt-2">
                               <span className="text-[9px] font-mono text-gray-700 uppercase">{new Date(result.timestamp).toLocaleTimeString()}</span>
                               {result.plugin && <span className="text-[8px] font-black bg-primary-950/40 text-primary-400 px-2 py-0.5 rounded-full border border-primary-500/20 uppercase tracking-widest">{result.plugin}</span>}
+                              {result.blindConfirmed && (
+                                <span className="text-[8px] font-black bg-purple-900/30 text-purple-400 px-2 py-0.5 rounded-full border border-purple-500/30 uppercase tracking-widest animate-pulse">
+                                  ⬡ BLIND {result.blindGrade}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -513,6 +518,12 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
                       <div className="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
                       <p className="text-gray-400">ML Confidence: <span className="text-purple-400 font-bold">{inspectingResult.mlConfidence ? (inspectingResult.mlConfidence * 100).toFixed(4) : '99.9802'}%</span></p>
                     </div>
+                    {inspectingResult.blindConfirmed && (
+                      <div className="flex items-center gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></div>
+                        <p className="text-purple-300 font-bold">Blind SQLi Grade: <span className="text-purple-400 font-black uppercase">{inspectingResult.blindGrade}</span> — Multi-Round Probe Confirmed</p>
+                      </div>
+                    )}
                   </div>
 
                   <div className="mt-8 p-4 bg-primary-600/5 rounded-2xl border border-primary-500/10">

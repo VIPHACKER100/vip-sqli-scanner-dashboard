@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Save, Bell, Cloud, Database, Cpu, Globe, Shield, Terminal, Zap, Fingerprint, Lock, ShieldAlert, Sliders, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Save, Bell, Cloud, Database, Cpu, Globe, Shield, Terminal, Zap, Fingerprint, Lock, ShieldAlert, Sliders, RefreshCw, CheckCircle, XCircle, Upload, Download } from 'lucide-react';
 import { ScannerSettings } from '../types';
 
 interface SettingsProps {
@@ -44,6 +44,8 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
     });
   };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleAddPayload = () => {
     if (newPayloadCat && newPayloadVal) {
       setSettings({
@@ -56,6 +58,55 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
       setNewPayloadCat('');
       setNewPayloadVal('');
     }
+  };
+
+  const handleExportPayloads = () => {
+    const data = JSON.stringify(settings.customPayloads, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sqli-payloads-export.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportPayloads = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const text = evt.target?.result as string;
+        let imported: { id: string; category: string; payload: string; description: string }[] = [];
+        if (file.name.endsWith('.json')) {
+          const parsed = JSON.parse(text);
+          if (Array.isArray(parsed)) {
+            imported = parsed.map((p: any, i: number) => ({
+              id: Date.now().toString() + i,
+              category: p.category || 'Imported',
+              payload: p.payload || String(p),
+              description: p.description || 'Imported vector'
+            }));
+          }
+        } else {
+          // .txt: one payload per line
+          imported = text.split('\n').filter(l => l.trim()).map((line, i) => ({
+            id: Date.now().toString() + i,
+            category: 'Imported',
+            payload: line.trim(),
+            description: 'Imported from .txt'
+          }));
+        }
+        const existing = new Set(settings.customPayloads.map(p => p.payload));
+        const newOnes = imported.filter(p => !existing.has(p.payload));
+        setSettings({ ...settings, customPayloads: [...settings.customPayloads, ...newOnes] });
+      } catch {
+        alert('Failed to parse import file. Ensure it is valid JSON or TXT format.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
   };
 
   const handleFinalize = () => {
@@ -262,13 +313,41 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                   onChange={(e) => setNewPayloadVal(e.target.value)}
                   className="bg-transparent border-b border-white/10 p-2 text-xs font-mono outline-none focus:border-primary-500 transition-colors text-white"
                 />
-                <button 
-                  id="register-vector-btn"
-                  onClick={handleAddPayload}
-                  className="mt-2 py-3 bg-primary-600 hover:bg-primary-500 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-lg active:scale-95"
-                >
-                  Register Vector
-                </button>
+                <div className="flex gap-2 mt-2">
+                  <button 
+                    id="register-vector-btn"
+                    onClick={handleAddPayload}
+                    className="flex-1 py-3 bg-primary-600 hover:bg-primary-500 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-lg active:scale-95"
+                  >
+                    Register Vector
+                  </button>
+                  <button
+                    id="import-payload-btn"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="py-3 px-4 bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 text-[10px] font-black uppercase tracking-widest rounded-2xl border border-amber-500/30 transition-all active:scale-95 flex items-center gap-2"
+                    title="Import payloads from JSON or TXT file"
+                  >
+                    <Upload size={12} /> Import
+                  </button>
+                  <button
+                    id="export-payload-btn"
+                    onClick={handleExportPayloads}
+                    disabled={settings.customPayloads.length === 0}
+                    className="py-3 px-4 bg-green-600/20 hover:bg-green-600/40 text-green-400 text-[10px] font-black uppercase tracking-widest rounded-2xl border border-green-500/30 transition-all active:scale-95 flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed"
+                    title="Export custom payloads as JSON"
+                  >
+                    <Download size={12} /> Export
+                  </button>
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".json,.txt"
+                  aria-label="Import payload file"
+                  title="Import payload file (JSON or TXT)"
+                  className="hidden"
+                  onChange={handleImportPayloads}
+                />
               </div>
 
               <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">

@@ -21,6 +21,8 @@ export interface ScanResult {
   details?: string;
   plugin?: string; // e.g., 'GraphQL', 'NoSQL'
   mlConfidence?: number;
+  blindConfirmed?: boolean;
+  blindGrade?: 'CONFIRMED' | 'PROBABLE' | 'POSSIBLE' | 'NEGATIVE';
   extraction?: {
     dbVersion?: string;
     dbUser?: string;

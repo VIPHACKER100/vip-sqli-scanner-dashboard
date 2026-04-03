@@ -1,5 +1,6 @@
 import { ScanResult, ScanStats, Verdict, ScanConfig, LogEntry, LogLevel, ScannerSettings, IScanner, PROXY_URL } from '../types';
 import { MLAnalyzer, MLEngineResult } from './mlEngine';
+import { blindSqliEngine, BlindConfirmResult } from './blindSqliEngine';
 
 class RealScannerService implements IScanner {
   private listeners: ((stats: ScanStats, newResult?: ScanResult) => void)[] = [];
@@ -158,17 +159,43 @@ class RealScannerService implements IScanner {
       }
     }
 
+    // 3. Blind SQLi Confirmation (fires when ML flags SUSPICIOUS or VULNERABLE)
+    let blindResult: BlindConfirmResult | null = null;
+    if (verdict === 'SUSPICIOUS' || verdict === 'VULNERABLE') {
+      this.emitLog('EXEC', `[Blind SQLi Engine] ML detected ${verdict}. Initiating multi-round blind confirmation...`, url);
+      blindResult = await blindSqliEngine.confirm(
+        url,
+        config.method,
+        baselineData.bodyLength,
+        this.proxyRequest.bind(this)
+      );
+      blindResult.evidence.forEach(e => this.emitLog('EXEC', e, url));
+
+      // Elevate verdict if blind engine confirms
+      if (blindResult.confirmed && verdict === 'SUSPICIOUS') {
+        verdict = 'VULNERABLE';
+        this.emitLog('VULN', `[Blind SQLi Engine] UPGRADED to VULNERABLE: ${blindResult.grade} via blind confirmation.`, url);
+      }
+    }
+
     if (verdict === 'VULNERABLE' && settings?.webhookUrl) {
       this.sendExfiltrationAlert(url, successfulPayload, bestMLResult, settings.webhookUrl);
     }
+
+    const allDetails = [
+      ...(bestMLResult ? bestMLResult.reasoning : ['No anomalous variance identified during forensic sweep.']),
+      ...(blindResult ? blindResult.evidence : [])
+    ].join('\n');
 
     return {
       id: Math.random().toString(36).substring(2, 11),
       url,
       verdict,
       timestamp: new Date().toISOString(),
-      details: bestMLResult ? bestMLResult.reasoning.join('\n') : 'No anomalous variance identified during forensic sweep.',
+      details: allDetails,
       mlConfidence: bestMLResult ? bestMLResult.confidence : undefined,
+      blindConfirmed: blindResult?.confirmed ?? false,
+      blindGrade: blindResult?.grade ?? undefined,
       extraction: verdict === 'VULNERABLE' ? {
         dbVersion: 'Forensic Signature Match',
         dbUser: 'Restricted Info',
