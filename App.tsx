@@ -45,6 +45,7 @@ const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>(Page.DASHBOARD);
   const [isSystemReady, setSystemReady] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [payloadCount, setPayloadCount] = useState(0);
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [settings, setSettings] = useState<ScannerSettings>(() => {
@@ -204,6 +205,7 @@ const App: React.FC = () => {
           animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
           exit={{ opacity: 0, y: -10, filter: 'blur(10px)' }}
           transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+          onClick={() => isSidebarOpen && setSidebarOpen(false)}
         >
           {(() => {
             switch (currentPage) {
@@ -239,41 +241,70 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-gray-100 font-sans relative transition-colors duration-500">
+
+    <div className="flex min-h-screen bg-background text-foreground font-sans relative transition-colors duration-500 overflow-x-hidden">
       <Sidebar
         activePage={currentPage}
-        setPage={setCurrentPage}
+        setPage={(p) => { setCurrentPage(p); setSidebarOpen(false); }}
         payloadCount={payloadCount}
         isSystemReady={isSystemReady}
         theme={theme}
         toggleTheme={toggleTheme}
+        isOpen={isSidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
 
-      <main className="flex-1 ml-64 min-h-screen relative overflow-x-hidden pb-12">
-        <header className="h-16 border-b border-slate-200 dark:border-white/5 bg-white/40 dark:bg-gray-950/40 backdrop-blur-md sticky top-0 z-20 px-8 flex items-center justify-between transition-colors">
-          <div className="flex items-center text-sm text-slate-500 dark:text-gray-400 font-bold uppercase tracking-widest transition-colors">
-            <span className="text-[10px]">{currentPage.replace('_', ' ')}</span>
-          </div>
+      {/* Mobile Backdrop */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-[25] lg:hidden animate-in fade-in duration-300"
+          />
+        )}
+      </AnimatePresence>
+
+      <main className="flex-1 lg:ml-64 min-h-screen relative overflow-x-hidden pb-12 transition-all duration-500 bg-background">
+        <header className="h-20 border-b border-border bg-[var(--header-bg)] backdrop-blur-md sticky top-0 z-20 px-6 sm:px-10 flex items-center justify-between transition-colors">
           <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setSidebarOpen(!isSidebarOpen)}
+              className="lg:hidden p-2.5 rounded-xl bg-muted border border-border text-foreground shadow-sm active:scale-95 transition-all hf-glass-hover"
+              aria-label="Toggle Sidebar"
+            >
+              <div className="w-5 h-4 flex flex-col justify-between">
+                <span className={`h-0.5 w-full bg-current rounded-full transition-all ${isSidebarOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
+                <span className={`h-0.5 w-full bg-current rounded-full transition-all ${isSidebarOpen ? 'opacity-0' : ''}`}></span>
+                <span className={`h-0.5 w-full bg-current rounded-full transition-all ${isSidebarOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
+              </div>
+            </button>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
+              {currentPage.replace('_', ' ')}
+            </span>
+          </div>
+          <div className="flex items-center gap-4 sm:gap-6">
             {!isSystemReady && (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-900/20 rounded-full border border-amber-900/50">
+              <div className="hidden sm:flex items-center gap-2.5 px-4 py-1.5 bg-amber-500/10 rounded-full border border-amber-500/20">
                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                <span className="text-xs font-medium text-amber-500">Initializing Database...</span>
+                <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Syncing Database</span>
               </div>
             )}
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-200 dark:bg-gray-800 rounded-full border border-gray-300 dark:border-gray-700">
-              <span className={`w-2 h-2 rounded-full ${stats.processed < stats.total && stats.total > 0 ? 'bg-green-500 animate-pulse' : 'bg-gray-500'}`}></span>
-              <span className="text-xs font-medium text-gray-300">
-                {stats.processed < stats.total && stats.total > 0 ? 'Scanner Running' : 'Scanner Idle'}
+            <div className="flex items-center gap-2.5 px-4 py-1.5 bg-muted rounded-full border border-border">
+              <span className={`w-2 h-2 rounded-full ${stats.processed < stats.total && stats.total > 0 ? 'bg-accent animate-pulse-fast' : 'bg-slate-400'}`}></span>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">
+                {stats.processed < stats.total && stats.total > 0 ? 'Scanner Active' : 'System Idle'}
               </span>
             </div>
-            <div className="w-8 h-8 rounded-full border border-primary-500/30 bg-primary-900/20 flex items-center justify-center">
-              <ShieldAlert className="w-4 h-4 text-primary-400" />
+            <div className="hidden sm:flex w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 items-center justify-center text-accent shadow-sm">
+              <ShieldAlert size={20} />
             </div>
           </div>
         </header>
 
-        <div className="p-8">
+        <div className="px-6 py-10 sm:px-10 sm:py-16">
           {renderContent()}
         </div>
 

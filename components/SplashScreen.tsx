@@ -25,11 +25,11 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             setProgress(prev => {
                 if (prev >= 100) {
                     clearInterval(interval);
-                    setTimeout(onComplete, 1200);
+                    setTimeout(onComplete, 1600);
                     return 100;
                 }
 
-                const nextProgress = prev + (Math.random() * 12);
+                const nextProgress = prev + (Math.random() * 6);
                 const msgIdx = Math.floor((nextProgress / 100) * messages.length);
                 if (msgIdx !== currentMsg && msgIdx < messages.length) {
                     currentMsg = msgIdx;
@@ -38,17 +38,17 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
                 return Math.min(nextProgress, 100);
             });
 
-            if (Math.random() > 0.85) {
+            if (Math.random() > 0.9) {
                 setGlitch(true);
                 setTimeout(() => setGlitch(false), 80);
             }
-        }, 350);
+        }, 600);
 
         return () => clearInterval(interval);
     }, [onComplete]);
 
     return (
-        <div className="fixed inset-0 z-[9999] bg-white dark:bg-[#020617] flex flex-col items-center justify-center p-8 overflow-hidden font-technical transition-colors duration-700">
+        <div className="fixed inset-0 z-[9999] bg-background flex flex-col items-center justify-center p-8 overflow-hidden font-technical transition-colors duration-700">
             {/* Background Cyber-Grid */}
             <div className="absolute inset-0 cyber-grid opacity-[0.08] dark:opacity-20 pointer-events-none transition-opacity"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-primary-500/5 dark:from-primary-950/40 via-transparent to-primary-500/5 dark:to-primary-950/20 pointer-events-none"></div>
@@ -61,9 +61,9 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             <div className={`relative transition-all duration-100 flex flex-col items-center ${glitch ? 'translate-x-1.5 -translate-y-1 scale-105 skew-x-3 opacity-60 grayscale' : ''}`}>
                 <div className="relative mb-16 group">
                     <div className="absolute inset-0 bg-primary-500 blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
-                    <div className="relative flex items-center justify-center w-40 h-40 bg-white/40 dark:bg-gray-900/60 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-[40px] shadow-xl dark:shadow-[0_0_50px_rgba(139,92,246,0.2)] rotate-45 transform hover:rotate-0 transition-all duration-1000">
-                        <Shield size={80} className="text-primary-600 dark:text-primary-500 -rotate-45 group-hover:rotate-0 transition-all duration-1000" strokeWidth={1} />
-                        <div className="absolute inset-2 border border-primary-500/10 dark:border-primary-500/20 rounded-[32px] pointer-events-none"></div>
+                    <div className="relative flex items-center justify-center w-40 h-40 hf-glass hf-glass-hover rounded-[40px] shadow-xl dark:shadow-[0_0_50px_rgba(0,82,255,0.2)] rotate-45 transform hover:rotate-0 transition-all duration-1000">
+                        <Shield size={80} className="text-accent -rotate-45 group-hover:rotate-0 transition-all duration-1000" strokeWidth={1} />
+                        <div className="absolute inset-2 border border-accent/10 dark:border-accent/20 rounded-[32px] pointer-events-none"></div>
                     </div>
                     {/* Pulsing Alert Rings */}
                     <div className="absolute inset-0 border-2 border-primary-500/10 dark:border-primary-500/10 rounded-[40px] animate-ping opacity-20"></div>
@@ -72,14 +72,14 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
                 <div className="text-center space-y-4">
                     <div className="flex items-center justify-center gap-4">
                         <Zap className="text-amber-500 animate-pulse" size={24} />
-                        <h1 className="text-7xl font-black text-slate-900 dark:text-white tracking-[0.3em] uppercase italic select-none">
-                            SQLI<span className="text-primary-600 dark:text-primary-500 text-neon-primary">HUNTER</span>
+                        <h1 className="text-7xl font-black text-foreground tracking-[0.3em] uppercase italic select-none">
+                            SQLI<span className="text-accent text-neon-primary">HUNTER</span>
                         </h1>
                         <Zap className="text-amber-500 animate-pulse" size={24} />
                     </div>
                     <div className="flex items-center justify-center gap-3 opacity-60">
                         <div className="h-px w-8 bg-slate-300 dark:bg-gray-700"></div>
-                        <p className="text-primary-700 dark:text-primary-400 text-[10px] font-black tracking-[0.6em] uppercase">
+                        <p className="text-accent text-[10px] font-black tracking-[0.6em] uppercase">
                             Advanced Intelligence Dashboard v2.2
                         </p>
                         <div className="h-px w-8 bg-slate-300 dark:bg-gray-700"></div>
@@ -89,12 +89,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
 
             <div className="mt-32 w-full max-w-md space-y-6">
                 <div className="flex justify-between items-end mb-1">
-                    <span className="text-[10px] font-mono text-primary-600 dark:text-primary-400 font-black animate-pulse uppercase tracking-[0.2em]">{status}</span>
-                    <span className="text-xs font-mono text-slate-500 dark:text-gray-400 font-bold bg-slate-100 dark:bg-white/5 px-3 py-1 rounded-full border border-slate-200 dark:border-white/5">{Math.round(progress)}%</span>
+                    <span className="text-[10px] font-mono text-accent font-black animate-pulse uppercase tracking-[0.2em]">{status}</span>
+                    <span className="text-xs font-mono text-muted-foreground font-bold bg-muted px-3 py-1 rounded-full border border-border">{Math.round(progress)}%</span>
                 </div>
-                <div className="h-1.5 w-full bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden p-[1px] border border-slate-200 dark:border-white/5 shadow-inner">
+                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden p-[1px] border border-border shadow-inner">
                     <div
-                        className="h-full bg-primary-600 shadow-[0_0_20px_rgba(139,92,246,0.6)] transition-all duration-700 ease-out rounded-full"
+                        className="h-full bg-accent shadow-[0_0_20px_rgba(0,82,255,0.6)] transition-all duration-700 ease-out rounded-full"
                         style={{ width: `${progress}%` }}
                     />
                 </div>

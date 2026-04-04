@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { Database, Share2, Globe, Server, Check, Shield, Terminal, Search, Cpu, Zap, Activity, Info, BarChart3, Fingerprint } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import { 
+  Database, Share2, Globe, Server, Check, Shield, Terminal, Search, Cpu, Zap, 
+  Activity, Info, BarChart3, Fingerprint, ToggleRight, Radio, ShieldCheck, 
+  ArrowUpRight, Layers, Hexagon, Search as SearchIcon
+} from 'lucide-react';
+import { 
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
+  Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis 
+} from 'recharts';
 import { PAYLOADS } from '../services/payloads';
 import { ScannerSettings } from '../types';
 
@@ -11,59 +18,71 @@ interface PluginsProps {
 }
 
 const PluginCard = ({ name, version, desc, active, onToggle, icon: Icon, stats, colorClass }: any) => (
-    <div className={`relative overflow-hidden ${active ? 'bg-primary-50/50 dark:bg-primary-900/10 border-primary-500/30 shadow-xl dark:shadow-[0_0_40px_rgba(59,130,246,0.1)]' : 'hf-glass'} rounded-3xl p-8 transition-all duration-500 hover:scale-[1.02] group transition-colors shadow-lg dark:shadow-2xl`}>
-        {active && <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity dark:text-white"><Icon size={120} /></div>}
+    <div className={`modern-card group p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5 ${active ? 'border-accent/40 bg-accent/[0.02]' : ''}`}>
+        {active && (
+          <div className="absolute -right-6 -top-6 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none">
+            <Icon size={140} />
+          </div>
+        )}
 
         <div className="flex justify-between items-start mb-8 relative z-10">
-            <div className={`p-4 rounded-2xl ${active ? `bg-primary-600/10 ${colorClass} shadow-lg shadow-primary-600/5` : 'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-gray-600'} transition-all duration-500`}>
-                <Icon size={24} strokeWidth={1.5} />
+            <div className={`p-4 rounded-2xl border transition-all duration-500 shadow-sm ${active ? `bg-accent text-white border-accent shadow-accent-sm` : 'bg-background-alt border-border text-muted-foreground'}`}>
+                <Icon size={24} strokeWidth={2.5} />
             </div>
             <div className="flex flex-col items-end gap-3">
                 <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" className="sr-only peer" checked={active} onChange={onToggle} />
-                    <div className={`w-11 h-6 rounded-full peer peer-focus:outline-none transition-all duration-500 ${active ? 'bg-primary-600 shadow-lg shadow-primary-600/30' : 'bg-slate-200 dark:bg-gray-800'} after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:shadow-md after:transition-all ${active ? 'after:translate-x-5' : ''}`}></div>
+                    <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:bg-accent after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:shadow-sm after:transition-all peer-checked:after:translate-x-5 transition-colors"></div>
                 </label>
             </div>
         </div>
 
-        <div className="space-y-6 relative z-10">
+        <div className="space-y-8 relative z-10">
             <div>
                 <div className="flex items-center gap-3 mb-2">
-                    <h3 className={`text-xl font-bold tracking-tight transition-colors ${active ? 'text-primary-900 dark:text-white' : 'text-slate-700 dark:text-gray-300'}`}>{name}</h3>
-                    <span className="text-[9px] font-black text-slate-500 dark:text-gray-400 bg-slate-100 dark:bg-white/5 px-2 py-1 rounded-full border border-slate-200 dark:border-white/10 uppercase tracking-widest">{version || 'v2.2'}</span>
+                    <h3 className={`font-display text-xl transition-colors italic ${active ? 'text-foreground font-bold' : 'text-muted-foreground'}`}>{name}</h3>
+                    <span className="text-[9px] font-black text-muted-foreground bg-muted px-2.5 py-1 rounded-full border border-border uppercase tracking-widest leading-none">
+                      {version || 'V2.2'}
+                    </span>
                 </div>
-                <p className="text-slate-500 dark:text-gray-400 text-[11px] leading-relaxed h-12 overflow-hidden italic transition-colors">"{desc}"</p>
+                <p className="text-muted-foreground text-[11px] leading-relaxed font-medium transition-colors line-clamp-2">
+                  {desc}
+                </p>
             </div>
 
-            <div className="pt-6 border-t border-slate-200 dark:border-white/5 grid grid-cols-2 gap-4">
+            <div className="pt-6 border-t border-border flex items-center justify-between">
                 <div className="space-y-1">
-                    <p className="text-[9px] font-bold text-slate-500 dark:text-gray-600 uppercase tracking-widest">Efficiency</p>
-                    <p className={`text-lg font-mono font-bold ${active ? 'text-primary-700 dark:text-white' : 'text-slate-400 dark:text-gray-500'}`}>{active ? stats.success : '0.0%'}</p>
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Efficiency</p>
+                    <p className={`text-lg font-mono font-bold tracking-tighter ${active ? 'text-accent' : 'text-muted-foreground opacity-40'}`}>
+                      {active ? stats.success : '0.0%'}
+                    </p>
                 </div>
-                <div className="space-y-1">
-                    <p className="text-[9px] font-bold text-slate-500 dark:text-gray-600 uppercase tracking-widest">Heuristic Δ</p>
-                    <p className={`text-lg font-mono ${active ? 'text-slate-800 dark:text-gray-300' : 'text-slate-400 dark:text-gray-500'}`}>{active ? stats.latency : '0ms'}</p>
+                <div className="space-y-1 text-right">
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Heuristic Δ</p>
+                    <p className={`text-lg font-mono font-bold tracking-tighter ${active ? 'text-foreground' : 'text-muted-foreground opacity-40'}`}>
+                      {active ? stats.latency : '0ms'}
+                    </p>
                 </div>
             </div>
 
-            {active && (
-                <div className="pt-2 flex items-center gap-2">
-                    <div className="flex-1 h-1 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
-                        <div className="h-full bg-primary-500/50 animate-pulse w-full"></div>
-                    </div>
-                    <span className="text-[8px] font-black text-green-600 dark:text-green-500 uppercase tracking-[0.2em]">Live_Sync</span>
+            <div className="pt-2 flex items-center gap-3">
+                <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
+                    <div className={`h-full transition-all duration-1000 ${active ? 'bg-accent w-full animate-pulse' : 'bg-muted-foreground/10 w-0'}`} />
                 </div>
-            )}
+                <span className={`text-[8px] font-black uppercase tracking-[0.2em] transition-opacity ${active ? 'text-emerald-500' : 'opacity-0'}`}>
+                  LIVE_SYNC
+                </span>
+            </div>
         </div>
     </div>
 );
 
 const Plugins: React.FC<PluginsProps> = ({ settings, setSettings, theme }) => {
     const isDark = theme === 'dark';
-    const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
-    const labelColor = isDark ? '#475569' : '#94a3b8';
-    const tooltipBg = isDark ? '#020617' : '#ffffff';
-    const tooltipBorder = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)';
+    const labelColor = isDark ? '#94A3B8' : '#64748B';
+    const tooltipBg = 'var(--card-elevated)';
+    const tooltipBorder = 'var(--border)';
     const [searchTerm, setSearchTerm] = useState('');
     const totalPayloads = Object.values(PAYLOADS).reduce((acc, curr) => acc + curr.length, 0);
 
@@ -87,21 +106,29 @@ const Plugins: React.FC<PluginsProps> = ({ settings, setSettings, theme }) => {
     };
 
     return (
-        <div className="space-y-10 reveal-up">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/5 pb-8">
-                <div>
-                    <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter italic uppercase">Intelligence Modules</h2>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Deploy specialized telemetry units for deep infrastructure fingerprinting.</p>
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            
+            {/* ── Header ── */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-10 border-b border-border relative">
+              <div className="space-y-4">
+                <div className="section-label">Intelligence Network</div>
+                <h2 className="font-display text-5xl md:text-6xl text-foreground italic">
+                  Intelligence <span className="text-electric-gradient">Modules</span>
+                </h2>
+                <p className="text-muted-foreground text-lg max-w-xl">
+                    Deploy specialized telemetry units for deep infrastructure fingerprinting and polymorphic injection validation.
+                </p>
+              </div>
+              
+              <div className="flex items-center gap-5 bg-background-alt px-8 py-5 rounded-3xl border border-border shadow-sm group">
+                <Fingerprint size={24} className="text-accent group-hover:rotate-12 transition-transform" strokeWidth={2.5} />
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none mb-1">Active Matrix</span>
+                  <span className="text-sm font-mono text-foreground font-black tracking-tighter">
+                    {Object.values(settings.enabledPlugins).filter(Boolean).length} / 4 UNITS DEPLOYED
+                  </span>
                 </div>
-                <div className="flex gap-4">
-                    <div className="px-6 py-3 bg-white/[0.02] border border-white/5 rounded-3xl flex items-center gap-4">
-                        <Fingerprint size={20} className="text-primary-500" />
-                        <div>
-                            <p className="text-[9px] font-black text-gray-500 dark:text-gray-600 uppercase tracking-[0.2em]">Active Matrix</p>
-                            <p className="text-xl font-mono text-gray-900 dark:text-white font-bold">{Object.values(settings.enabledPlugins).filter(Boolean).length} / 4 UNITS</p>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -111,7 +138,7 @@ const Plugins: React.FC<PluginsProps> = ({ settings, setSettings, theme }) => {
                     active={settings.enabledPlugins.graphql}
                     onToggle={() => handleTogglePlugin('graphql')}
                     icon={Share2}
-                    colorClass="text-blue-400"
+                    colorClass="text-accent"
                     stats={{ success: '94.2%', latency: '112ms' }}
                 />
                 <PluginCard
@@ -120,7 +147,7 @@ const Plugins: React.FC<PluginsProps> = ({ settings, setSettings, theme }) => {
                     active={settings.enabledPlugins.nosql}
                     onToggle={() => handleTogglePlugin('nosql')}
                     icon={Database}
-                    colorClass="text-purple-400"
+                    colorClass="text-accent"
                     stats={{ success: '88.7%', latency: '145ms' }}
                 />
                 <PluginCard
@@ -129,7 +156,7 @@ const Plugins: React.FC<PluginsProps> = ({ settings, setSettings, theme }) => {
                     active={settings.enabledPlugins.waf}
                     onToggle={() => handleTogglePlugin('waf')}
                     icon={Shield}
-                    colorClass="text-green-400"
+                    colorClass="text-accent"
                     stats={{ success: '91.0%', latency: '24ms' }}
                 />
                 <PluginCard
@@ -139,141 +166,158 @@ const Plugins: React.FC<PluginsProps> = ({ settings, setSettings, theme }) => {
                     active={settings.enabledPlugins.ldap}
                     onToggle={() => handleTogglePlugin('ldap')}
                     icon={Server}
-                    colorClass="text-amber-400"
+                    colorClass="text-accent"
                     stats={{ success: '65.4%', latency: '310ms' }}
                 />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[40px] p-10 shadow-xl dark:shadow-2xl relative overflow-hidden group transition-colors">
-                    <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:scale-110 transition-transform"><BarChart3 size={200} /></div>
-                    <div className="flex items-center justify-between mb-10 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                
+                <div className="lg:col-span-2 modern-card p-10 group relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5">
+                    <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:scale-110 group-hover:rotate-6 transition-all duration-700 pointer-events-none">
+                      <BarChart3 size={240} />
+                    </div>
+                    
+                    <div className="flex items-center justify-between mb-12 relative z-10">
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                                <Activity size={20} className="text-primary-500" />
+                            <h3 className="font-display text-2xl text-foreground italic flex items-center gap-4">
+                                <div className="p-3 bg-accent/10 text-accent rounded-2xl border border-accent/20 shadow-sm">
+                                  <Activity size={20} strokeWidth={2.5} />
+                                </div>
                                 Extraction Precision Matrix
                             </h3>
-                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em] mt-1">Heuristic Baseline vs Active Deployment</p>
+                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.25em] mt-3 opacity-60">
+                              Heuristic Baseline vs Active Deployment
+                            </p>
                         </div>
-                        <div className="flex gap-2">
-                            <div className="flex items-center gap-2 px-3 py-1 bg-primary-500/10 border border-primary-500/20 rounded-lg">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
-                                <span className="text-[9px] font-mono text-primary-400 font-bold">LEGACY</span>
+                        <div className="flex gap-4">
+                            <div className="flex items-center gap-2.5 px-4 py-2 bg-background border border-border rounded-xl">
+                                <div className="w-2 h-2 rounded-full bg-[#0052FF]" />
+                                <span className="text-[9px] font-mono text-muted-foreground font-black uppercase">LEGACY</span>
                             </div>
-                            <div className="flex items-center gap-2 px-3 py-1 bg-purple-500/10 border border-purple-500/20 rounded-lg">
-                                <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
-                                <span className="text-[9px] font-mono text-purple-400 font-bold">V2.2_AI</span>
+                            <div className="flex items-center gap-2.5 px-4 py-2 bg-accent/5 border border-accent/20 rounded-xl">
+                                <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-accent-sm" />
+                                <span className="text-[9px] font-mono text-accent font-black uppercase">V2.2_XNODE</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="h-80 relative z-10 flex items-center justify-center">
+                    <div className="h-85 relative z-10 flex items-center justify-center py-6">
                         <ResponsiveContainer width="100%" height="100%">
                             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
                                 <PolarGrid stroke={gridColor} />
-                                <PolarAngleAxis dataKey="subject" tick={{ fill: labelColor, fontSize: 10, fontWeight: 'bold' }} />
+                                <PolarAngleAxis dataKey="subject" tick={{ fill: labelColor, fontSize: 10, fontWeight: '900', letterSpacing: '0.1em' }} />
                                 <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
-                                <Radar name="Legacy" dataKey="A" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.1} />
-                                <Radar name="V2.2" dataKey="B" stroke="#a855f7" fill="#a855f7" fillOpacity={0.3} />
-                                <Tooltip contentStyle={{ backgroundColor: tooltipBg, borderColor: tooltipBorder, borderRadius: '1rem' }} />
+                                <Radar name="Legacy" dataKey="A" stroke="var(--border-strong)" fill="var(--muted)" fillOpacity={0.1} strokeWidth={2} />
+                                <Radar name="V2.2" dataKey="B" stroke="#0052FF" fill="#0052FF" fillOpacity={0.15} strokeWidth={4} />
+                                <Tooltip contentStyle={{ backgroundColor: tooltipBg, borderColor: tooltipBorder, borderRadius: '1.25rem', boxShadow: '0 20px 40px -15px rgba(0,0,0,0.1)' }} />
                             </RadarChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[40px] p-10 shadow-xl dark:shadow-2xl flex flex-col justify-between group transition-colors">
-                    <div className="space-y-10">
-                        <div className="flex items-center gap-4">
-                            <div className="p-4 bg-red-600/10 rounded-3xl border border-red-500/20">
-                                <Zap size={24} className="text-red-500" />
+                <div className="modern-card p-10 flex flex-col justify-between group transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5">
+                    <div className="space-y-12">
+                        <div className="flex items-center gap-5">
+                            <div className="p-4 bg-rose-500/10 text-rose-500 rounded-2xl border border-rose-500/20 shadow-sm relative overflow-hidden group-hover:scale-110 transition-transform">
+                                <div className="absolute inset-0 bg-rose-500/5 animate-pulse" />
+                                <Zap size={24} strokeWidth={2.5} className="relative z-10" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Signature DB</h3>
-                                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest italic">Encrypted Payload Cache</p>
+                                <h3 className="font-display text-2xl text-foreground italic">Signature DB</h3>
+                                <p className="text-[9px] text-muted-foreground font-black uppercase tracking-widest mt-1 opacity-60">Encrypted Payload Cache</p>
                             </div>
                         </div>
 
-                        <div className="space-y-8">
-                            <div className="relative group/val">
-                                <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-3">Unit Integrity</p>
-                                <div className="flex items-end justify-between mb-2">
-                                    <p className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter font-mono">{totalPayloads.toLocaleString()}</p>
-                                    <div className="flex items-center gap-2 mb-1.5">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                                        <span className="text-[8px] font-black text-green-500 uppercase tracking-widest">Secured</span>
+                        <div className="space-y-10">
+                            <div>
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.25em] mb-4">Unit Integrity</p>
+                                <div className="flex items-end justify-between mb-3">
+                                    <div className="flex items-baseline gap-2">
+                                      <p className="text-5xl font-bold text-foreground tracking-tighter font-mono">{totalPayloads.toLocaleString()}</p>
+                                      <span className="text-[10px] font-black text-muted-foreground uppercase">Vectors</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 mb-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">SECURED_0x1</span>
                                     </div>
                                 </div>
-                                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden p-[1px] border border-white/[0.02]">
-                                    <div className="h-full bg-primary-500 rounded-full w-[98.4%] shadow-[0_0_15px_rgba(59,130,246,0.3)]"></div>
+                                <div className="h-1.5 w-full bg-background border border-border rounded-full overflow-hidden shadow-inner">
+                                    <div className="h-full bg-accent rounded-full w-[98.4%] shadow-accent-sm transition-all duration-2000" />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="space-y-1">
-                                    <p className="text-[9px] font-bold text-gray-700 uppercase tracking-tighter">Zero-Day Count</p>
-                                    <p className="text-lg font-mono text-white">412</p>
+                            <div className="grid grid-cols-2 gap-8 border-t border-border pt-8">
+                                <div className="space-y-2">
+                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Zero-Day Hits</p>
+                                    <p className="text-2xl font-bold text-foreground font-mono tracking-tighter">412</p>
                                 </div>
-                                <div className="space-y-1 text-right">
-                                    <p className="text-[9px] font-bold text-gray-700 uppercase tracking-tighter">Last Update</p>
-                                    <p className="text-lg font-mono text-gray-400">2M AGO</p>
+                                <div className="space-y-2 text-right">
+                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Last Update</p>
+                                    <p className="text-2xl font-bold text-accent font-mono tracking-tighter italic">2M_AGO</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <button className="w-full mt-10 py-5 bg-primary-600 hover:bg-primary-500 text-white font-black text-[10px] uppercase tracking-[0.3em] rounded-3xl transition-all shadow-2xl shadow-primary-600/30 active:scale-95 group overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                        <span className="relative z-10 flex items-center justify-center gap-3">
-                            <Activity size={16} />
-                            Synchronize Signatures
-                        </span>
+                    <button className="btn-primary w-full h-18 mt-12 group">
+                        <Activity size={18} fill="currentColor" strokeWidth={2.5} className="group-hover:rotate-12 transition-transform" />
+                        SYNCHRONIZE_MATRIX
                     </button>
                 </div>
             </div>
 
-            <div className="hf-glass hf-glass-hover rounded-[40px] p-10 shadow-2xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:scale-110 transition-transform"><Terminal size={180} /></div>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-10 relative z-10">
-                    <div>
-                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-4">
-                            <Database size={24} className="text-primary-600 dark:text-primary-500" />
+            <div className="modern-card p-12 shadow-2xl relative overflow-hidden group border-t-4 border-t-accent">
+                <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 group-hover:rotate-12 transition-all duration-1000 pointer-events-none">
+                  <Terminal size={220} />
+                </div>
+                
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 mb-12 relative z-10">
+                    <div className="space-y-4">
+                        <h3 className="font-display text-3xl text-foreground italic flex items-center gap-5">
+                            <Database size={28} className="text-accent" strokeWidth={2.5} />
                             Elite Extraction Matrix
                         </h3>
-                        <p className="text-xs text-slate-500 dark:text-gray-500 mt-3 max-w-2xl leading-relaxed italic transition-colors">The v2.2 extraction core employs multi-threaded asynchronous tunneling. Upon validation of an injection vector, the engine fingerprints the target environment and establishes a persistent intelligence feed.</p>
+                        <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed font-medium">
+                          The v2.2 extraction core employs multi-threaded asynchronous tunneling. Upon validation of an injection vector, the engine fingerprints the target environment and establishes a persistent intelligence feed across Sector 0x9.
+                        </p>
                     </div>
-                    <div className="relative w-full md:w-96">
-                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-primary-600 dark:text-primary-500 opacity-50">
-                            <Search size={18} />
-                        </div>
+                    
+                    <div className="relative w-full lg:w-105 group/search">
+                        <SearchIcon size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/search:text-accent transition-colors" />
                         <input
                             type="text"
                             placeholder="OPERATIONAL VECTOR SEARCH..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-slate-100 dark:bg-gray-950 border border-slate-200 dark:border-white/5 text-slate-900 dark:text-gray-200 text-xs font-mono font-bold rounded-2xl pl-14 pr-6 py-4 focus:border-primary-500/50 outline-none transition-all tracking-widest placeholder:text-slate-400 dark:placeholder:text-gray-800 shadow-inner"
+                            className="w-full bg-background border border-border text-foreground text-xs font-mono font-bold rounded-2xl pl-14 pr-6 py-4.5 focus:border-accent/40 outline-none transition-all tracking-widest shadow-sm placeholder:text-muted-foreground/30"
                         />
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
                     {Object.keys(PAYLOADS).filter(c => c.toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 12).map((cat) => (
-                        <div key={cat} className="group/item p-5 bg-white/[0.01] border border-white/5 rounded-2xl hover:bg-white/[0.03] hover:border-primary-500/20 transition-all cursor-default relative overflow-hidden">
-                            <div className="flex justify-between items-center mb-4">
-                                <span className="text-xs font-black text-gray-400 group-hover/item:text-primary-400 transition-colors uppercase tracking-tight">{cat}</span>
-                                <div className="text-[10px] font-mono text-gray-700 bg-black/40 px-2 py-0.5 rounded border border-white/5">{PAYLOADS[cat].length}</div>
+                        <div key={cat} className="p-6 bg-background-alt/50 border border-border rounded-2xl hover:border-accent/30 hover:bg-background transition-all cursor-default shadow-sm group/item">
+                            <div className="flex justify-between items-center mb-5">
+                                <span className="text-[10px] font-black text-muted-foreground group-hover/item:text-accent transition-colors uppercase tracking-widest">{cat}</span>
+                                <div className="text-[9px] font-mono font-black text-foreground bg-accent/10 px-2 py-0.5 rounded border border-accent/20">{PAYLOADS[cat].length}</div>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden p-[0.5px]">
-                                    <div className="h-full bg-primary-600/30 group-hover/item:bg-primary-500 transition-all shadow-[0_0_8px_rgba(59,130,246,0.2)]" style={{ width: `${Math.min(100, (PAYLOADS[cat].length / 50) * 100)}%` }}></div>
+                            <div className="flex items-center gap-4">
+                                <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
+                                    <div className="h-full bg-accent/40 group-hover/item:bg-accent transition-all duration-700 shadow-accent-sm" style={{ width: `${Math.min(100, (PAYLOADS[cat].length / 50) * 100)}%` }}></div>
                                 </div>
-                                <span className="text-[10px] font-bold text-gray-800 group-hover/item:text-gray-400 transition-colors uppercase">{(Math.min(100, (PAYLOADS[cat].length / 50) * 100)).toFixed(0)}%</span>
+                                <span className="text-[9px] font-black text-muted-foreground uppercase opacity-40">
+                                  {(Math.min(100, (PAYLOADS[cat].length / 50) * 100)).toFixed(0)}%
+                                </span>
                             </div>
                         </div>
                     ))}
                     {Object.keys(PAYLOADS).filter(c => c.toLowerCase().includes(searchTerm.toLowerCase())).length === 0 && (
-                        <div className="col-span-full py-12 flex flex-col items-center gap-4 opacity-40">
-                            <Info size={32} className="text-gray-500" />
-                            <p className="text-[10px] font-bold uppercase tracking-[0.3em]">No specialized vectors identified for this query.</p>
+                        <div className="col-span-full py-24 flex flex-col items-center gap-6 opacity-20">
+                            <Hexagon size={48} strokeWidth={1.5} className="animate-spin-slow" />
+                            <p className="text-[11px] font-black uppercase tracking-[0.4em] font-mono text-center">
+                              No specialized vectors identified in sector query.
+                            </p>
                         </div>
                     )}
                 </div>

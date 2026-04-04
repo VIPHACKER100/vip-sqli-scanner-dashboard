@@ -1,19 +1,20 @@
 import React from 'react';
-import { Page } from '../types';
-import {
-  LayoutDashboard,
-  ScanSearch,
-  LineChart,
-  FileText,
-  Settings,
-  Zap,
-  ShieldAlert,
-  BookOpen,
-  Sun,
+import { 
+  BarChart3, 
+  Settings as SettingsIcon, 
+  Shield, 
+  FileText, 
+  Info, 
+  LayoutDashboard, 
+  Search, 
+  Puzzle, 
+  Sun, 
   Moon,
-  User,
-  Terminal
+  Zap,
+  Terminal as TerminalIcon,
+  X
 } from 'lucide-react';
+import { Page } from '../types';
 
 interface SidebarProps {
   activePage: Page;
@@ -22,92 +23,137 @@ interface SidebarProps {
   isSystemReady: boolean;
   theme: 'light' | 'dark';
   toggleTheme: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activePage, setPage, payloadCount, isSystemReady, theme, toggleTheme }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activePage, setPage, payloadCount, isSystemReady, theme, toggleTheme, isOpen, onClose }) => {
+  const isDark = theme === 'dark';
+
   const menuItems = [
-    { id: Page.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
-    { id: Page.NEW_SCAN, label: 'New Scan', icon: ScanSearch },
-    { id: Page.ANALYTICS, label: 'Analytics', icon: LineChart },
-    { id: Page.RESULTS, label: 'Scan Results', icon: FileText },
-    { id: Page.SETTINGS, label: 'Settings', icon: Settings },
-    { id: Page.DOCS, label: 'Protocols', icon: BookOpen },
-    { id: Page.CLONE_GUIDE, label: 'Clone Guide', icon: Terminal },
-    { id: Page.ABOUT, label: 'Operative', icon: User },
+    { id: Page.DASHBOARD, label: 'Overview', icon: LayoutDashboard },
+    { id: Page.NEW_SCAN, label: 'New Vector', icon: Search },
+    { id: Page.RESULTS, label: 'Intelligence', icon: Shield },
+    { id: Page.ANALYTICS, label: 'Analytics', icon: BarChart3 },
+    { id: Page.PLUGINS, label: 'Extensions', icon: Puzzle },
+    { id: Page.SETTINGS, label: 'Settings', icon: SettingsIcon },
+  ];
+
+  const secondaryItems = [
+    { id: Page.DOCS, label: 'Protocols', icon: FileText },
+    { id: Page.CLONE_GUIDE, label: 'Terminal', icon: TerminalIcon },
+    { id: Page.ABOUT, label: 'System Info', icon: Info },
   ];
 
   return (
-    <div className="w-64 hf-glass border-r flex flex-col h-screen fixed left-0 top-0 z-10 transition-all duration-500">
-      <div className="p-6 flex items-center gap-4 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
-        <div className="bg-primary-600 p-2.5 rounded-xl shadow-lg shadow-primary-600/20">
-          <ShieldAlert className="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h1 className="font-bold text-lg text-gray-900 dark:text-white leading-none tracking-tight">ADVANCED SQLi</h1>
-          <span className="text-[10px] text-primary-600 dark:text-primary-500 font-mono font-bold mt-1 block tracking-wider uppercase">v2.2 Engine</span>
-          <p className="text-[8px] text-gray-500 dark:text-gray-300 mt-1.5 font-mono tracking-widest uppercase">by VIPHACKER.100</p>
-        </div>
-      </div>
+    <aside className={`w-64 h-full fixed left-0 top-0 bg-background dark:bg-background-alt border-r border-border flex flex-col z-40 transition-all duration-500 transform lg:translate-x-0 ${isOpen ? 'translate-x-0 shadow-2xl shadow-black/20' : '-translate-x-full'}`}>
+      
+      {/* Mobile Close Button */}
+      <button 
+        onClick={onClose}
+        className="lg:hidden absolute top-6 right-6 p-2 rounded-xl bg-muted text-muted-foreground hover:text-foreground transition-colors"
+        aria-label="Close Sidebar"
+      >
+        <X size={20} />
+      </button>
 
-      <nav className="flex-1 p-4 space-y-2 mt-4">
-        {menuItems.map((item) => {
-          const isActive = activePage === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setPage(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative group ${isActive
-                ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10'
-                }`}
-            >
-              <item.icon size={20} className={`${isActive ? 'text-white' : 'group-hover:scale-110 transition-transform'}`} />
-              <span className="font-semibold text-sm">{item.label}</span>
-              {isActive && (
-                <span className="absolute right-3 w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-              )}
-            </button>
-          );
-        })}
-      </nav>
-
-      <div className="p-4 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black/10">
-        <div className="mb-4">
-          <button
-            onClick={toggleTheme}
-            className="w-full flex items-center justify-between px-4 py-2 bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/10 transition-all text-slate-700 dark:text-gray-300"
-          >
-            <span className="text-[10px] font-bold uppercase tracking-widest">Theme Mode</span>
-            {theme === 'dark' ? <Sun size={14} className="text-amber-500" /> : <Moon size={14} className="text-primary-600" />}
-          </button>
-        </div>
-        <div className="bg-slate-100/50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/5 shadow-inner transition-colors">
-          <p className="font-bold text-[9px] text-gray-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-            <div className="w-1 h-1 bg-primary-500 rounded-full"></div>
-            System Status
-          </p>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] text-gray-600 dark:text-gray-300 font-medium">Detection Engine</span>
-              <div className="flex items-center gap-2">
-                <span className={`w-1.5 h-1.5 rounded-full ${isSystemReady ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-amber-500 animate-pulse'}`}></span>
-                <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 uppercase tracking-tighter">{isSystemReady ? 'Online' : 'Loading'}</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between font-mono">
-              <span className="text-[10px] text-gray-600 dark:text-gray-300">Payload Sync</span>
-              <span className="text-[10px] text-primary-600 dark:text-primary-400 font-bold bg-primary-600/10 dark:bg-primary-400/10 px-1.5 py-0.5 rounded border border-primary-600/20 dark:border-primary-400/20">
-                {payloadCount.toLocaleString()}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] text-gray-600 dark:text-gray-300 font-medium">Telemetry Hub</span>
-              <span className="text-[10px] font-bold text-green-600 animate-pulse">0xFD::ACTIVE</span>
-            </div>
+      {/* Logo Section */}
+      <div className="p-8 pb-10">
+        <div className="flex items-center gap-3 group cursor-pointer" onClick={() => { setPage(Page.DASHBOARD); onClose(); }}>
+          <div className="w-10 h-10 rounded-xl bg-electric-gradient flex items-center justify-center text-white shadow-accent transition-transform group-hover:scale-105">
+            <Zap size={20} fill="currentColor" />
+          </div>
+          <div>
+            <h1 className="font-display text-xl text-foreground leading-tight">VIP HUNTER</h1>
+            <p className="text-[10px] font-mono font-bold text-accent tracking-[0.2em]">v2.2 PRIME</p>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Primary Navigation */}
+      <nav className="flex-1 px-4 space-y-1 overflow-y-auto scrollbar-hide">
+        <p className="px-4 text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Operations</p>
+        <div className="space-y-1">
+          {menuItems.map((item) => {
+            const isActive = activePage === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => { setPage(item.id); onClose(); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all group ${
+                  isActive 
+                    ? 'bg-accent/10 text-accent border border-accent/20 shadow-sm' 
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
+                <item.icon size={18} className={isActive ? 'text-accent' : 'text-muted-foreground group-hover:text-foreground'} />
+                {item.label}
+                {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-accent pulsing-dot" />}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="pt-8 mb-6">
+          <p className="px-4 text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Intelligence</p>
+          <div className="space-y-1">
+            {secondaryItems.map((item) => {
+              const isActive = activePage === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => { setPage(item.id); onClose(); }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all group ${
+                    isActive 
+                      ? 'bg-accent/10 text-accent border border-accent/20 shadow-sm' 
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  }`}
+                >
+                  <item.icon size={18} className={isActive ? 'text-accent' : 'text-muted-foreground group-hover:text-foreground'} />
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </nav>
+
+      {/* Footer System Status */}
+      <div className="p-6 mt-auto">
+        <div className="p-5 rounded-2xl bg-muted border border-border space-y-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">Payloads</span>
+            <span className="text-xs font-bold text-foreground">{payloadCount.toLocaleString()}</span>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <div className={`h-1.5 flex-1 rounded-full overflow-hidden bg-white dark:bg-slate-900 border border-border`}>
+              <div 
+                className={`h-full bg-accent transition-all duration-1000 ${isSystemReady ? 'w-full' : 'w-1/3 animate-pulse'}`}
+              />
+            </div>
+            <span className="text-[10px] font-mono font-bold text-accent">{isSystemReady ? 'READY' : 'INIT'}</span>
+          </div>
+
+          <button 
+            onClick={toggleTheme}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground transition-all text-xs font-bold shadow-sm active:scale-95"
+            aria-label={isDark ? "Switch to Light Protocol" : "Switch to Dark Protocol"}
+          >
+            {isDark ? <Sun size={14} /> : <Moon size={14} />}
+            {isDark ? 'Light Protocol' : 'Dark Protocol'}
+          </button>
+        </div>
+
+        <div className="mt-6 px-2 flex items-center justify-between opacity-40 hover:opacity-100 transition-opacity">
+          <p className="text-[9px] font-mono font-bold text-muted-foreground tracking-tighter uppercase">© 2026 VIP_HACKER</p>
+          <div className="flex items-center gap-1.5 text-accent font-mono text-[9px] font-bold">
+            <div className="w-1 h-1 rounded-full bg-accent pulsing-dot" />
+            LIVE_LINK
+          </div>
+        </div>
+      </div>
+    </aside>
   );
 };
 

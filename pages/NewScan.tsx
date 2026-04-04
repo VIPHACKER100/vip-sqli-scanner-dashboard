@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { ScanConfig, Page } from '../types';
-import { Play, Sliders, Zap, Info, HelpCircle, Gauge, Globe, Terminal, Shield, Network, FileUp } from 'lucide-react';
+import { Play, Sliders, Zap, Info, HelpCircle, Gauge, Globe, Terminal, Shield, Network, FileUp, Target, Command, Cpu } from 'lucide-react';
 
 interface NewScanProps {
   onStartScan: (config: ScanConfig) => void;
@@ -9,29 +9,29 @@ interface NewScanProps {
 
 const HelpTooltip = ({ text }: { text: string }) => (
   <div className="group relative inline-flex ml-2 align-middle">
-    <HelpCircle size={14} className="text-gray-500 hover:text-primary-400 cursor-help transition-colors" />
-    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none transform translate-y-2 group-hover:translate-y-0">
-      <p className="text-[11px] text-gray-300 leading-relaxed font-normal normal-case text-left">{text}</p>
-      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-[6px] border-transparent border-t-white/10"></div>
+    <HelpCircle size={14} className="text-muted-foreground hover:text-accent cursor-help transition-colors" />
+    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-4 bg-foreground text-background border border-border rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none transform translate-y-2 group-hover:translate-y-0">
+      <p className="text-[11px] leading-relaxed font-bold uppercase tracking-tight">{text}</p>
+      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-[6px] border-transparent border-t-foreground"></div>
     </div>
   </div>
 );
 
 const ConfigCard = ({ title, icon: Icon, children, colorClass }: any) => (
-  <div className="hf-glass hf-glass-hover rounded-3xl overflow-hidden group">
-    <div className="p-4 border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02] flex items-center justify-between px-6">
-      <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-3">
-        <div className={`p-2 rounded-lg bg-slate-900 dark:bg-gray-900 border border-white/5 group-hover:scale-110 transition-transform ${colorClass}`}>
-          <Icon size={18} />
+  <div className="modern-card group flex flex-col h-full">
+    <div className="p-5 border-b border-border/50 flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <div className={`p-2 rounded-xl bg-accent/10 transition-transform group-hover:scale-110 ${colorClass || 'text-accent'}`}>
+          <Icon size={18} strokeWidth={2.5} />
         </div>
-        {title}
-      </h3>
-      <div className="flex gap-1 opacity-20 group-hover:opacity-40 transition-opacity">
-        <div className="w-1 h-1 rounded-full bg-slate-400 dark:bg-white"></div>
-        <div className="w-1 h-1 rounded-full bg-slate-400 dark:bg-white"></div>
+        <h3 className="font-bold text-foreground text-sm uppercase tracking-tight">{title}</h3>
+      </div>
+      <div className="flex gap-1.5 opacity-20">
+        <div className="w-1 h-1 rounded-full bg-foreground"></div>
+        <div className="w-1 h-1 rounded-full bg-foreground"></div>
       </div>
     </div>
-    <div className="p-8">
+    <div className="p-6 flex-1">
       {children}
     </div>
   </div>
@@ -76,7 +76,6 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
       };
       reader.readAsText(file);
     }
-    // Clear the input value so the same file can be uploaded multiple times
     if (e.target) e.target.value = '';
   };
 
@@ -119,27 +118,33 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
   };
 
   const getThreadDescription = (threads: number) => {
-    if (threads <= 3) return { text: "Tactical Stealth", color: "text-green-400" };
-    if (threads <= 10) return { text: "Balanced Precision", color: "text-primary-400" };
-    return { text: "Aggressive Saturation", color: "text-amber-400" };
+    if (threads <= 3) return { text: "Tactical Stealth", color: "text-emerald-500" };
+    if (threads <= 10) return { text: "Balanced Precision", color: "text-accent" };
+    return { text: "Aggressive Saturation", color: "text-rose-500" };
   };
 
   const threadDesc = getThreadDescription(config.threads);
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 reveal-up">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter">Infiltrate New Targets</h2>
-          <p className="text-gray-500 dark:text-gray-400 text-sm">Deploy the SQLiHunter engine against target infrastructure.</p>
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      {/* Hero Section */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4">
+        <div className="space-y-4">
+          <div className="section-label">Deployment Phase</div>
+          <h2 className="font-display text-5xl md:text-6xl text-foreground max-w-2xl leading-[1.1]">
+            Infiltrate New <span className="text-electric-gradient italic">Vectors</span>
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-xl">
+            Configure the VIP-Engine for deep protocol analysis and vulnerability discovery across target domains.
+          </p>
         </div>
 
-        <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-4 flex flex-wrap gap-2 max-w-lg">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block w-full mb-2 ml-1">Mission Presets</span>
+        <div className="modern-card p-4 flex flex-wrap gap-2 max-w-lg bg-background-alt border-dashed">
+          <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-[0.2em] block w-full mb-2 ml-1">Pre-Configured Operations</span>
           {[
-            { name: 'POST API', url: 'https://api.vulnerable.com/v1/auth', method: 'POST', body: '{"username": "admin", "password": "password"}' },
+            { name: 'POST API Sync', url: 'https://api.vulnerable.com/v1/auth', method: 'POST', body: '{"username": "admin", "password": "password"}' },
             { name: 'Standard SQLi', url: 'https://vulnerable-sqli.com/api.php?id=1', method: 'GET', body: '' },
-            { name: 'Deep Discovery', url: 'https://pentest-target.io/search?q=test&sort=id&page=1\nhttps://internal-api.secure/v2/users/auth', method: 'GET', body: '' },
+            { name: 'Matrix Discovery', url: 'https://pentest-target.io/search?q=test&sort=id&page=1\nhttps://internal-api.secure/v2/users/auth', method: 'GET', body: '' },
           ].map(preset => (
             <button
               key={preset.name}
@@ -153,7 +158,7 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
                   requestBody: preset.body
                 });
               }}
-              className="px-3 py-1.5 bg-slate-100 dark:bg-gray-900 hover:bg-primary-600/20 border border-slate-200 dark:border-white/5 hover:border-primary-500/50 rounded-xl text-[10px] font-bold text-slate-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all uppercase tracking-tight"
+              className="px-3 py-1.5 bg-background hover:bg-accent/10 border border-border rounded-xl text-[10px] font-bold text-muted-foreground hover:text-accent transition-all uppercase tracking-tight"
             >
               + {preset.name}
             </button>
@@ -161,10 +166,10 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="px-3 py-1.5 bg-slate-100 dark:bg-gray-900 hover:bg-primary-600/20 border border-slate-200 dark:border-white/5 hover:border-primary-500/50 rounded-xl text-[10px] font-bold text-slate-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all uppercase tracking-tight flex items-center gap-1.5"
+            className="px-3 py-1.5 bg-background hover:bg-accent/10 border border-border rounded-xl text-[10px] font-bold text-muted-foreground hover:text-accent transition-all uppercase tracking-tight flex items-center gap-1.5"
           >
             <FileUp size={12} />
-            Load File
+            CSV/TXT Load
           </button>
           <input 
             type="file"
@@ -173,26 +178,19 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
             accept=".txt"
             onChange={handleFileChange}
           />
-          <button
-            type="button"
-            onClick={() => setConfig({ ...config, targetUrls: '', method: 'GET', requestBody: '' })}
-            className="px-3 py-1.5 bg-red-600/5 hover:bg-red-600/20 border border-red-500/20 rounded-xl text-[10px] font-bold text-red-400 transition-all uppercase tracking-tight"
-          >
-            Clear Hub
-          </button>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-3">
-            <ConfigCard title="Target Intelligence Hub" icon={Globe} colorClass="text-primary-400">
-              <div className="relative group/field h-full">
-                <div className="absolute top-4 left-4 pointer-events-none opacity-20 group-focus-within/field:opacity-40 transition-opacity">
-                  <Terminal size={18} className="text-primary-500" />
+            <ConfigCard title="Target Intelligence Hub" icon={Target} colorClass="text-accent">
+              <div className="relative h-full">
+                <div className="absolute top-5 left-5 pointer-events-none">
+                  <Terminal size={20} className="text-accent opacity-30" />
                 </div>
                 <textarea
-                  className={`w-full h-48 bg-gray-50/50 dark:bg-gray-950/50 border rounded-3xl p-6 pl-14 text-gray-900 dark:text-gray-200 focus:border-primary-500/30 focus:ring-4 focus:ring-primary-500/5 outline-none font-mono text-xs leading-relaxed transition-all resize-none shadow-inner ${isDragging ? 'border-primary-500 bg-primary-600/10 scale-[1.01]' : 'border-gray-200 dark:border-white/5'}`}
+                  className={`w-full h-80 bg-background border-2 rounded-3xl p-8 pl-16 text-foreground focus:border-accent/40 focus:ring-8 focus:ring-accent/5 outline-none font-mono text-xs leading-relaxed transition-all resize-none shadow-inner ${isDragging ? 'border-accent bg-accent/5 scale-[1.01]' : 'border-border'}`}
                   placeholder="Enter target vectors (One per line)...&#10;example: https://target.io/v1/users?id=100"
                   value={config.targetUrls}
                   onChange={(e) => setConfig({ ...config, targetUrls: e.target.value })}
@@ -201,26 +199,26 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
                   onDrop={handleDrop}
                   required
                 />
-                <div className="absolute bottom-4 right-6 flex items-center gap-2 text-[10px] font-mono text-gray-400">
-                  <Info size={12} />
-                  <span>Auto-Spidery Active</span>
+                <div className="absolute bottom-6 right-8 flex items-center gap-3 text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-widest">
+                  <Cpu size={14} className="text-accent" />
+                  <span>VIP-Engine Baseline Active</span>
                 </div>
               </div>
             </ConfigCard>
           </div>
 
-          <div className="lg:col-span-2">
-            <ConfigCard title="REST Intelligence" icon={Network} colorClass="text-purple-400">
-              <div className="space-y-6">
-                <div className="group/field">
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">HTTP Verbs</label>
-                  <div className="flex gap-2">
+          <div className="lg:col-span-2 space-y-8">
+            <ConfigCard title="Protocol Selection" icon={Network} colorClass="text-violet-500">
+              <div className="space-y-8">
+                <div>
+                  <label className="label-mono mb-4">HTTP Method</label>
+                  <div className="grid grid-cols-3 gap-3">
                     {['GET', 'POST', 'PUT'].map(m => (
                       <button
                         key={m}
                         type="button"
                         onClick={() => setConfig({ ...config, method: m as any })}
-                        className={`flex-1 py-2 rounded-xl border font-mono text-[10px] font-bold transition-all ${config.method === m ? 'bg-primary-600/10 border-primary-500 text-primary-600 dark:text-primary-400 shadow-lg dark:shadow-[0_0_15px_rgba(139,92,246,0.2)]' : 'bg-slate-100 dark:bg-gray-950/50 border-slate-200 dark:border-white/5 text-slate-500 dark:text-gray-600 hover:border-primary-500/30 dark:hover:border-white/10'}`}
+                        className={`py-3 rounded-2xl border font-mono text-xs font-bold transition-all ${config.method === m ? 'bg-accent text-white border-accent shadow-accent-sm' : 'bg-background border-border text-muted-foreground hover:border-accent/30'}`}
                       >
                         {m}
                       </button>
@@ -229,32 +227,45 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
                 </div>
 
                 {config.method !== 'GET' && (
-                  <div className="group/field reveal-up">
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">JSON Request Skeleton</label>
+                  <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+                    <label className="label-mono mb-4">JSON Matrix Template</label>
                     <textarea
-                      className="w-full h-24 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-white/5 rounded-2xl p-4 text-gray-900 dark:text-gray-200 focus:border-purple-500/50 outline-none font-mono text-[10px] transition-all"
+                      className="w-full h-32 bg-background border border-border rounded-2xl p-5 text-foreground focus:border-accent/40 outline-none font-mono text-[11px] transition-all shadow-inner"
                       placeholder='{ "username": "admin" }'
                       value={config.requestBody}
                       onChange={(e) => setConfig({ ...config, requestBody: e.target.value })}
                     />
-                    <p className="text-[8px] text-gray-600 mt-2 font-mono uppercase tracking-tighter">Enter JSON body structure for parameter fuzzing.</p>
+                    <p className="text-[9px] text-muted-foreground mt-3 font-mono font-bold uppercase tracking-tight italic">Define schema for automated parameter mutation.</p>
                   </div>
                 )}
               </div>
             </ConfigCard>
+
+            <div className="modern-card p-6 border-dashed border-accent/20 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
+                    <Shield size={20} />
+                </div>
+                <div>
+                  <span className="font-bold text-sm block">Proxy Bridge</span>
+                  <span className="text-[10px] font-mono font-bold text-emerald-500 uppercase">Status: Isolated</span>
+                </div>
+              </div>
+              <div className="w-3 h-3 rounded-full bg-emerald-500 pulsing-dot" />
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <ConfigCard title="Mission Profile" icon={Sliders} colorClass="text-primary-400">
+          <ConfigCard title="Mission Profile" icon={Sliders} colorClass="text-accent">
             <div className="space-y-4">
               {[
-                { id: 'stealth', label: 'Stealth Recon', desc: 'Minimal footprint, WAF evasion active', color: 'hover:border-green-500/30' },
-                { id: 'balanced', label: 'Balanced Pulse', desc: 'Standard frequency and depth', color: 'hover:border-primary-500/30' },
-                { id: 'aggressive', label: 'Full Saturation', desc: 'Fast, comprehensive fuzzing matrix', color: 'hover:border-amber-500/30' }
+                { id: 'stealth', label: 'Tactical Stealth', desc: 'Minimal footprint, WAF evasion active', color: 'border-emerald-500/30' },
+                { id: 'balanced', label: 'Balanced Pulse', desc: 'Standard frequency and depth', color: 'border-accent/30' },
+                { id: 'aggressive', label: 'Full Saturation', desc: 'Fast, comprehensive saturation', color: 'border-rose-500/30' }
               ].map((p) => (
-                <label key={p.id} className={`flex items-start gap-4 p-5 rounded-3xl border cursor-pointer transition-all duration-300 relative overflow-hidden group/item ${config.profile === p.id ? 'bg-primary-600/10 border-primary-500/50 shadow-lg shadow-primary-500/5' : `bg-slate-100/50 dark:bg-gray-950/40 border-slate-200 dark:border-white/5 ${p.color}`}`}>
-                  <div className="pt-0.5">
+                <label key={p.id} className={`flex items-start gap-5 p-6 rounded-3xl border-2 cursor-pointer transition-all duration-500 relative group/item ${config.profile === p.id ? 'bg-accent/5 border-accent shadow-accent-sm' : `bg-card border-border hover:border-accent/30 hf-glass-hover`}`}>
+                  <div className="pt-1">
                     <input
                       type="radio"
                       name="profile"
@@ -263,28 +274,28 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
                       onChange={(e) => setConfig({ ...config, profile: e.target.value as any })}
                       className="sr-only"
                     />
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${config.profile === p.id ? 'border-primary-500 bg-primary-500' : 'border-slate-300 dark:border-gray-700'}`}>
-                      {config.profile === p.id && <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>}
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${config.profile === p.id ? 'border-accent bg-accent' : 'border-border'}`}>
+                      {config.profile === p.id && <div className="w-2 h-2 rounded-full bg-white"></div>}
                     </div>
                   </div>
-                  <div className="relative z-10">
-                    <span className={`block font-bold text-sm tracking-tight ${config.profile === p.id ? 'text-primary-700 dark:text-white' : 'text-slate-600 dark:text-gray-400'}`}>{p.label}</span>
-                    <span className="block text-[10px] text-slate-500 dark:text-gray-500 mt-1 uppercase tracking-tighter font-medium">{p.desc}</span>
+                  <div>
+                    <span className={`block font-bold text-base tracking-tight ${config.profile === p.id ? 'text-foreground' : 'text-muted-foreground'}`}>{p.label}</span>
+                    <span className="block text-[10px] text-muted-foreground mt-1.5 uppercase font-mono font-bold tracking-tight">{p.desc}</span>
                   </div>
                 </label>
               ))}
             </div>
           </ConfigCard>
 
-          <ConfigCard title="Engine Tuning" icon={Zap} colorClass="text-amber-400">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between p-5 bg-slate-100 dark:bg-gray-950/40 rounded-3xl border border-slate-200 dark:border-white/5 hover:border-purple-500/20 transition-all group/opt">
-                <div className="space-y-1">
-                  <span className="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
-                    ML-Heuristics
-                    <span className="px-1.5 py-0.5 rounded-full text-[8px] font-black bg-purple-600 text-white tracking-tighter">AI_V2</span>
+          <ConfigCard title="Engine Sync" icon={Zap} colorClass="text-amber-500">
+            <div className="space-y-8">
+              <div className="flex items-center justify-between p-6 bg-background-alt rounded-3xl border border-border group/opt transition-all hover:border-accent/30">
+                <div className="space-y-1.5">
+                  <span className="font-bold text-sm text-foreground flex items-center gap-3">
+                    Neural Heuristics
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-accent text-white tracking-widest uppercase">ML_V4</span>
                   </span>
-                  <p className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Bypasses character-based filters</p>
+                  <p className="text-[10px] text-muted-foreground font-mono font-bold uppercase tracking-tight">Adaptive filter bypass logic</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -293,14 +304,14 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
                     checked={config.useML}
                     onChange={(e) => setConfig({ ...config, useML: e.target.checked })}
                   />
-                  <div className="w-8 h-4.5 bg-gray-800 rounded-full peer peer-checked:bg-purple-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3.5 after:w-3.5 after:shadow-sm after:transition-all peer-checked:after:translate-x-3.5"></div>
+                  <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:bg-accent after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:shadow-sm after:transition-all peer-checked:after:translate-x-5"></div>
                 </label>
               </div>
 
-              <div className="flex items-center justify-between p-5 bg-slate-100 dark:bg-gray-950/40 rounded-3xl border border-slate-200 dark:border-white/5 hover:border-primary-500/20 transition-all group/opt">
-                <div className="space-y-1">
-                  <span className="font-bold text-sm text-gray-900 dark:text-white">Advanced Plugins</span>
-                  <p className="text-[10px] text-gray-500 uppercase font-bold tracking-tighter">Activates GQL, NoSQL modules</p>
+              <div className="flex items-center justify-between p-6 bg-background-alt rounded-3xl border border-border group/opt transition-all hover:border-accent/30">
+                <div className="space-y-1.5">
+                  <span className="font-bold text-sm text-foreground">Advanced Plugin Matrix</span>
+                  <p className="text-[10px] text-muted-foreground font-mono font-bold uppercase tracking-tight">Activates GQL, NoSQL sub-routers</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -309,22 +320,22 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
                     checked={config.usePlugins}
                     onChange={(e) => setConfig({ ...config, usePlugins: e.target.checked })}
                   />
-                  <div className="w-8 h-4.5 bg-gray-900 rounded-full peer peer-checked:bg-primary-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3.5 after:w-3.5 after:shadow-sm after:transition-all peer-checked:after:translate-x-3.5"></div>
+                  <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:bg-accent after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:shadow-sm after:transition-all peer-checked:after:translate-x-5"></div>
                 </label>
               </div>
 
-              <div className="pt-6 border-t border-white/5">
-                <div className="flex justify-between items-end mb-5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                    <Gauge size={14} className="text-primary-500" />
-                    Concurrency Matrix
+              <div className="pt-6 border-t border-border">
+                <div className="flex justify-between items-end mb-6">
+                  <label className="label-mono flex items-center gap-3">
+                    <Gauge size={16} className="text-accent" />
+                    Concurrency Velocity
                   </label>
                   <div className="text-right">
-                    <span className="text-2xl font-bold text-gray-900 dark:text-white font-mono leading-none tracking-tighter">{config.threads}</span>
-                    <span className={`block text-[8px] font-black uppercase tracking-widest ${threadDesc.color} mt-1`}>{threadDesc.text}</span>
+                    <span className="text-3xl font-display font-bold text-foreground leading-none">{config.threads}</span>
+                    <span className={`block text-[9px] font-black uppercase tracking-[0.2em] ${threadDesc.color} mt-2`}>{threadDesc.text}</span>
                   </div>
                 </div>
-                <div className="relative group/slider">
+                <div className="relative group/slider px-2">
                   <input
                     type="range"
                     min="1"
@@ -332,141 +343,25 @@ const NewScan: React.FC<NewScanProps> = ({ onStartScan, setPage }) => {
                     step="1"
                     value={config.threads}
                     onChange={(e) => setConfig({ ...config, threads: parseInt(e.target.value) })}
-                    className="w-full h-1.5 bg-slate-200 dark:bg-gray-950 rounded-full appearance-none cursor-pointer accent-primary-600 group-hover/slider:bg-slate-300 dark:group-hover:bg-gray-900 transition-all"
+                    className="w-full h-2 bg-muted rounded-full appearance-none cursor-pointer accent-accent"
                   />
-                  <div className="flex justify-between text-[8px] font-mono text-gray-700 mt-3 uppercase font-bold">
-                    <span>1_THREAD</span>
-                    <span>20_THREADS</span>
+                  <div className="flex justify-between text-[9px] font-mono text-muted-foreground mt-4 uppercase font-bold tracking-widest">
+                    <span>MIN_LIMIT</span>
+                    <span>MAX_SATURATION</span>
                   </div>
                 </div>
               </div>
-            </div>
-          </ConfigCard>
-
-          {/* Fuzzing Configuration */}
-          <ConfigCard title="Parameter Fuzzing" icon={Shield} colorClass="text-green-400">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-gray-950/40 rounded-3xl border border-gray-100 dark:border-white/5 hover:border-green-500/20 transition-all group/opt">
-                <div className="space-y-1">
-                  <span className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 transition-colors">
-                    Fuzzing Mode
-                    <span className="px-1.5 py-0.5 rounded-full text-[8px] font-black bg-green-600 text-white tracking-tighter">BETA</span>
-                  </span>
-                  <p className="text-[10px] text-slate-500 dark:text-gray-500 uppercase font-bold tracking-tighter transition-colors">Auto-discover injection points</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="sr-only peer"
-                    checked={config.useFuzzing}
-                    onChange={(e) => setConfig({
-                      ...config,
-                      useFuzzing: e.target.checked,
-                      fuzzConfig: { ...config.fuzzConfig!, enabled: e.target.checked }
-                    })}
-                  />
-                  <div className="w-9 h-5 bg-slate-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-green-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:shadow-sm after:transition-all peer-checked:after:translate-x-4 transition-colors"></div>
-                </label>
-              </div>
-
-              {config.useFuzzing && (
-                <div className="space-y-4 reveal-up">
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Injection Vectors</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {['GET', 'POST', 'HEADERS', 'COOKIES', 'PATH'].map(vector => (
-                        <label key={vector} className={`flex items-center gap-3 p-3 rounded-2xl border cursor-pointer transition-all ${config.fuzzConfig?.vectors.includes(vector as any) ? 'bg-green-600/10 border-green-500/50' : 'bg-slate-100/50 dark:bg-gray-950/40 border-slate-200 dark:border-white/5 hover:border-primary-500/30'}`}>
-                          <input
-                            type="checkbox"
-                            checked={config.fuzzConfig?.vectors.includes(vector as any)}
-                            onChange={(e) => {
-                              const vectors = e.target.checked
-                                ? [...(config.fuzzConfig?.vectors || []), vector]
-                                : (config.fuzzConfig?.vectors || []).filter(v => v !== vector);
-                              setConfig({ ...config, fuzzConfig: { ...config.fuzzConfig!, vectors: vectors as any } });
-                            }}
-                            className="sr-only"
-                          />
-                          <div className={`w-3.5 h-3.5 rounded border-2 flex items-center justify-center transition-all ${config.fuzzConfig?.vectors.includes(vector as any) ? 'border-green-500 bg-green-500' : 'border-slate-300 dark:border-gray-700'}`}>
-                            {config.fuzzConfig?.vectors.includes(vector as any) && <div className="w-1.5 h-1.5 rounded-sm bg-white"></div>}
-                          </div>
-                          <span className={`text-[10px] font-bold uppercase tracking-tight transition-colors ${config.fuzzConfig?.vectors.includes(vector as any) ? 'text-green-700 dark:text-green-400' : 'text-slate-500 dark:text-gray-400'}`}>{vector}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Fuzzing Strategy</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {[
-                        { id: 'smart', label: 'Smart', desc: 'High-risk first' },
-                        { id: 'sequential', label: 'Sequential', desc: 'One-by-one' },
-                        { id: 'parallel', label: 'Parallel', desc: 'Simultaneous' },
-                        { id: 'recursive', label: 'Recursive', desc: 'Nested params' }
-                      ].map(strategy => (
-                        <label key={strategy.id} className={`flex items-start gap-3 p-3 rounded-2xl border cursor-pointer transition-all ${config.fuzzConfig?.strategy === strategy.id ? 'bg-green-600/10 border-green-500/50' : 'bg-slate-100/50 dark:bg-gray-950/40 border-slate-200 dark:border-white/5 hover:border-primary-500/30'}`}>
-                          <div className="pt-0.5">
-                            <input
-                              type="radio"
-                              name="fuzzStrategy"
-                              value={strategy.id}
-                              checked={config.fuzzConfig?.strategy === strategy.id}
-                              onChange={(e) => setConfig({ ...config, fuzzConfig: { ...config.fuzzConfig!, strategy: e.target.value as any } })}
-                              className="sr-only"
-                            />
-                            <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center transition-all ${config.fuzzConfig?.strategy === strategy.id ? 'border-green-500 bg-green-500' : 'border-slate-300 dark:border-gray-700'}`}>
-                              {config.fuzzConfig?.strategy === strategy.id && <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>}
-                            </div>
-                          </div>
-                          <div className="transition-colors">
-                            <span className={`block text-[10px] font-bold uppercase tracking-tight ${config.fuzzConfig?.strategy === strategy.id ? 'text-green-700 dark:text-green-400' : 'text-slate-600 dark:text-gray-400'}`}>{strategy.label}</span>
-                            <span className="block text-[8px] text-slate-500 dark:text-gray-500 uppercase tracking-tighter">{strategy.desc}</span>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between p-4 bg-slate-100/50 dark:bg-gray-950/40 rounded-2xl border border-slate-200 dark:border-white/5 transition-colors">
-                    <span className="text-[10px] font-bold text-slate-500 dark:text-gray-400 uppercase tracking-tight">Payload Mutations</span>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="sr-only peer"
-                        checked={config.fuzzConfig?.payloadMutation}
-                        onChange={(e) => setConfig({ ...config, fuzzConfig: { ...config.fuzzConfig!, payloadMutation: e.target.checked } })}
-                      />
-                      <div className="w-9 h-5 bg-slate-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-green-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:shadow-sm after:transition-all peer-checked:after:translate-x-4 transition-colors"></div>
-                    </label>
-                  </div>
-
-                  <div className="flex items-center justify-between p-4 bg-slate-100/50 dark:bg-gray-950/40 rounded-2xl border border-slate-200 dark:border-white/5 transition-colors">
-                    <span className="text-[10px] font-bold text-slate-500 dark:text-gray-400 uppercase tracking-tight">Encoding Variants</span>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="sr-only peer"
-                        checked={config.fuzzConfig?.encodingVariants}
-                        onChange={(e) => setConfig({ ...config, fuzzConfig: { ...config.fuzzConfig!, encodingVariants: e.target.checked } })}
-                      />
-                      <div className="w-9 h-5 bg-slate-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-green-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:shadow-sm after:transition-all peer-checked:after:translate-x-4 transition-colors"></div>
-                    </label>
-                  </div>
-                </div>
-              )}
             </div>
           </ConfigCard>
         </div>
 
-        <div className="flex justify-end pt-4">
+        <div className="flex justify-end pt-8">
           <button
             type="submit"
-            className="group relative flex items-center gap-4 px-12 py-5 bg-primary-600 hover:bg-primary-500 text-white font-black rounded-3xl transition-all shadow-2xl shadow-primary-600/20 active:scale-95 overflow-hidden"
+            className="btn-primary px-16 h-20 shadow-accent-lg group"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-            <Play size={20} fill="currentColor" className="group-hover:scale-110 transition-transform" />
-            <span className="text-sm uppercase tracking-[0.2em] italic">Deploy Engine</span>
+            <Play size={24} fill="currentColor" className="group-hover:scale-110 transition-transform" strokeWidth={2.5} />
+            <span className="text-lg font-display italic">Deploy Protocol</span>
           </button>
         </div>
       </form >

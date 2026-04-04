@@ -80,9 +80,9 @@ graph TD
 - **Real-World Forensic Mode**: Executes actual network requests against live targets
 - **Alert Telemetry**: Instant exfiltration notifications via Discord/Slack webhooks
 - **Cloud Vault Sync**: Encrypted intelligence synchronization with remote XNODE endpoints.
-- **Master Vault Token**: Secured identity management for distributed scanning.
-- **Payload Import/Export**: JSON/TXT support for managing custom research libraries. 🆕
-- **Real Data Forensics**: Captures actual payloads, HTTP status codes, response sizes, and SQL error snippets for every finding. 🆕
+- **XNODE Semantic Design System**: Theme-aware interface with dynamic protocol shifting (Light/Dark). 🆕
+- **Payload Import/Export**: JSON/TXT support for managing custom research libraries.
+- **Real Data Forensics**: Captures actual payloads, HTTP status codes, response sizes, and SQL error snippets for every finding.
 
 ---
 
@@ -94,6 +94,7 @@ graph TD
 - **Sync Protocol**: HTTPS/TLS 1.3 encrypted XNODE sync
 - **Auth**: Master Vault Token (256-bit entropy)
 - **Local Proxy**: High-concurrency Node.js bridge (Port 3001)
+- **UI Engine**: Vite + Tailwind Play CDN (Hybrid Semantic Token Mapping)
 
 ### Payload Database
 
@@ -317,6 +318,7 @@ Encoding Variants: [ON] - URL, hex, unicode
 - ✅ **Telemetry Webhooks**: Real-time exfiltration alerts
 - ✅ **XNODE Cloud Sync**: Distributed intelligence vault integration
 - ✅ **Master Identity**: Vault Token based authentication
+- ✅ **Semantic UI Hardening**: Dynamic CSS variable mapping for perfect theme-aware depth. 🆕
 
 ---
 

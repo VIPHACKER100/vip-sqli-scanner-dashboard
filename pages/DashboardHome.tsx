@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScanStats, ScanResult } from '../types';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from 'recharts';
-import { Activity, CheckCircle, AlertTriangle, ShieldCheck, Cpu, Target, Network, FileSearch, Terminal, Database, Globe } from 'lucide-react';
+import { Activity, CheckCircle, AlertTriangle, ShieldCheck, Cpu, Target, Network, FileSearch, Terminal, Database, Globe, ArrowUpRight } from 'lucide-react';
 
 interface DashboardHomeProps {
   stats: ScanStats;
@@ -11,153 +11,175 @@ interface DashboardHomeProps {
 }
 
 const StatCard = ({ title, value, icon: Icon, colorClass, bgClass, subtext }: any) => (
-  <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl p-6 shadow-xl dark:shadow-2xl transition-all hover:border-primary-500/30 group relative overflow-hidden transition-colors">
-    <div className={`absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform ${colorClass}`}>
-      <Icon size={100} />
-    </div>
+  <div className="modern-card p-6 group relative overflow-hidden">
     <div className="flex justify-between items-start relative z-10">
       <div>
-        <p className="text-slate-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 group-hover:text-primary-600 dark:group-hover:text-gray-300 transition-colors font-mono">{title}</p>
-        <h3 className="text-4xl font-bold text-slate-900 dark:text-white mb-1 tracking-tighter">{value}</h3>
-        {subtext && <p className="text-[10px] text-slate-400 dark:text-gray-400 font-mono group-hover:text-slate-500 dark:group-hover:text-gray-300 transition-colors uppercase tracking-widest">{subtext}</p>}
+        <p className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-[0.2em] mb-2 transition-colors">{title}</p>
+        <h3 className="text-4xl font-bold text-foreground mb-1 tracking-tight">{value.toLocaleString()}</h3>
+        {subtext && <p className="text-[10px] text-muted-foreground font-mono transition-colors uppercase tracking-wider">{subtext}</p>}
       </div>
-      <div className={`p-4 rounded-2xl ${bgClass} shadow-lg dark:shadow-xl transform transition-all duration-500 group-hover:rotate-6`}>
-        <Icon className={`w-6 h-6 ${colorClass}`} strokeWidth={1.5} />
+      <div className={`w-12 h-12 rounded-xl ${bgClass} flex items-center justify-center text-accent shadow-sm transform transition-all duration-500 group-hover:rotate-6 group-hover:scale-110`}>
+        <Icon size={24} className={colorClass} strokeWidth={2} />
       </div>
+    </div>
+    <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-between">
+      <span className="text-[9px] font-mono font-bold text-accent">OPERATIONAL</span>
+      <ArrowUpRight size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
     </div>
   </div>
 );
 
 const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, results, theme }) => {
   const isDark = theme === 'dark';
-  const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
-  const labelColor = isDark ? '#475569' : '#94a3b8';
-  const tooltipBg = isDark ? '#020617' : '#ffffff';
-  const tooltipBorder = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)';
+  const labelColor = isDark ? '#94A3B8' : '#64748B';
+  const tooltipBg = 'var(--card-elevated)';
+  const tooltipBorder = 'var(--border)';
   const progress = stats.total > 0 ? (stats.processed / stats.total) * 100 : 0;
   const isScanning = stats.total > 0 && stats.processed < stats.total;
-  const vulnerableResults = results.filter(r => r.verdict === 'VULNERABLE').slice(0, 3);
+  const vulnerableResults = results.filter(r => r.verdict === 'VULNERABLE').slice(0, 4);
 
   return (
-    <div className="space-y-8 reveal-up">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter italic transition-colors">Mission Intelligence Hub</h2>
-          <p className="text-gray-500 dark:text-gray-300 text-sm transition-colors">Real-time tactical metrics and high-value exfiltration telemetry.</p>
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      {/* Hero Section */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4">
+        <div className="space-y-4">
+          <div className="section-label">Command Center</div>
+          <h2 className="font-display text-5xl md:text-6xl text-foreground max-w-2xl leading-[1.1]">
+            Mission <span className="text-electric-gradient italic">Intelligence</span> Hub
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-xl">
+            Real-time tactical metrics and high-value exfiltration telemetry for active protocol execution.
+          </p>
         </div>
+        
         {isScanning && (
-          <div className="flex items-center gap-4 bg-primary-600/10 border border-primary-500/30 px-6 py-3 rounded-2xl shadow-2xl shadow-primary-600/10 backdrop-blur-md">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-primary-500"></span>
-            </span>
-            <span className="text-[11px] font-bold text-primary-200 tracking-widest uppercase font-mono">MISSION_PHASE::ACTIVE {Math.round(progress)}%</span>
+          <div className="flex items-center gap-5 bg-accent/5 border border-accent/20 px-6 py-4 rounded-2xl shadow-accent-sm backdrop-blur-md">
+            <div className="pulsing-dot" />
+            <div className="space-y-1">
+              <span className="text-[10px] font-mono font-bold text-accent tracking-[0.2em] uppercase block">Mission Phase: Active</span>
+              <div className="flex items-center gap-3">
+                <div className="h-1.5 w-32 bg-accent/10 rounded-full overflow-hidden border border-accent/10">
+                  <div className="h-full bg-accent transition-all duration-500" style={{ width: `${progress}%` }} />
+                </div>
+                <span className="text-xs font-mono font-bold text-foreground">{Math.round(progress)}%</span>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Target Workload" value={stats.total} subtext={`Processed: ${stats.processed}`} icon={Activity} colorClass="text-primary-400" bgClass="bg-primary-400/10" />
-        <StatCard title="Defenses Solid" value={stats.safe} subtext="Negative Findings" icon={ShieldCheck} colorClass="text-green-400" bgClass="bg-green-400/10" />
-        <StatCard title="Breaches Confirmed" value={stats.vulnerable} subtext="Exfiltration Active" icon={AlertTriangle} colorClass="text-red-400" bgClass="bg-red-400/10" />
-        <StatCard title="Anomalous Hits" value={stats.suspicious} subtext="ML Signal Hits" icon={CheckCircle} colorClass="text-purple-400" bgClass="bg-purple-400/10" />
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard title="Target Vectors" value={stats.total} subtext={`${stats.processed} Processed`} icon={Target} colorClass="text-accent" bgClass="bg-accent/10" />
+        <StatCard title="System Cleared" value={stats.safe} subtext="Negative Signals" icon={ShieldCheck} colorClass="text-emerald-500" bgClass="bg-emerald-500/10" />
+        <StatCard title="Breaches Active" value={stats.vulnerable} subtext="Critical Findings" icon={AlertTriangle} colorClass="text-rose-500" bgClass="bg-rose-500/10" />
+        <StatCard title="ML Anomalies" value={stats.suspicious} subtext="Signature Hits" icon={Activity} colorClass="text-violet-500" bgClass="bg-violet-500/10" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           {/* Chart Section */}
-          <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-xl dark:shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-              <Activity size={120} />
-            </div>
-            <div className="flex items-center justify-between mb-8 relative z-10">
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                  <Activity size={18} className="text-primary-500" />
-                  Operations Timeline
-                </h3>
-                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Real-time detection velocity baseline</p>
+          <div className="modern-card p-8">
+            <div className="flex items-center justify-between mb-10">
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold text-foreground">Operations Timeline</h3>
+                <p className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-widest">Real-time detection velocity baseline</p>
               </div>
-              <div className="flex gap-2">
-                <span className="px-2 py-1 bg-green-500/10 text-green-500 text-[9px] font-mono border border-green-500/20 rounded">SAFE</span>
-                <span className="px-2 py-1 bg-red-500/10 text-red-500 text-[9px] font-mono border border-red-500/20 rounded">VULN</span>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase">Stable</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-accent pulse-fast" />
+                  <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase">Critical</span>
+                </div>
               </div>
             </div>
-            <div className="h-64 relative z-10">
+            <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={scanHistory} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorVulnDash" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#0052FF" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#0052FF" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorSafeDash" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#10B981" stopOpacity={0.15} />
+                      <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
-                  <XAxis dataKey="time" stroke={labelColor} fontSize={10} tickLine={false} axisLine={false} dy={10} />
+                  <XAxis dataKey="time" stroke={labelColor} fontSize={10} tickLine={false} axisLine={false} dy={10} fontStyle="italic" />
                   <YAxis stroke={labelColor} fontSize={10} tickLine={false} axisLine={false} />
-                  <Tooltip contentStyle={{ backgroundColor: tooltipBg, borderColor: tooltipBorder, borderRadius: '1rem', boxShadow: isDark ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 25px 50px -12px rgba(0, 0, 0, 0.1)' }} />
-                  <Area type="monotone" dataKey="vulnerable" stroke="#ef4444" strokeWidth={3} fill="url(#colorVulnDash)" />
-                  <Area type="monotone" dataKey="safe" stroke="#22c55e" strokeWidth={3} fill="url(#colorSafeDash)" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: tooltipBg, 
+                      borderColor: tooltipBorder, 
+                      borderRadius: '1rem', 
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                      fontSize: '12px',
+                      fontWeight: '700'
+                    }} 
+                  />
+                  <Area type="monotone" dataKey="vulnerable" stroke="#0052FF" strokeWidth={4} fill="url(#colorVulnDash)" animationDuration={2000} />
+                  <Area type="monotone" dataKey="safe" stroke="#10B981" strokeWidth={3} fill="url(#colorSafeDash)" strokeDasharray="6 6" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          {/* High-Value Intelligence Feed */}
-          <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl dark:shadow-2xl">
-            <div className="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] flex justify-between items-center">
-              <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                <Terminal size={18} className="text-red-500" />
-                Critical Intelligence Matrix
-              </h3>
+          {/* Intelligence Feed */}
+          <div className="modern-card overflow-hidden">
+            <div className="p-6 border-b border-border bg-muted/30 flex justify-between items-center">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500">
+                  <Terminal size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-foreground">Critical Intelligence Matrix</h3>
+                  <p className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-widest">High-value breach telemetry</p>
+                </div>
+              </div>
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-2">
-                  {[1, 2, 3].map(i => <div key={i} className="w-5 h-5 rounded-full border-2 border-gray-900 bg-gray-800 flex items-center justify-center text-[7px] font-bold text-gray-500">{i}</div>)}
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="w-6 h-6 rounded-full border-2 border-background bg-muted flex items-center justify-center text-[8px] font-bold text-muted-foreground">
+                      {i}
+                    </div>
+                  ))}
                 </div>
-                <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Live Exfiltration</span>
+                <span className="text-[10px] font-mono font-bold text-accent uppercase tracking-widest pulsing-dot">Active</span>
               </div>
             </div>
-            <div className="p-4">
+            <div className="p-6">
               {vulnerableResults.length > 0 ? (
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {vulnerableResults.map((vuln) => (
-                    <div key={vuln.id} className="group p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.04] hover:border-red-500/20 transition-all flex items-center justify-between">
-                      <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <div className="p-2.5 bg-red-600/10 rounded-xl border border-red-500/20 text-red-500 group-hover:scale-110 transition-transform shrink-0">
-                          <ShieldCheck size={18} />
+                    <div key={vuln.id} className="group p-4 bg-card border border-border rounded-2xl hover:border-accent/40 transition-all flex flex-col gap-4 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div className="p-2 bg-rose-500/10 rounded-lg text-rose-500">
+                          <ShieldCheck size={16} />
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs font-mono text-primary-400 truncate mb-1">{vuln.url}</p>
-                          <div className="flex items-center gap-3">
-                            <span className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">MySQL v8.0</span>
-                            <div className="w-1 h-1 rounded-full bg-gray-700"></div>
-                            <span className="text-[9px] font-mono text-green-500 uppercase">Authenticated</span>
-                          </div>
-                        </div>
+                        <span className="text-[10px] font-mono font-bold text-rose-500">EXFILTRATED</span>
                       </div>
-                      <div className="flex items-center gap-6 shrink-0">
-                        <div className="text-right">
-                          <p className="text-[9px] font-bold text-gray-400 uppercase mb-0.5 tracking-tighter">Confidence</p>
-                          <p className="text-xs font-mono text-purple-400 font-bold">{(vuln.mlConfidence! * 100).toFixed(1)}%</p>
+                      <div className="space-y-1">
+                        <p className="text-xs font-mono font-bold text-foreground truncate">{vuln.url}</p>
+                        <div className="flex items-center gap-3">
+                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Heuristic Sync</span>
+                          <span className="text-[9px] font-mono text-accent font-bold">{(vuln.mlConfidence! * 100).toFixed(1)}% Match</span>
                         </div>
-                        <button
-                          onClick={() => (window as any).setPage('results')}
-                          className="p-2 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition-colors"
-                        >
-                          <FileSearch size={16} className="text-gray-400" />
-                        </button>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="py-20 text-center opacity-40">
-                  <AlertTriangle size={32} className="mx-auto text-gray-600 mb-4" />
-                  <p className="text-xs text-gray-500 font-bold uppercase tracking-[0.2em]">Passive Monitoring Active :: No Critical Hits</p>
+                <div className="py-20 text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto text-muted-foreground">
+                    <AlertTriangle size={32} />
+                  </div>
+                  <p className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">Passive Monitoring Active :: No Critical Hits</p>
                 </div>
               )}
             </div>
@@ -165,61 +187,55 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
         </div>
 
         <div className="space-y-8">
-          {/* Tactical Statistics */}
-          <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-xl dark:shadow-2xl flex flex-col group relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:rotate-12 transition-transform">
-              <Database size={120} />
+          {/* Engineering precision */}
+          <div className="modern-card p-8 flex flex-col group relative overflow-hidden h-[420px]">
+            <div className="absolute -right-10 -top-10 text-accent opacity-5 group-hover:scale-125 transition-transform duration-1000">
+              <Cpu size={240} />
             </div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-8 flex items-center gap-3 relative z-10">
-              <Cpu size={18} className="text-primary-500" />
+            <h3 className="text-lg font-bold text-foreground mb-10 flex items-center gap-3 relative z-10 font-display italic">
+              <Cpu size={18} className="text-accent" />
               Telemetric Precision
             </h3>
-            <div className="space-y-6 flex-1 flex flex-col justify-center relative z-10">
+            <div className="space-y-8 flex-1 flex flex-col justify-center relative z-10">
               {[
-                { label: "Engine Throughput", value: isScanning ? 88 : 0, color: "bg-primary-500", icon: Activity },
-                { label: "WAF Evasion Mean", value: isScanning ? 94 : 100, color: "bg-green-500", icon: Globe },
-                { label: "ML Diff Accuracy", value: isScanning ? 91 : 0, color: "bg-purple-500", icon: Cpu },
-                { label: "Extraction Load", value: isScanning ? 42 : 5, color: "bg-amber-500", icon: Database }
+                { label: "Engine Throughput", value: isScanning ? 88 : 0, color: "bg-accent", icon: Activity },
+                { label: "WAF Evasion Mean", value: isScanning ? 94 : 100, color: "bg-emerald-500", icon: Globe },
+                { label: "ML Signal Sync", value: isScanning ? 91 : 0, color: "bg-violet-500", icon: Cpu },
+                { label: "Storage Capacity", value: 42, color: "bg-amber-500", icon: Database }
               ].map((item, idx) => (
                 <div key={idx} className="space-y-3">
-                  <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-[0.1em] text-gray-500 group-hover:text-gray-400 transition-colors">
-                    <span className="flex items-center gap-2 text-gray-300">
-                      <item.icon size={12} className="text-gray-700" />
+                  <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                    <span className="flex items-center gap-2">
+                      <item.icon size={12} className="text-accent" />
                       {item.label}
                     </span>
-                    <span className="text-gray-200 font-mono tracking-tighter">{item.value}%</span>
+                    <span className="text-foreground font-bold">{item.value}%</span>
                   </div>
-                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden p-[1px] border border-white/[0.02]">
+                  <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden border border-border/50">
                     <div
-                      className={`h-full ${item.color} rounded-full transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(139,92,246,0.3)]`}
+                      className={`h-full ${item.color} rounded-full transition-all duration-1000 ease-out shadow-accent-sm`}
                       style={{ width: `${item.value}%` }}
                     />
                   </div>
                 </div>
               ))}
             </div>
-            <div className="mt-8 pt-8 border-t border-white/5 grid grid-cols-2 gap-4 relative z-10">
-              <div>
-                <p className="text-[9px] font-bold text-gray-600 uppercase mb-1">State</p>
-                <span className={`text-xs font-bold ${isScanning ? 'text-primary-400' : 'text-gray-500'} font-mono`}>{isScanning ? 'MISSION_ACTIVE' : 'READY_STANDBY'}</span>
+            <div className="mt-10 pt-6 border-t border-border flex items-center justify-between relative z-10">
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${isScanning ? 'bg-accent pulsing-dot' : 'bg-muted'}`} />
+                <span className="text-[10px] font-mono font-bold text-foreground">{isScanning ? 'MISSION_ACTIVE' : 'READY_STANDBY'}</span>
               </div>
-              <div className="text-right">
-                <p className="text-[9px] font-bold text-gray-600 uppercase mb-1">Uptime</p>
-                <span className="text-xs text-gray-400 font-mono tracking-tighter italic">07:24:12</span>
-              </div>
+              <span className="text-[10px] text-muted-foreground font-mono font-bold">07:24:12</span>
             </div>
           </div>
 
-          {/* Tactical Node Explorer */}
-          <div className="bg-white dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-3xl p-8 shadow-xl dark:shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:scale-110 transition-transform">
-              <Network size={120} />
-            </div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-8 flex items-center gap-3 relative z-10">
-              <Target size={18} className="text-red-500" />
-              Target Vector Map
+          {/* Node Explorer */}
+          <div className="modern-card p-8">
+            <h3 className="text-lg font-bold text-foreground mb-8 flex items-center gap-3 font-display italic">
+              <Target size={18} className="text-rose-500" />
+              Vector Intelligence Map
             </h3>
-            <div className="grid grid-cols-4 gap-3 relative z-10 h-32">
+            <div className="grid grid-cols-4 gap-3 h-32 mb-10">
               {Array.from({ length: 12 }).map((_, i) => {
                 const isNodeVuln = results[i]?.verdict === 'VULNERABLE';
                 const isNodeSafe = results[i]?.verdict === 'SAFE';
@@ -228,16 +244,16 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
                 return (
                   <div
                     key={i}
-                    className={`aspect-square rounded-xl border transition-all duration-500 relative group/node ${isNodeVuln ? 'bg-red-500/20 border-red-500 animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.3)]' :
-                      isNodeSafe ? 'bg-green-500/10 border-green-500/30' :
-                        isNodeLoading ? 'bg-primary-500/10 border-primary-500/30 animate-pulse' :
-                          'bg-gray-200/50 dark:bg-white/5 border-gray-300 dark:border-white/5'
-                      }`}
+                    className={`aspect-square rounded-xl border-2 transition-all duration-500 relative group/node ${
+                      isNodeVuln ? 'bg-rose-500/10 border-rose-500 shadow-md shadow-rose-500/20 pulse-fast' :
+                      isNodeSafe ? 'bg-emerald-500/5 border-emerald-500/30' :
+                      isNodeLoading ? 'bg-accent/5 border-accent/20 animate-pulse' :
+                      'bg-card border-border'
+                    }`}
                   >
                     {results[i] && (
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-[8px] font-mono rounded-lg opacity-0 group-hover/node:opacity-100 transition-opacity whitespace-nowrap z-30 pointer-events-none shadow-2xl border border-white/10">
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-slate-900 text-white text-[9px] font-mono font-bold rounded-lg opacity-0 group-hover/node:opacity-100 transition-opacity whitespace-nowrap z-30 pointer-events-none shadow-xl">
                         {results[i].url}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-gray-900"></div>
                       </div>
                     )}
                   </div>
@@ -245,68 +261,30 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ stats, scanHistory, resul
               })}
             </div>
 
-            <div className="mt-8 border-t border-white/5 pt-8 relative z-10">
-              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6">Extraction Heuristics</p>
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart cx="50%" cy="50%" outerRadius="80%" data={[
-                    { subject: 'Stealth', A: 120, fullMark: 150 },
-                    { subject: 'Precision', A: 130, fullMark: 150 },
-                    { subject: 'Bypass', A: 140, fullMark: 150 },
-                    { subject: 'Velocity', A: 90, fullMark: 150 },
-                    { subject: 'Extraction', A: 110, fullMark: 150 },
-                  ]}>
-                    <PolarGrid stroke={gridColor} />
-                    <PolarAngleAxis dataKey="subject" tick={{ fill: labelColor, fontSize: 8, fontWeight: 'bold' }} />
-                    <Radar name="Engine" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.2} />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
+            <div className="h-56 mt-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={[
+                  { subject: 'Stealth', A: 120, fullMark: 150 },
+                  { subject: 'Precision', A: 130, fullMark: 150 },
+                  { subject: 'Bypass', A: 140, fullMark: 150 },
+                  { subject: 'Velocity', A: 90, fullMark: 150 },
+                  { subject: 'Extraction', A: 110, fullMark: 150 },
+                ]}>
+                  <PolarGrid stroke={gridColor} />
+                  <PolarAngleAxis dataKey="subject" tick={{ fill: labelColor, fontSize: 9, fontWeight: '800' }} />
+                  <Radar name="Engine" dataKey="A" stroke="#0052FF" fill="#0052FF" fillOpacity={0.1} strokeWidth={3} />
+                </RadarChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Mission Critical Call to Action */}
           <button
             onClick={() => (window as any).setPage('new_scan')}
-            className="w-full py-5 bg-primary-600 hover:bg-primary-500 text-white rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-xl dark:shadow-2xl shadow-primary-600/20 dark:shadow-primary-600/30 active:scale-95 group overflow-hidden relative"
+            className="btn-primary w-full h-16 shadow-accent-lg"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-            <span className="relative z-10 flex items-center justify-center gap-3">
-              <Target size={18} fill="currentColor" />
-              Infiltrate New Vector
-            </span>
+            <Target size={20} fill="currentColor" />
+            Infiltrate New Vector
           </button>
-
-          {/* Live Mission Logs */}
-          <div className="bg-slate-50 dark:bg-gray-950/40 border border-slate-200 dark:border-white/5 rounded-[32px] p-6 shadow-inner group transition-colors">
-            <div className="flex items-center justify-between mb-4 px-2">
-              <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] flex items-center gap-2">
-                <Terminal size={12} className="text-primary-500" />
-                Mission_Log::Live
-              </span>
-              <div className="h-px flex-1 mx-4 bg-white/[0.03]"></div>
-              <span className="text-[8px] font-mono text-gray-700 uppercase">FEED_0x3A</span>
-            </div>
-            <div className="space-y-3 max-h-48 overflow-y-auto scrollbar-hide">
-              {results.slice(0, 5).map((log, i) => (
-                <div key={log.id} className="flex items-center justify-between text-[9px] font-mono border-b border-white/[0.02] pb-2 last:border-0 hover:bg-white/[0.02] transition-colors px-2">
-                  <div className="flex items-center gap-3 truncate">
-                    <span className="text-gray-700">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
-                    <span className={`font-bold ${log.verdict === 'VULNERABLE' ? 'text-red-500' : 'text-gray-500'}`}>
-                      {log.verdict === 'VULNERABLE' ? 'CRIT::BREACH' : 'INFO::CLEARED'}
-                    </span>
-                    <span className="text-gray-600 truncate opacity-60">» {log.url}</span>
-                  </div>
-                  <span className="text-primary-500/40 font-black shrink-0">0x{log.id.slice(0, 4)}</span>
-                </div>
-              ))}
-              {results.length === 0 && (
-                <div className="py-4 text-center text-[9px] font-black text-gray-800 uppercase tracking-widest italic">
-                  Waiting for Mission Deployment...
-                </div>
-              )}
-            </div>
-          </div>
         </div>
       </div>
     </div>

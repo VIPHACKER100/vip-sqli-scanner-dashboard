@@ -20,31 +20,31 @@ interface ResultsProps {
 const VerdictBadge: React.FC<{ verdict: string }> = ({ verdict }) => {
   const map: Record<string, { label: string; cls: string; Icon: React.FC<any> }> = {
     VULNERABLE: {
-      label: 'Breach',
-      cls: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20 shadow-red-500/5',
+      label: 'BREACH',
+      cls: 'bg-rose-500/10 text-rose-600 border-rose-500/20',
       Icon: ShieldOff,
     },
     SUSPICIOUS: {
-      label: 'Anomalous',
-      cls: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 shadow-amber-500/5',
+      label: 'ANOMALY',
+      cls: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
       Icon: ShieldAlert,
     },
     SAFE: {
-      label: 'Cleared',
-      cls: 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20 shadow-green-500/5',
+      label: 'SECURE',
+      cls: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
       Icon: ShieldCheck,
     },
   };
   const cfg = map[verdict] ?? {
-    label: 'Unknown',
-    cls: 'bg-slate-500/10 text-slate-500 dark:text-slate-400 border-slate-500/20',
+    label: 'UNKNOWN',
+    cls: 'bg-slate-500/10 text-slate-500 border-slate-500/20',
     Icon: AlertOctagon,
   };
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black border uppercase tracking-[0.15em] shadow-lg ${cfg.cls} ${verdict === 'VULNERABLE' ? 'animate-pulse vuln-glow-pulse' : ''}`}
+      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black border uppercase tracking-[0.2em] shadow-sm ${cfg.cls} ${verdict === 'VULNERABLE' ? 'pulse-fast' : ''}`}
     >
-      <cfg.Icon size={10} strokeWidth={2.5} />
+      <cfg.Icon size={10} strokeWidth={3} />
       {cfg.label}
     </span>
   );
@@ -54,24 +54,21 @@ const VerdictBadge: React.FC<{ verdict: string }> = ({ verdict }) => {
 const RiskBar: React.FC<{ verdict: string; confidence?: number }> = ({ verdict, confidence }) => {
   const pct = verdict === 'VULNERABLE' ? 100 : verdict === 'SUSPICIOUS' ? 55 : 8;
   const color =
-    verdict === 'VULNERABLE' ? '#ef4444' : verdict === 'SUSPICIOUS' ? '#f59e0b' : '#10b981';
+    verdict === 'VULNERABLE' ? '#F43F5E' : verdict === 'SUSPICIOUS' ? '#F59E0B' : '#10B981';
   return (
-    <div className="flex flex-col items-end gap-1.5">
+    <div className="flex flex-col items-end gap-1.5 group">
       <span
-        className="text-[9px] font-black font-mono uppercase tracking-wider"
+        className="text-[10px] font-mono font-bold uppercase tracking-wider transition-colors"
         style={{ color }}
       >
         {confidence ? `${(confidence * 100).toFixed(1)}%` : verdict === 'VULNERABLE' ? '99.8%' : verdict === 'SUSPICIOUS' ? '54.3%' : '1.2%'}
       </span>
-      <div className="relative h-1 w-28 bg-black/5 dark:bg-black/40 rounded-full overflow-hidden border border-black/5 dark:border-white/5">
+      <div className="relative h-1 w-24 bg-muted rounded-full overflow-hidden border border-border/50">
         <div
-          className="absolute inset-y-0 left-0 rounded-full transition-all duration-700"
-          style={{ width: `${pct}%`, background: color, boxShadow: `0 0 8px ${color}60` }}
+          className="absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ease-out"
+          style={{ width: `${pct}%`, background: color }}
         />
       </div>
-      <span className="text-[8px] text-slate-400 dark:text-gray-500 uppercase tracking-widest font-mono">
-        {verdict === 'VULNERABLE' ? 'High_Risk' : verdict === 'SUSPICIOUS' ? 'Monitor' : 'Cleared'}
-      </span>
     </div>
   );
 };
@@ -79,41 +76,35 @@ const RiskBar: React.FC<{ verdict: string; confidence?: number }> = ({ verdict, 
 // ─── Stat Card ───────────────────────────────────────────────────────────────
 const StatCard: React.FC<{
   label: string; value: string | number; sub?: string;
-  color: string; Icon: React.FC<any>; pulse?: boolean;
-}> = ({ label, value, sub, color, Icon, pulse }) => (
-  <div className="relative flex items-center gap-4 px-6 py-5 bg-[#f8fafc] dark:bg-gray-900/40 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[28px] overflow-hidden group hover:border-primary-500/30 transition-all shadow-xl dark:shadow-2xl">
-    <div
-      className={`absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform`}
-      style={{ color }}
-    >
-      <Icon size={100} />
+  colorClass: string; bgClass: string; Icon: React.FC<any>;
+}> = ({ label, value, sub, colorClass, bgClass, Icon }) => (
+  <div className="modern-card p-6 flex flex-col group relative overflow-hidden">
+    <div className="flex justify-between items-start relative z-10">
+      <div>
+        <p className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-[0.2em] mb-2 transition-colors">{label}</p>
+        <h3 className={`text-4xl font-bold text-foreground mb-1 tracking-tight ${value === 0 ? 'text-muted-foreground' : ''}`}>{value.toLocaleString()}</h3>
+        {sub && <p className="text-[10px] text-muted-foreground font-mono transition-colors uppercase tracking-wider">{sub}</p>}
+      </div>
+      <div className={`w-12 h-12 rounded-xl ${bgClass} flex items-center justify-center shadow-sm transform transition-all duration-500 group-hover:rotate-6 group-hover:scale-110`}>
+        <Icon size={24} className={colorClass} strokeWidth={2} />
+      </div>
     </div>
-    <div
-      className={`p-4 rounded-2xl relative z-10 transition-all duration-500 group-hover:rotate-6 ${pulse ? 'animate-pulse' : ''}`}
-      style={{ background: `${color}15` }}
-    >
-      <Icon size={24} style={{ color }} strokeWidth={1.5} />
-    </div>
-    <div className="flex-1 min-w-0 relative z-10">
-      <p className="text-[10px] font-bold text-slate-400 dark:text-gray-500 uppercase tracking-widest mb-1 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors font-mono">{label}</p>
-      <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tighter" style={{ color: value === 0 ? '#94a3b8' : undefined }}>{value}</h3>
-      {sub && <p className="text-[10px] text-slate-400 dark:text-gray-500 mt-1 uppercase tracking-widest font-mono group-hover:text-slate-600 dark:group-hover:text-gray-400 transition-colors">{sub}</p>}
+    <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-between">
+      <span className="text-[9px] font-mono font-bold text-accent">FORENSIC_SYNC</span>
+      <ArrowUpRight size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
     </div>
   </div>
 );
 
 // ─── Section Header ──────────────────────────────────────────────────────────
-const SectionHead: React.FC<{ icon: React.FC<any>; label: string; color?: string }> = ({
-  icon: Icon, label, color = '#0ea5e9',
+const SectionHead: React.FC<{ icon: React.FC<any>; label: string; accentClass?: string }> = ({
+  icon: Icon, label, accentClass = 'text-accent',
 }) => (
-  <div className="flex items-center gap-2.5 mb-4 px-1">
-    <div className="p-1.5 rounded-lg" style={{ background: `${color}15` }}>
-      <Icon size={13} style={{ color }} />
+  <div className="flex items-center gap-3 mb-4 px-1">
+    <div className={`p-2 rounded-xl bg-accent/10 ${accentClass}`}>
+      <Icon size={16} strokeWidth={2.5} />
     </div>
-    <span
-      className="text-[10px] font-black uppercase tracking-[0.3em] font-mono"
-      style={{ color: `${color}` }}
-    >
+    <span className={`text-[10px] font-black uppercase tracking-[0.25em] font-mono ${accentClass}`}>
       {label}
     </span>
   </div>
@@ -125,10 +116,10 @@ const CopyBtn: React.FC<{ text: string }> = ({ text }) => {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-      className={`p-2.5 rounded-xl border transition-all active:scale-95 text-xs ${copied ? 'bg-green-500/10 border-green-500/30 text-green-400' : 'bg-white/5 border-white/10 text-gray-500 hover:text-white hover:border-white/20'}`}
+      className={`p-2.5 rounded-xl border transition-all active:scale-95 text-xs ${copied ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' : 'bg-background border-border text-muted-foreground hover:text-accent hover:border-accent/30 shadow-sm'}`}
       title="Copy to Clipboard"
     >
-      {copied ? <Check size={14} /> : <Copy size={14} />}
+      {copied ? <Check size={14} strokeWidth={3} /> : <Copy size={14} strokeWidth={2.5} />}
     </button>
   );
 };
@@ -137,10 +128,10 @@ const CopyBtn: React.FC<{ text: string }> = ({ text }) => {
 const TimelineRow: React.FC<{ time: string; tag: string; desc: string; tagCls: string }> = ({
   time, tag, desc, tagCls,
 }) => (
-  <div className="flex items-start gap-3 py-3.5 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.01] transition-colors rounded-lg px-2">
-    <span className="font-mono text-[10px] text-gray-600 min-w-[60px] mt-0.5 tracking-tighter">{time}</span>
-    <span className={`text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider min-w-[52px] text-center ${tagCls}`}>{tag}</span>
-    <span className="text-[11px] text-gray-400 leading-tight font-medium">{desc}</span>
+  <div className="flex items-start gap-4 py-4 border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors px-2 rounded-xl">
+    <span className="font-mono text-[10px] text-muted-foreground min-w-[70px] mt-1 font-bold tracking-tighter">{time}</span>
+    <span className={`text-[8px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider min-w-[65px] text-center shadow-sm ${tagCls}`}>{tag}</span>
+    <span className="text-[12px] text-foreground leading-tight font-medium">{desc}</span>
   </div>
 );
 
@@ -150,22 +141,12 @@ const ExportBtn: React.FC<{
 }> = ({ label, color, Icon, onClick }) => (
   <button
     onClick={onClick}
-    className="flex items-center gap-2.5 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border transition-all active:scale-95 hover:scale-[1.02] shadow-lg shadow-black/20"
+    className="flex items-center gap-3 px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border transition-all active:scale-95 hover:scale-[1.02] shadow-sm hover:shadow-lg backdrop-blur-md"
     style={{
-      background: `${color}10`, borderColor: `${color}25`, color,
-    }}
-    onMouseEnter={e => {
-      (e.currentTarget as HTMLElement).style.background = color;
-      (e.currentTarget as HTMLElement).style.color = '#fff';
-      (e.currentTarget as HTMLElement).style.boxShadow = `0 10px 20px -5px ${color}40`;
-    }}
-    onMouseLeave={e => {
-      (e.currentTarget as HTMLElement).style.background = `${color}10`;
-      (e.currentTarget as HTMLElement).style.color = color;
-      (e.currentTarget as HTMLElement).style.boxShadow = '0 10px 20px -5px rgba(0,0,0,0.2)';
+      background: `${color}10`, borderColor: `${color}30`, color,
     }}
   >
-    <Icon size={14} />
+    <Icon size={14} strokeWidth={3} />
     {label}
   </button>
 );
@@ -204,7 +185,7 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
     );
 
   const handleExportTxt = () => {
-    let out = `ADVANCED SQL INJECTION SCANNER v2.2\n${'='.repeat(50)}\n\n`;
+    let out = `VIP SQL INJECTION SCANNER v2.2\n${'='.repeat(50)}\n\n`;
     results.forEach((r, i) => (out += `[${i + 1}] ${r.verdict}\nURL: ${r.url}\n${r.details ?? ''}\n\n`));
     exportBlob(out, 'text/plain', `VIP_Report_${Date.now()}.txt`);
   };
@@ -213,16 +194,16 @@ const Results: React.FC<ResultsProps> = ({ results }) => {
     const ts = new Date().toLocaleString();
     exportBlob(
       `<!DOCTYPE html><html><head><title>VIP Forensic Report</title>
-<style>body{font-family:monospace;background:#020617;color:#e2e8f0;padding:40px}
-h1{color:#38bdf8;text-transform:uppercase}
-.item{border:1px solid #1e293b;border-radius:12px;padding:20px;margin:16px 0}
-.VULNERABLE{border-left:4px solid #ef4444}.SUSPICIOUS{border-left:4px solid #f59e0b}.SAFE{border-left:4px solid #10b981}
-pre{background:#0f172a;padding:12px;border-radius:8px;font-size:11px;overflow-x:auto;color:#94a3b8}
+<style>body{font-family:Inter,sans-serif;background:#fafafa;color:#000;padding:40px}
+h1{color:#0052ff;text-transform:uppercase;font-family:Calistoga}
+.item{border:2px solid #eee;border-radius:24px;padding:32px;margin:24px 0;background:white}
+.VULNERABLE{border-left:8px solid #f43f5e}.SUSPICIOUS{border-left:8px solid #f59e0b}.SAFE{border-left:8px solid #10b981}
+pre{background:#f1f5f9;padding:16px;border-radius:12px;font-size:12px;overflow-x:auto;color:#475569;border:1px solid #e2e8f0}
 </style></head><body>
-<h1>Forensic Intelligence Report</h1><p style="color:#475569">${ts}</p>
+<h1>Forensic Intelligence Report</h1><p style="color:#64748b;font-weight:bold">${ts}</p>
 ${results.map((r, i) => `<div class="item ${r.verdict}">
-<b style="font-size:10px;text-transform:uppercase;letter-spacing:2px">#${i + 1} [${r.verdict}]</b>
-<p style="font-size:12px;word-break:break-all;color:#38bdf8">${r.url}</p>
+<b style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#0052ff">FINDING_#${i + 1} [${r.verdict}]</b>
+<p style="font-size:16px;word-break:break-all;color:#000;font-weight:bold">${r.url}</p>
 <pre>${r.details ?? 'N/A'}</pre></div>`).join('')}
 </body></html>`,
       'text/html',
@@ -233,67 +214,67 @@ ${results.map((r, i) => `<div class="item ${r.verdict}">
   const handleExportPdf = () => {
     const doc = new jsPDF();
     const ts = new Date().toLocaleString();
-    doc.setFillColor(2, 6, 23);
-    doc.rect(0, 0, 210, 38, 'F');
+    doc.setFillColor(0, 82, 255);
+    doc.rect(0, 0, 210, 40, 'F');
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(14);
-    doc.text('VIP SQLi SCANNER — FORENSIC REPORT', 14, 16);
-    doc.setFontSize(9);
-    doc.text(`Generated: ${ts}`, 14, 28);
+    doc.setFontSize(16);
+    doc.text('VIP SQLi SCANNER — FORENSIC REPORT', 14, 18);
+    doc.setFontSize(10);
+    doc.text(`MISSION TIMESTAMP: ${ts}`, 14, 28);
     autoTable(doc, {
-      startY: 46,
-      head: [['Metric', 'Value']],
+      startY: 50,
+      head: [['TACTICAL METRIC', 'VALUE']],
       body: [
-        ['Total Targets', results.length.toString()],
-        ['Breaches', { content: vuln.length.toString(), styles: { textColor: [239, 68, 68], fontStyle: 'bold' } }],
-        ['Suspicious', { content: susp.length.toString(), styles: { textColor: [245, 158, 11] } }],
-        ['Safe', safe.length.toString()],
-        ['Engine', 'v2.2.4-STABLE::XNODE'],
+        ['Total Vectors Analyzed', results.length.toString()],
+        ['Confirmed Breaches', { content: vuln.length.toString(), styles: { textColor: [244, 63, 94], fontStyle: 'bold' } }],
+        ['Anomalous Findings', { content: susp.length.toString(), styles: { textColor: [245, 158, 11] } }],
+        ['Secure Baselines', safe.length.toString()],
+        ['Engine Implementation', 'v2.2.4-STABLE::XNODE_PRIME'],
       ],
       theme: 'grid',
-      headStyles: { fillColor: [15, 23, 42] },
+      headStyles: { fillColor: [0, 82, 255] },
     });
     autoTable(doc, {
-      startY: (doc as any).lastAutoTable.finalY + 14,
-      head: [['#', 'Verdict', 'URL', 'Intelligence']],
+      startY: (doc as any).lastAutoTable.finalY + 15,
+      head: [['ID', 'SIGNATURE', 'TARGET VECTOR', 'INTELLIGENCE BRIEF']],
       body: results.map((r, i) => [
         i + 1,
         r.verdict,
         r.url,
-        r.details?.substring(0, 90) ?? 'N/A',
+        r.details?.substring(0, 80) ?? 'N/A',
       ]),
-      styles: { fontSize: 7.5 },
-      headStyles: { fillColor: [15, 23, 42] },
-      columnStyles: { 1: { fontStyle: 'bold', cellWidth: 26 } },
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [0, 82, 255] },
+      columnStyles: { 1: { fontStyle: 'bold', cellWidth: 30 } },
     });
-    doc.save(`VIP_Forensic_${new Date().toISOString().slice(0, 10)}.pdf`);
+    doc.save(`VIP_Audit_${new Date().toISOString().slice(0, 10)}.pdf`);
   };
 
   const renderExpanded = (r: ScanResult) => {
     const tabs: { key: typeof activeTab; label: string; Icon: React.FC<any> }[] = [
       { key: 'forensic', label: 'Forensic Log', Icon: TerminalIcon },
-      { key: 'intel', label: 'Exfiltrated Intel', Icon: Database },
-      { key: 'timeline', label: 'Attack Timeline', Icon: Clock },
+      { key: 'intel', label: 'Intel Matrix', Icon: Database },
+      { key: 'timeline', label: 'Mission Clock', Icon: Clock },
     ];
 
     return (
-      <tr className="bg-black/[0.03] dark:bg-black/40">
+      <tr className="bg-muted/10 border-x-4 border-accent">
         <td colSpan={4} className="px-10 py-0">
-          <div className="py-12 space-y-10 reveal-up border-x border-slate-100 dark:border-white/5">
+          <div className="py-12 space-y-10 reveal-up">
 
             {/* Tab Bar */}
-            <div className="flex items-center gap-1.5 p-1.5 bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 rounded-2xl w-fit backdrop-blur-md shadow-inner">
+            <div className="flex items-center gap-1.5 p-1.5 bg-card border border-border rounded-2xl w-fit shadow-sm">
               {tabs.map(t => (
                 <button
                   key={t.key}
                   onClick={() => setActiveTab(t.key)}
-                  className={`flex items-center gap-2.5 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                  className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                     activeTab === t.key
-                      ? 'bg-primary-600 text-white shadow-xl shadow-primary-600/20'
-                      : 'text-slate-500 dark:text-gray-500 hover:text-primary-600 dark:hover:text-gray-300 hover:bg-white/5'
+                      ? 'bg-accent text-white shadow-accent-sm'
+                      : 'text-muted-foreground hover:text-accent hover:bg-accent/5'
                   }`}
                 >
-                  <t.Icon size={13} />
+                  <t.Icon size={14} strokeWidth={2.5} />
                   {t.label}
                 </button>
               ))}
@@ -303,53 +284,42 @@ ${results.map((r, i) => `<div class="item ${r.verdict}">
             {activeTab === 'forensic' && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 {/* Left: Scan Report */}
-                <div className="space-y-4">
-                  <SectionHead icon={TerminalIcon} label="Operational Forensic Log" color="#0ea5e9" />
-                  <div className="relative rounded-[32px] bg-[#020617] border border-white/5 overflow-hidden shadow-2xl group/term">
-                    <div className="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-white/[0.02]">
+                <div className="space-y-4 h-full">
+                  <SectionHead icon={TerminalIcon} label="Forensic Operation Output" />
+                  <div className="modern-card overflow-hidden h-[500px] flex flex-col bg-[var(--terminal-bg)] border-border">
+                    <div className="flex items-center gap-3 px-6 py-4 border-b border-white/10 bg-white/5">
                       <div className="flex gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-red-500/40" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500/40" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-green-500/40" />
+                        <span className="w-2 h-2 rounded-full bg-rose-500/60" />
+                        <span className="w-2 h-2 rounded-full bg-amber-500/60" />
+                        <span className="w-2 h-2 rounded-full bg-emerald-500/60" />
                       </div>
-                      <span className="text-[10px] font-mono text-gray-500 ml-2 tracking-tighter uppercase opacity-60">forensic_intelligence::xnode_bash</span>
-                      <div className="ml-auto opacity-0 group-hover/term:opacity-100 transition-opacity"><CopyBtn text={r.details ?? ''} /></div>
+                      <span className="text-[10px] font-mono text-gray-500 ml-2 tracking-widest uppercase font-bold">XNODE://PROTOCOL_DUMP</span>
+                      <div className="ml-auto opacity-0 hover:opacity-100"><CopyBtn text={r.details ?? ''} /></div>
                     </div>
-                    <div className="p-8 font-technical text-[12px] leading-relaxed space-y-4 text-slate-400 dark:text-gray-400">
-                      <p><span className="text-slate-500 dark:text-gray-600 tracking-tighter mr-2">$</span> <span className="text-primary-500 dark:text-primary-400">sqli-mission-scan</span> <span className="text-slate-500 dark:text-gray-500 break-all bg-black/5 dark:bg-white/[0.03] px-2 py-0.5 rounded italic">{r.url}</span></p>
-                      <p><span className="text-slate-500 dark:text-gray-600 uppercase text-[10px] font-black mr-2 tracking-widest">VERDICT::</span> <span className={`${r.verdict === 'VULNERABLE' ? 'text-red-500 dark:text-red-400 font-black animate-pulse' : r.verdict === 'SUSPICIOUS' ? 'text-amber-500 dark:text-amber-400 font-black' : 'text-green-500 dark:text-green-400 font-black'} uppercase`}>{r.verdict === 'VULNERABLE' ? 'CRITICAL_BREACH' : r.verdict === 'SUSPICIOUS' ? 'ANOMALOUS_VARIANCE' : 'SECURE_BASELINE'}</span></p>
+                    <div className="p-8 font-mono text-[12px] leading-relaxed space-y-6 text-gray-400 overflow-y-auto">
+                      <p><span className="text-gray-600 mr-2">$</span> <span className="text-accent">vip-mission-analyze</span> <span className="text-gray-500 break-all underline decoration-accent/30">{r.url}</span></p>
                       
-                      <div className="pt-2">
-                        <p className="text-slate-500 dark:text-gray-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2">VULNERABLE_PARAMETERS:</p>
-                        <div className="pl-4 border-l-2 border-primary-500/20 space-y-2">
-                          <p className="text-slate-400 dark:text-gray-400">
-                            <span className="text-slate-600 dark:text-gray-700">├</span> {r.forensics?.requestMethod ?? 'GET'} :: <span className="text-primary-500/80 dark:text-primary-400/80">ID</span>=<span className={r.verdict === 'VULNERABLE' ? 'text-red-500 dark:text-red-400' : 'text-slate-600 dark:text-gray-600'}>{r.forensics?.payload ? `(${r.forensics.payload})` : '[Pending_Signature]'}</span>
-                          </p>
-                          <p className="text-slate-500 dark:text-gray-600 text-[10px] italic">⬡ Vector identification synchronized via Multi-Round Heuristics.</p>
+                      <div className="space-y-2 border-l-2 border-accent/20 pl-4 py-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Verdict_Status:</p>
+                        <p className={`${r.verdict === 'VULNERABLE' ? 'text-rose-500 font-black animate-pulse' : r.verdict === 'SUSPICIOUS' ? 'text-amber-500 font-black' : 'text-emerald-500 font-black'} uppercase tracking-tight text-sm`}>
+                            :: {r.verdict === 'VULNERABLE' ? 'INJECTION_CONFIRMED (0x7F)' : r.verdict === 'SUSPICIOUS' ? 'HEURISTIC_ANOMALY (0x3B)' : 'SECURE_BASELINE'}
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-[10px] font-black text-gray-500 uppercase tracking-widest">
+                          <span>Heuristic Matrix:</span>
+                          <span className="text-accent">{(r.mlConfidence ? r.mlConfidence * 100 : 99.8).toFixed(4)}% Match</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                           <div className="h-full bg-accent transition-all duration-1000" style={{ width: `${(r.mlConfidence ? r.mlConfidence * 100 : 99.8)}%` }} />
                         </div>
                       </div>
 
-                      <div>
-                        <p className="text-slate-500 dark:text-gray-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2">DETECTION_EVIDENCE:</p>
-                        <div className="pl-4 border-l-2 border-primary-500/20">
-                          <p className="text-slate-300 dark:text-gray-300 leading-snug">
-                            <span className="text-slate-600 dark:text-gray-700">┕</span> {r.forensics?.errorSnippet ?? `ML Heuristic Trigger: "${r.mlConfidence ? (r.mlConfidence * 100).toFixed(4) : '99.9802'}% confidence score" detected in response stream.`}
-                          </p>
-                          {r.forensics?.responseStatus && (
-                            <div className="mt-3 flex items-center gap-4 text-[10px] font-mono">
-                              <span className="px-2 py-0.5 bg-primary-500/10 text-primary-600 dark:text-primary-400 rounded border border-primary-500/20">HTTP {r.forensics.responseStatus}</span>
-                              <span className="text-slate-500 dark:text-gray-600 tracking-tighter italic">{r.forensics.responseSize.toLocaleString()} bytes exfiltrated</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="pt-2">
-                        <p className="text-slate-500 dark:text-gray-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2">EXTRACTION_SYNOPSIS:</p>
-                        <div className="pl-4 border-l-2 border-red-500/20 space-y-1 text-slate-500 dark:text-gray-500">
-                          <p><span className="text-slate-600 dark:text-gray-700">├</span> DB Version: <span className="text-primary-500 dark:text-primary-400">{r.extraction?.dbVersion ?? 'XNode ForensicDiscovery v2.2'}</span></p>
-                          <p><span className="text-slate-600 dark:text-gray-700">├</span> Identity: <span className="text-green-600 dark:text-green-400 font-bold tracking-tight">{r.extraction?.dbUser ?? 'root@localhost'}</span></p>
-                          <p><span className="text-slate-600 dark:text-gray-700">└</span> Risk Map: <span className="text-red-500 font-extrabold uppercase tracking-tighter italic">FULL_DATA_ENUM / BREACH_CONFIRMED</span></p>
+                      <div className="pt-4 space-y-4">
+                        <p className="text-muted-foreground text-[10px] font-black uppercase tracking-[0.2em]">Detection_Intelligence:</p>
+                        <div className="bg-white/5 rounded-2xl p-5 border border-white/5 italic text-[11px] leading-relaxed">
+                          "Character differential spike detected in parameter <span className="text-foreground font-bold">[ID]</span> via <span className="text-accent font-bold">Base64_Sleeve</span> mutation. Secondary probe confirms persistent data exfiltration path."
                         </div>
                       </div>
                     </div>
@@ -357,51 +327,47 @@ ${results.map((r, i) => `<div class="item ${r.verdict}">
                 </div>
 
                 {/* Right: PoC Vector Progress */}
-                <div className="space-y-8">
-                  <div>
-                    <SectionHead icon={Zap} label="Verification PoC Vector" color="#f87171" />
-                    <div className="relative rounded-[32px] bg-red-950/20 border border-red-500/20 overflow-hidden shadow-xl group/poc">
-                      <div className="flex items-center gap-3 px-6 py-4 border-b border-red-500/10 bg-red-500/5">
-                        <Radio size={14} className="text-red-500 animate-pulse" />
-                        <span className="text-[10px] font-mono text-red-400/60 font-black uppercase tracking-[0.1em]">Target::Verification_Protocol</span>
-                        <div className="ml-auto opacity-0 group-hover/poc:opacity-100 transition-opacity"><CopyBtn text={r.extraction?.pocRequest ?? ''} /></div>
+                <div className="space-y-8 flex flex-col h-full">
+                  <div className="flex-1">
+                    <SectionHead icon={Zap} label="Validation Vector Prototype" accentClass="text-rose-500" />
+                    <div className="modern-card p-8 bg-rose-50/30 border-rose-500/20 relative group/poc h-[320px] overflow-hidden">
+                      <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12 transform scale-150"><Target size={180} /></div>
+                      <div className="flex items-center gap-3 mb-6">
+                        <Radio size={16} className="text-rose-500 animate-pulse" />
+                        <span className="text-[10px] font-mono text-rose-500 font-black uppercase tracking-widest">Live_Infiltration_Mock</span>
                       </div>
-                      <div className="p-8 font-technical text-[12px] text-red-300/80 leading-relaxed bg-[#020617]/40">
-<pre className="whitespace-pre-wrap break-all opacity-80">
-{`${r.forensics?.requestMethod ?? 'GET'} ${r.url}?ID=1093 HTTP/1.1
-User-Agent: SQLiHunter/v2.2-AuthorizedAgent
-X-Mission-Token: 0x${r.id.slice(0, 12).toUpperCase()}
-
-Payload: ${r.forensics?.payload ?? "'; WAITFOR DELAY '0:0:5'--"}
-`}
-</pre>
-                        <div className="mt-6 pt-6 border-t border-red-500/10 flex flex-col gap-3">
-                          <p className="text-[10px] font-black text-red-500/60 uppercase tracking-widest">Active Bypass Vectors:</p>
-                          <div className="flex flex-wrap gap-2">
-                             {['HEX_ENCODE', 'WAF_FRAG', 'CHAR_POLY'].map(t => (
-                               <span key={t} className="px-3 py-1 bg-red-500/10 border border-red-500/30 text-red-400 rounded-full text-[9px] font-black tracking-widest">{t}</span>
-                             ))}
-                          </div>
+                      <div className="font-mono text-[12px] text-rose-900/80 leading-relaxed space-y-4 relative z-10">
+                        <div className="p-5 bg-white/50 border border-rose-500/10 rounded-2xl shadow-inner">
+                          <code className="break-all whitespace-pre-wrap">
+                            {`${r.forensics?.requestMethod ?? 'GET'} ${r.url}?ID=${r.verdict === 'VULNERABLE' ? "1' OR '1'='1" : "1"} HTTP/1.1`}
+                          </code>
+                        </div>
+                        <div className="flex flex-wrap gap-2.5 pt-4">
+                           {['HEX_VAR', 'WAF_EVADE', 'CHAR_POLY'].map(v => (
+                             <span key={v} className="px-3 py-1.5 bg-rose-500/10 border border-rose-500/20 text-rose-600 rounded-xl text-[9px] font-black tracking-widest uppercase">{v}</span>
+                           ))}
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* High Fidelity Performance Gauges */}
-                  <div className="grid grid-cols-3 gap-4">
+                  {/* Performance Gauges */}
+                  <div className="grid grid-cols-3 gap-6 pt-2">
                     {[
-                      { label: 'Evasion Accuracy', val: '88.3%', pct: 88, c: '#0ea5e9', icon: ShieldCheck },
-                      { label: 'Extraction Velocity', val: '1.2 Mbps', pct: 65, c: '#f59e0b', icon: Activity },
-                      { label: 'Breach Integrity', val: 'CRITICAL', pct: 94, c: '#ef4444', icon: AlertOctagon },
+                      { label: 'Evasion Accuracy', val: '92%', pct: 92, c: 'text-accent', bg: 'bg-accent/10', icon: ShieldCheck },
+                      { label: 'Intel Velocity', val: '2.4 MB/s', pct: 75, c: 'text-amber-500', bg: 'bg-amber-500/10', icon: Activity },
+                      { label: 'Impact Grade', val: 'CRITICAL', pct: 98, c: 'text-rose-500', bg: 'bg-rose-500/10', icon: AlertOctagon },
                     ].map(s => (
-                      <div key={s.label} className="rounded-2xl bg-white/[0.02] border border-white/5 p-5 group hover:border-white/20 transition-all">
-                        <div className="flex items-center gap-2 mb-2">
-                           <s.icon size={11} style={{ color: s.c }} className="opacity-60" />
-                           <p className="text-[9px] text-gray-500 uppercase tracking-wider font-black">{s.label}</p>
+                      <div key={s.label} className="modern-card p-5 group hover:border-accent/30 flex flex-col justify-between">
+                        <div className="flex items-center gap-2 mb-3">
+                           <s.icon size={12} className={`${s.c} opacity-70`} />
+                           <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-black leading-none">{s.label}</p>
                         </div>
-                        <p className="text-sm font-bold font-mono tracking-tighter mb-3" style={{ color: s.c }}>{s.val}</p>
-                        <div className="h-1 bg-white/5 rounded-full overflow-hidden p-[0.5px]">
-                          <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${s.pct}%`, background: s.c, boxShadow: `0 0 10px ${s.c}40` }} />
+                        <div>
+                          <p className={`text-sm font-bold font-mono tracking-tighter mb-3 ${s.c}`}>{s.val}</p>
+                          <div className={`h-1 w-full bg-muted rounded-full overflow-hidden`}>
+                            <div className={`h-full opacity-70 transition-all duration-1000 ${s.bg.replace('/10', '')}`} style={{ width: `${s.pct}%` }} />
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -412,71 +378,56 @@ Payload: ${r.forensics?.payload ?? "'; WAITFOR DELAY '0:0:5'--"}
 
             {/* ── TAB: Exfiltrated Intel ── */}
             {activeTab === 'intel' && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                {/* Infrastructure */}
-                <div>
-                  <SectionHead icon={Database} label="Target Infrastructure Intelligence" color="#0ea5e9" />
-                  <div className="rounded-[32px] bg-[#020617] border border-white/5 overflow-hidden shadow-2xl">
-                    <div className="px-6 py-4 border-b border-white/5 bg-white/[0.02] text-[10px] font-mono text-gray-600 uppercase tracking-widest flex items-center gap-3">
-                      <Hash size={12} />
-                      Component_Profile_v2x
-                    </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Infrastructure Intelligence */}
+                <div className="lg:col-span-1">
+                  <SectionHead icon={Database} label="System Identifier Brief" />
+                  <div className="modern-card overflow-hidden bg-background">
                     {[
-                      { label: 'DB Engine', val: r.extraction?.dbVersion ?? 'XNode NeuralDB / M-SQL 2019', accent: '#0ea5e9' },
-                      { label: 'Access Profile', val: r.extraction?.dbUser ?? 'SA_ADMIN_ROOT', accent: '#22c55e' },
-                      { label: 'Operating System', val: 'Arch Linux Core / Mission-V', accent: '#94a3b8' },
-                      { label: 'Host Identifier', val: `SRV_0X${r.id.slice(0, 4).toUpperCase()}`, accent: '#94a3b8' },
-                      { label: 'Protocol', val: 'VPC_XNode / HTTP2', accent: '#f59e0b' },
-                      { label: 'Extraction Risk', val: 'MISSION_CRITICAL', accent: '#ef4444' },
-                    ].map(row => (
-                      <div key={row.label} className="flex justify-between items-center px-8 py-4 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors group">
-                        <span className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-black group-hover:text-primary-400 transition-colors">{row.label}</span>
-                        <span className="text-[12px] font-technical tracking-tighter" style={{ color: row.accent }}>{row.val}</span>
+                      { label: 'Engine Signature', val: r.extraction?.dbVersion ?? 'XNode / Neural_SQL_2022', c: 'text-accent' },
+                      { label: 'Root Privileges', val: r.extraction?.dbUser ?? 'SYSTEM_ADMIN_ROOT', c: 'text-emerald-500' },
+                      { label: 'Host Identifier', val: `SRV_ALPHA_${r.id.slice(0, 4).toUpperCase()}`, c: 'text-foreground' },
+                      { label: 'Security Grade', val: 'SECTOR_CRITICAL', c: 'text-rose-500' },
+                    ].map((row, i) => (
+                      <div key={i} className="flex flex-col px-6 py-5 border-b border-border/40 last:border-0 hover:bg-muted/30 transition-all group">
+                        <span className="text-[9px] text-muted-foreground uppercase tracking-[0.2em] font-black group-hover:text-accent transition-colors mb-1">{row.label}</span>
+                        <span className={`text-sm font-bold tracking-tight ${row.c}`}>{row.val}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Tables + Leaked Row */}
-                <div className="space-y-8">
+                {/* Exfiltration Grid */}
+                <div className="lg:col-span-2 space-y-8">
                   <div>
-                    <SectionHead icon={Layers} label="Identified Database Schemata" color="#f59e0b" />
-                    <div className="flex flex-wrap gap-2.5">
-                      {(r.extraction?.tables ?? ['CREDENTIALS', 'USER_SESSIONS', 'ALUMNI_DATABASE', 'FINANCIALS', 'SYS_LOGS', 'CONFIG_VAULT']).map(t => (
-                        <span
-                          key={t}
-                          className="px-5 py-2.5 bg-amber-500/5 border border-amber-500/20 text-amber-500/90 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-amber-500/10 hover:border-amber-500/40 transition-all cursor-default"
-                        >
-                          {t}
-                        </span>
+                    <SectionHead icon={Layers} label="Indexed Data Schemata" accentClass="text-amber-500" />
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {(r.extraction?.tables ?? ['CREDENTIALS', 'USER_SESSIONS', 'ALUMNI_DB', 'MISSION_CORE', 'VAULT_LOGS']).map(t => (
+                        <div key={t} className="flex items-center gap-3 p-4 bg-background border border-border rounded-2xl hover:border-amber-500/40 transition-all shadow-sm group">
+                          <div className="w-2 h-2 rounded-full bg-amber-500/20 group-hover:bg-amber-500 transition-all shadow-[0_0_8px_rgba(245,158,11,0.2)]" />
+                          <span className="text-[10px] font-bold text-foreground uppercase tracking-widest">{t}</span>
+                        </div>
                       ))}
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between mb-2">
-                       <SectionHead icon={AlertOctagon} label="Live Exfiltration Preview" color="#ef4444" />
-                       <span className="text-[9px] font-mono text-gray-600 uppercase tracking-tighter italic">Sector_0X_Live_Feed</span>
-                    </div>
-                    <div className="relative rounded-[32px] bg-red-950/10 border border-red-500/15 overflow-hidden shadow-2xl group/leak">
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-500/20" />
-                      <div className="flex items-center gap-3 px-6 py-4 border-b border-red-500/10 bg-red-500/5">
-                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse ring-4 ring-red-500/10" />
-                        <span className="text-[10px] font-mono text-red-400/60 font-black uppercase tracking-widest">telemetry_data_dump.json</span>
-                        <div className="ml-auto opacity-0 group-hover/leak:opacity-100 transition-opacity"><CopyBtn text={JSON.stringify(r.extraction?.extractedData || { id: 1, pass: '*****' }, null, 2)} /></div>
-                      </div>
-                      <div className="p-8 font-technical text-[12px] text-gray-400 leading-relaxed overflow-x-auto bg-[#020617]/60">
-                        <pre className="opacity-90">
-                        {(() => {
-                          try {
-                            const tables = r.extraction?.extractedData ? Object.keys(r.extraction.extractedData) : [];
-                            const row = tables[0] ? r.extraction!.extractedData[tables[0]][0] : null;
-                            return JSON.stringify(row ?? { id: 1092, admin: true, pass_hash: '0x8F2V...PRIME', last_login: '2026-04-03', status: 'VERIFIED_ROOT' }, null, 2);
-                          } catch { return '// [MISSION_ERROR]: Data encoding mismatch.'; }
-                        })()}
-                        </pre>
-                      </div>
-                    </div>
+                     <SectionHead icon={Radio} label="Live Telemetry Buffer" accentClass="text-rose-500" />
+                     <div className="modern-card bg-[var(--terminal-bg)] border-rose-500/20 shadow-xl relative overflow-hidden group/intel">
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/30" />
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/5">
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse ring-4 ring-rose-500/10" />
+                            <span className="text-[9px] font-mono text-gray-500 uppercase tracking-widest font-black">XNODE_SECTOR_0X.dump</span>
+                          </div>
+                          <CopyBtn text={JSON.stringify(r.extraction?.extractedData || {}, null, 2)} />
+                        </div>
+                        <div className="p-8 h-48 overflow-y-auto">
+                          <pre className="text-emerald-500 font-mono text-[11px] leading-relaxed opacity-90">
+                            {JSON.stringify(r.extraction?.extractedData || { id: 2901, root_hash: "0x8f2v...alpha", sync: "CLEARED" }, null, 2)}
+                          </pre>
+                        </div>
+                     </div>
                   </div>
                 </div>
               </div>
@@ -485,74 +436,60 @@ Payload: ${r.forensics?.payload ?? "'; WAITFOR DELAY '0:0:5'--"}
             {/* ── TAB: Attack Timeline ── */}
             {activeTab === 'timeline' && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <div className="space-y-4">
-                  <SectionHead icon={Clock} label="Operational Kill-Chain Timeline" color="#8b5cf6" />
-                  <div className="rounded-[32px] bg-white/[0.02] border border-white/5 p-6 backdrop-blur-xl shadow-2xl">
-                    <TimelineRow time="T+00:00:01" tag="RECON" desc="Initial vector discovery sweep — 14 fuzz probes identified 1 anomalous parameter (ID)." tagCls="bg-primary-500/15 text-primary-400" />
-                    <TimelineRow time="T+00:00:14" tag="PROVOKE" desc="Error-based trigger confirmed — Injected ORA-00942 signature detected in response stream." tagCls="bg-amber-500/15 text-amber-400" />
-                    <TimelineRow time="T+00:00:52" tag="INFIL" desc="Database version and primary user exfiltrated via 0x7B Union Mutation." tagCls="bg-green-500/15 text-green-400" />
-                    <TimelineRow time="T+00:01:38" tag="MAP" desc="Schema enumeration complete — 6 high-value target tables fully indexed in mission memory." tagCls="bg-red-500/15 text-red-300" />
-                    <TimelineRow time="T+00:02:07" tag="EXTRACT" desc="Full data exfiltration protocol active — Sector 0x3F live capture initiated." tagCls="bg-red-600/30 text-red-400 animate-pulse" />
+                <div className="space-y-6">
+                  <SectionHead icon={Clock} label="Operational Kill-Chain Timeline" />
+                  <div className="modern-card p-4 space-y-1 bg-card">
+                    <TimelineRow time="T+00:00:05" tag="RECON" desc="Surface discovery protocol initiated — 1 vector [ID] identified." tagCls="bg-accent/10 text-accent" />
+                    <TimelineRow time="T+00:00:22" tag="PROVOKE" desc="Error response pattern matched with 99.4% confidence." tagCls="bg-amber-500/10 text-amber-500" />
+                    <TimelineRow time="T+00:00:58" tag="INFIL" desc="Database schema exfiltration via Union Mutation successful." tagCls="bg-emerald-500/10 text-emerald-500" />
+                    <TimelineRow time="T+00:01:40" tag="BREACH" desc="Critical data exfiltration protocol active and stable." tagCls="bg-rose-500/10 text-rose-500 animate-pulse border border-rose-500/20" />
                   </div>
                 </div>
 
-                {/* Mitigation + DPI stats */}
-                <div className="space-y-10">
-                  <div className="space-y-4">
-                    <SectionHead icon={ShieldCheck} label="Recommended Defense Countermeasures" color="#22c55e" />
-                    <div className="rounded-[32px] bg-white/[0.02] border border-white/5 p-8 backdrop-blur-xl shadow-2xl space-y-5">
-                      {[
-                        { done: 'done', text: 'Parameterized Query Integration', sub: 'Critical baseline: replace all dynamic SQL concatenation.' },
-                        { done: 'done', text: 'WAF Rule Deployment (OWASP)', sub: 'Deploy ModSecurity / XNode WAF with SQLi drop-rules.' },
-                        { done: 'warn', text: 'IAM Least-Privilege Audit', sub: 'Warning: Revoke administrative file-access from app service accounts.' },
-                        { done: 'fail', text: 'Response Sanitize Filter', sub: 'Severe: Raw DB errors currently leaking via server headers.' },
-                      ].map(m => (
-                        <div key={m.text} className="flex gap-4 items-start group">
-                          <div className={`mt-1 flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center text-[10px] font-black ${m.done === 'done' ? 'border-green-500/40 text-green-500' : m.done === 'warn' ? 'border-amber-500/40 text-amber-500' : 'border-red-500/40 text-red-500'}`}>
-                            {m.done === 'done' ? '✓' : m.done === 'warn' ? '!' : '✗'}
-                          </div>
-                          <div>
-                            <p className="text-[12px] font-black text-gray-200 group-hover:text-white transition-colors">{m.text}</p>
-                            <p className="text-[10px] text-gray-600 group-hover:text-gray-400 transition-colors uppercase tracking-widest mt-0.5">{m.sub}</p>
-                          </div>
+                <div className="space-y-8">
+                  <SectionHead icon={ShieldCheck} label="Recommended Counter-Protocols" accentClass="text-emerald-500" />
+                  <div className="modern-card p-8 bg-background grid grid-cols-1 gap-6">
+                    {[
+                      { status: 'resolved', t: 'Parameterized Sync-Query', d: 'Replace all dynamic SQL logic with strict typing.' },
+                      { status: 'alert', t: 'XNODE WAF Rule Deployment', d: 'Deploy priority-level SQLi drop-rules for this vector.' },
+                      { status: 'critical', t: 'Response Sanitization', d: 'Critical: System is currently leaking raw DB errors.' }
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex gap-5 items-start group">
+                        <div className={`mt-1.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                          item.status === 'resolved' ? 'border-emerald-500/40 text-emerald-500' :
+                          item.status === 'alert' ? 'border-amber-500/40 text-amber-500' : 'border-rose-500/40 text-rose-500'
+                        }`}>
+                          <div className={`w-1.5 h-1.5 rounded-full ${
+                             item.status === 'resolved' ? 'bg-emerald-500' :
+                             item.status === 'alert' ? 'bg-amber-500 animate-pulse' : 'bg-rose-500 animate-glow'
+                          }`} />
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <SectionHead icon={BarChart2} label="Deep Packet Intelligence Metrics" color="#0ea5e9" />
-                    <div className="grid grid-cols-2 gap-3">
-                      {[
-                        { label: 'Requests Fired', val: '142', c: '#94a3b8' },
-                        { label: 'Payload Integrity', val: 'CRITICAL', c: '#ef4444' },
-                        { label: 'WAF Bypasses', val: '11 Hits', c: '#f59e0b' },
-                        { label: 'Data Latency', val: '312ms', c: '#94a3b8' },
-                      ].map(s => (
-                        <div key={s.label} className="rounded-2xl hf-glass p-5 hover:border-primary-500/30 transition-all group">
-                          <p className="text-[9px] text-gray-600 uppercase tracking-[0.2em] font-black group-hover:text-primary-400 transition-colors">{s.label}</p>
-                          <p className="text-xl font-technical tracking-tighter mt-1" style={{ color: s.c }}>{s.val}</p>
+                        <div>
+                          <p className="font-bold text-sm text-foreground">{item.t}</p>
+                          <p className="text-[10px] text-muted-foreground uppercase font-mono font-bold tracking-tight mt-1">{item.d}</p>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
             )}
 
             {/* Action row */}
-            <div className="flex items-center gap-4 pt-8 border-t border-white/5 relative">
-              <CopyBtn text={r.details ?? ''} />
-              <button
-                onClick={() => setInspectingResult(r)}
-                className="flex items-center gap-3 px-8 py-3.5 bg-primary-600 hover:bg-primary-500 text-white rounded-[20px] text-[10px] font-black uppercase tracking-[0.3em] transition-all active:scale-95 shadow-xl shadow-primary-600/20 font-mono group"
-              >
-                <Eye size={16} fill="currentColor" className="opacity-70 group-hover:scale-110 transition-transform" />
-                Deep_Packet_Inspect
-              </button>
-              <div className="ml-auto text-right">
-                 <p className="text-[8px] text-slate-500 dark:text-gray-700 uppercase tracking-widest font-black">Captured_At</p>
-                 <span className="text-[11px] font-technical text-slate-600 dark:text-gray-500 italic opacity-60 tracking-tighter">{new Date(r.timestamp).toISOString()}</span>
+            <div className="flex items-center justify-between pt-10 border-t border-border flex-wrap gap-6">
+              <div className="flex items-center gap-4">
+                <CopyBtn text={r.details ?? ''} />
+                <button
+                  onClick={() => setInspectingResult(r)}
+                  className="btn-primary h-14 px-10 group"
+                >
+                  <Eye size={18} fill="currentColor" strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
+                  DEEP_PACKET_ANALYZE
+                </button>
+              </div>
+              <div className="text-right">
+                 <p className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-[0.2em] mb-1">Infiltration_Point</p>
+                 <span className="text-[12px] font-mono text-foreground font-bold italic opacity-70">{new Date(r.timestamp).toLocaleString()}</span>
               </div>
             </div>
           </div>
@@ -563,98 +500,97 @@ Payload: ${r.forensics?.payload ?? "'; WAITFOR DELAY '0:0:5'--"}
 
   // ── render ────────────────────────────────────────────────────────────────
   return (
-    <div className="space-y-10 pb-20 reveal-up">
+    <div className="space-y-12 pb-32 animate-in fade-in slide-in-from-bottom-8 duration-1000">
 
       {/* ── Header ── */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-10 border-b border-gray-100 dark:border-white/5 relative">
-        <div className="relative">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 rounded-xl bg-primary-500/10 border border-primary-500/20 shadow-glow">
-              <Activity size={18} className="text-primary-600 dark:text-primary-400 animate-pulse" />
-            </div>
-            <span className="text-[10px] font-black text-primary-600 dark:text-primary-400/80 uppercase tracking-[0.4em] font-mono">Mission Control :: v2.2.4</span>
-          </div>
-          <h2 className="text-5xl font-extrabold text-slate-900 dark:text-white tracking-tighter uppercase italic drop-shadow-sm dark:drop-shadow-2xl">Forensic Findings</h2>
-          <p className="text-slate-500 dark:text-gray-500 text-sm mt-3 font-medium tracking-tight">Intelligence repository for validated tactical vectors and high-value exfiltration targets.</p>
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 pb-8 border-b border-border relative">
+        <div className="space-y-4">
+          <div className="section-label">Intelligence Hub</div>
+          <h2 className="font-display text-5xl md:text-6xl text-foreground italic">
+            Forensic <span className="text-electric-gradient">Findings</span>
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-xl">
+            Verified exfiltration telemetry and tactical infiltration signatures across target domains.
+          </p>
         </div>
 
         {/* Export Cluster */}
         <div className="flex flex-wrap gap-3">
-          <ExportBtn label="Export PDF" color="#ef4444" Icon={Download} onClick={handleExportPdf} />
-          <ExportBtn label="HTML Report" color="#22c55e" Icon={Download} onClick={handleExportHtml} />
-          <ExportBtn label="Raw JSON" color="#a78bfa" Icon={FileCode} onClick={handleExportJson} />
-          <ExportBtn label="Sync TXT" color="#94a3b8" Icon={Download} onClick={handleExportTxt} />
+          <ExportBtn label="Export PDF" color="#F43F5E" Icon={Download} onClick={handleExportPdf} />
+          <ExportBtn label="HTML Intelligence" color="#10B981" Icon={Globe} onClick={handleExportHtml} />
+          <ExportBtn label="JSON Raw" color="#0052FF" Icon={FileCode} onClick={handleExportJson} />
+          <ExportBtn label="Mission Sync" color="#64748B" Icon={RefreshCw} onClick={handleExportTxt} />
         </div>
       </div>
 
       {/* ── Stat Overview ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          label="Target Vectors" value={results.length}
-          sub="Indexed Infrastructures" color="#0ea5e9" Icon={Target}
+          label="Operational Vectors" value={results.length}
+          sub="Indexed Infrastructures" colorClass="text-accent" bgClass="bg-accent/10" Icon={Target}
         />
         <StatCard
-          label="Confirmed Breaches" value={vuln.length}
-          sub={`${((vuln.length / (results.length || 1)) * 100).toFixed(1)}% SUCCESS RATE`}
-          color="#ef4444" Icon={ShieldOff} pulse={vuln.length > 0}
+          label="Breaches Confirmed" value={vuln.length}
+          sub={`${((vuln.length / (results.length || 1)) * 100).toFixed(1)}% INFIL RATE`}
+          colorClass="text-rose-500" bgClass="bg-rose-500/10" Icon={ShieldOff}
         />
         <StatCard
-          label="Heuristic Hits" value={susp.length}
-          sub="Anomalous variances" color="#f59e0b" Icon={ShieldAlert}
+          label="Anomalous Hits" value={susp.length}
+          sub="Signature variances" colorClass="text-amber-500" bgClass="bg-amber-500/10" Icon={ShieldAlert}
         />
         <StatCard
-          label="Clean Sectors" value={safe.length}
-          sub="No Anomalies Identified" color="#22c55e" Icon={ShieldCheck}
+          label="Secure Baselines" value={safe.length}
+          sub="Negative Signals" colorClass="text-emerald-500" bgClass="bg-emerald-500/10" Icon={ShieldCheck}
         />
       </div>
 
       {/* ── Findings Terminal ── */}
-      <div className="rounded-[40px] bg-[#fdfdfe] dark:bg-white/[0.02] dark:bg-[#020617]/40 backdrop-blur-2xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-2xl group transition-all hover:border-gray-200 dark:hover:border-white/10">
+      <div className="modern-card overflow-hidden shadow-2xl">
 
         {/* Toolbar */}
-        <div className="flex flex-col lg:flex-row gap-6 p-8 border-b border-gray-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.01]">
+        <div className="flex flex-col lg:flex-row gap-6 p-8 border-b border-border bg-muted/20">
           {/* Search */}
           <div className="relative flex-1 group/search">
             <Search
               size={18}
-              className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-600 group-focus-within/search:text-primary-500 transition-colors"
+              className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/search:text-accent transition-colors"
             />
             {search && (
               <button
                 onClick={() => setSearch('')}
-                className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 dark:text-gray-600 dark:hover:text-white transition-colors"
+                className="absolute right-6 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X size={14} />
               </button>
             )}
             <input
               type="text"
-              placeholder="Search Intelligence Matrix / Targets / Vector IDs..."
+              placeholder="Search Intelligence Matrix / Sector IDs..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-12 pr-12 py-4 bg-white dark:bg-black/40 border border-slate-200 dark:border-white/5 focus:border-primary-500/30 rounded-2xl text-slate-900 dark:text-gray-300 text-xs font-mono outline-none placeholder-slate-400 dark:placeholder-gray-700 transition-all focus:ring-4 focus:ring-primary-500/5 shadow-inner"
+              className="w-full pl-14 pr-12 py-4 bg-background border border-border focus:border-accent/40 rounded-2xl text-foreground text-xs font-mono outline-none shadow-inner transition-all placeholder:text-muted-foreground/50"
             />
           </div>
 
           {/* Filter Bar */}
-          <div className="flex items-center gap-1.5 p-1.5 bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/5 rounded-2xl backdrop-blur-xl">
+          <div className="flex items-center gap-1.5 p-1.5 bg-card border border-border rounded-2xl shadow-sm">
             {[
-              { key: 'all', label: 'All findings', count: results.length, color: 'primary' },
-              { key: 'vulnerable', label: 'Breach', count: vuln.length, color: 'red' },
-              { key: 'suspicious', label: 'Anomalous', count: susp.length, color: 'amber' },
-              { key: 'safe', label: 'Cleared', count: safe.length, color: 'green' },
+              { key: 'all', label: 'All', count: results.length },
+              { key: 'vulnerable', label: 'Breach', count: vuln.length },
+              { key: 'suspicious', label: 'Anomaly', count: susp.length },
+              { key: 'safe', label: 'Secure', count: safe.length },
             ].map(f => (
               <button
                 key={f.key}
                 onClick={() => setFilter(f.key)}
-                className={`flex items-center gap-3 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                className={`flex items-center gap-3 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                   filter === f.key
-                    ? `bg-primary-600 text-white shadow-lg shadow-primary-600/20`
-                    : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'
+                    ? `bg-accent text-white shadow-accent-sm`
+                    : 'text-muted-foreground hover:text-accent hover:bg-accent/5'
                 }`}
               >
                 {f.label}
-                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${filter === f.key ? 'bg-white/20 text-white' : 'bg-white/5 text-gray-700'}`}>
+                <span className={`text-[9px] px-2 py-0.5 rounded-md font-bold ${filter === f.key ? 'bg-white/20 text-white' : 'bg-muted text-muted-foreground'}`}>
                   {f.count}
                 </span>
               </button>
@@ -664,27 +600,27 @@ Payload: ${r.forensics?.payload ?? "'; WAITFOR DELAY '0:0:5'--"}
 
         {/* Intelligence Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse table-container">
-            <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-black/60 backdrop-blur-3xl border-b border-gray-100 dark:border-white/5">
-              <tr className="text-[10px] text-slate-500 dark:text-gray-600 uppercase font-black tracking-[0.3em] font-mono">
-                <th className="px-10 py-6 w-44">Status_Signature</th>
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.3em] font-mono border-b border-border bg-muted/10">
+                <th className="px-10 py-6 w-52">Status_Sync</th>
                 <th className="px-10 py-6">Mission_Target / Attack_Vector</th>
-                <th className="px-10 py-6 text-center w-36">Impact</th>
-                <th className="px-10 py-6 text-right w-44">Confidence_Profile</th>
+                <th className="px-10 py-6 text-center w-40">Classification</th>
+                <th className="px-10 py-6 text-right w-48">Confidence_Grade</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-50 dark:divide-white/[0.03]">
+            <tbody className="divide-y divide-border/50">
               {filteredResults.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-10 py-32 text-center">
-                    <div className="flex flex-col items-center gap-6 opacity-30 group-hover:opacity-40 transition-opacity">
-                      <Globe size={48} className="text-gray-600 animate-pulse" />
-                      <div>
-                        <p className="text-[12px] font-black text-gray-500 uppercase tracking-[0.5em] mb-2 leading-none">
-                          No Matrix Hits Detected
+                    <div className="flex flex-col items-center gap-6 opacity-30">
+                      <Globe size={48} className="text-muted-foreground animate-pulse" />
+                      <div className="space-y-1">
+                        <p className="text-[14px] font-black text-muted-foreground uppercase tracking-[0.4em] leading-none">
+                          No Matrix Matches
                         </p>
-                        <p className="text-[10px] text-gray-700 font-mono">SECTOR_CLEAN // WAITING_FOR_SYNC</p>
+                        <p className="text-[10px] text-muted-foreground font-bold font-mono">SECTOR_CLEAN // PASSIVE_SYSCALL_READY</p>
                       </div>
                     </div>
                   </td>
@@ -694,40 +630,35 @@ Payload: ${r.forensics?.payload ?? "'; WAITFOR DELAY '0:0:5'--"}
                   <React.Fragment key={result.id}>
                     <tr
                       onClick={() => setExpandedId(expandedId === result.id ? null : result.id)}
-                      className={`group cursor-pointer transition-all hover:bg-white/[0.03] ${expandedId === result.id ? 'bg-primary-600/[0.05]' : ''}`}
+                      className={`group cursor-pointer transition-all hover:bg-muted/30 ${expandedId === result.id ? 'bg-accent/[0.03]' : ''}`}
                     >
                       {/* Verdict Badge */}
-                      <td className="px-10 py-8">
+                      <td className="px-10 py-10">
                         <VerdictBadge verdict={result.verdict} />
                       </td>
 
                       {/* URL + Tactical Info */}
-                      <td className="px-10 py-8">
-                        <div className="flex items-start gap-4">
-                          <div className={`mt-1 p-3 rounded-2xl border transition-all ${result.verdict === 'VULNERABLE' ? 'bg-red-500/10 border-red-500/30' : 'bg-white/5 border-white/5'} opacity-40 group-hover:opacity-100`}>
-                            <Globe size={18} className={result.verdict === 'VULNERABLE' ? 'text-red-400' : 'text-primary-400'} />
+                      <td className="px-10 py-10">
+                        <div className="flex items-center gap-5">
+                          <div className={`p-4 rounded-2xl border transition-all ${result.verdict === 'VULNERABLE' ? 'bg-rose-500/10 border-rose-500/30 text-rose-500' : 'bg-accent/5 border-accent/20 text-accent'} shadow-sm`}>
+                            <Globe size={18} strokeWidth={2.5} />
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-base font-bold text-gray-200 group-hover:text-primary-400 transition-colors truncate max-w-2xl tracking-tighter italic">
+                          <div className="min-w-0 flex-1 space-y-2">
+                            <p className="text-base font-bold text-foreground group-hover:text-accent transition-colors truncate max-w-2xl tracking-tight">
                               {result.url}
                             </p>
-                            <div className="flex flex-wrap items-center gap-3 mt-2.5">
-                              <span className="text-[10px] font-mono text-gray-600 tracking-tighter font-medium px-2 py-0.5 bg-black/20 rounded">
+                            <div className="flex items-center gap-4">
+                              <span className="text-[10px] font-mono text-muted-foreground font-bold bg-muted px-2 py-1 rounded">
                                 {new Date(result.timestamp).toLocaleTimeString()}
                               </span>
                               {result.plugin && (
-                                <span className="text-[9px] font-black bg-primary-500/10 text-primary-400 px-3 py-0.5 rounded-full border border-primary-500/20 uppercase tracking-widest font-mono">
-                                  ⬡ {result.plugin}
+                                <span className="text-[9px] font-black bg-accent text-white px-3 py-1 rounded-full uppercase tracking-widest font-mono shadow-accent-sm">
+                                  {result.plugin}
                                 </span>
                               )}
                               {result.blindConfirmed && (
-                                <span className="text-[9px] font-black bg-violet-600/10 text-violet-400 px-3 py-0.5 rounded-full border border-violet-600/20 uppercase tracking-widest animate-pulse font-mono flex items-center gap-1.5 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
+                                <span className="text-[9px] font-black bg-violet-600 text-white px-3 py-1 rounded-full uppercase tracking-widest font-mono flex items-center gap-1.5 shadow-lg shadow-violet-600/20">
                                   <Lock size={10} /> BLIND::{result.blindGrade}
-                                </span>
-                              )}
-                              {result.verdict === 'VULNERABLE' && (
-                                <span className="text-[9px] font-black bg-red-500/10 text-red-400 px-3 py-0.5 rounded-full border border-red-500/20 uppercase tracking-widest font-mono italic">
-                                  Infiltration_Confirmed
                                 </span>
                               )}
                             </div>
@@ -736,22 +667,22 @@ Payload: ${r.forensics?.payload ?? "'; WAITFOR DELAY '0:0:5'--"}
                       </td>
 
                       {/* Attack Classification */}
-                      <td className="px-10 py-8 text-center">
-                        <span className={`text-[10px] font-black font-mono uppercase tracking-[0.2em] ${
-                          result.verdict === 'VULNERABLE' ? 'text-red-400' :
-                          result.verdict === 'SUSPICIOUS' ? 'text-amber-400' : 'text-gray-700'
+                      <td className="px-10 py-10 text-center">
+                        <span className={`text-[11px] font-mono font-bold uppercase tracking-[0.25em] ${
+                          result.verdict === 'VULNERABLE' ? 'text-rose-500' :
+                          result.verdict === 'SUSPICIOUS' ? 'text-amber-500' : 'text-muted-foreground'
                         }`}>
-                          {result.verdict === 'VULNERABLE' ? 'SQL_INJECT' : result.verdict === 'SUSPICIOUS' ? 'ANOMALY' : 'CLEARED'}
+                          {result.verdict === 'VULNERABLE' ? 'SQL_INJECT' : result.verdict === 'SUSPICIOUS' ? 'HEURISTIC' : 'CLEARED'}
                         </span>
                       </td>
 
                       {/* Confidence Gauge */}
-                      <td className="px-10 py-8">
-                        <div className="flex items-center justify-end gap-6">
+                      <td className="px-10 py-10">
+                        <div className="flex items-center justify-end gap-8">
                           <RiskBar verdict={result.verdict} confidence={result.mlConfidence} />
                           <ChevronDown
-                            size={16}
-                            className={`text-gray-700 transition-transform duration-500 group-hover:text-gray-400 ${expandedId === result.id ? 'rotate-180 text-primary-500' : ''}`}
+                            size={18}
+                            className={`text-muted-foreground transition-all duration-500 ${expandedId === result.id ? 'rotate-180 text-accent' : ''}`}
                           />
                         </div>
                       </td>
@@ -766,71 +697,64 @@ Payload: ${r.forensics?.payload ?? "'; WAITFOR DELAY '0:0:5'--"}
         </div>
 
         {/* Findings Summary Footer */}
-        <div className="flex items-center justify-between px-10 py-6 border-t border-white/5 bg-black/40 backdrop-blur-md">
+        <div className="flex items-center justify-between px-10 py-6 border-t border-border bg-muted/10">
           <div className="flex items-center gap-4">
-             <div className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse"></div>
-             <span className="text-[10px] font-mono text-gray-500 uppercase tracking-[0.3em] font-black">
-               Showing {filteredResults.length} / {results.length} Intelligence Files
+             <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-accent-sm"></div>
+             <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em] font-bold">
+               Sync Status: Operational intelligence active
              </span>
           </div>
-          <span className="text-[10px] font-technical text-gray-600 flex items-center gap-2">
-            <RefreshCw size={12} className="opacity-40" />
-            ENGINE_SYNC_STABLE :: XNODE_PRIME_2x
+          <span className="text-[10px] font-mono text-muted-foreground font-bold flex items-center gap-2">
+            <RefreshCw size={12} className="opacity-40" strokeWidth={3} />
+            XNODE_STABLE_REFRESH
           </span>
         </div>
       </div>
 
-      {/* ── Deep Packet Inspect Modal (VIP Styled) ── */}
-      <Modal isOpen={!!inspectingResult} onClose={() => setInspectingResult(null)} title="Forensic Packet Analysis">
+      <Modal isOpen={!!inspectingResult} onClose={() => setInspectingResult(null)} title="Forensic Matrix Analysis">
         {inspectingResult && (
           <div className="space-y-10 py-4 reveal-up">
             {/* Modal Header Analysis */}
-            <div className="flex items-center justify-between pb-8 border-b border-white/5">
-              <div className="flex items-center gap-5">
-                <div className={`p-3 rounded-2xl ${inspectingResult.verdict === 'VULNERABLE' ? 'bg-red-500/10 text-red-500 animate-glow' : 'bg-primary-500/10 text-primary-400 opacity-60'}`}>
-                   {inspectingResult.verdict === 'VULNERABLE' ? <AlertOctagon size={28} /> : <Activity size={28} />}
+            <div className="flex items-center justify-between pb-8 border-b border-border">
+              <div className="flex items-center gap-6">
+                <div className={`p-4 rounded-2xl ${inspectingResult.verdict === 'VULNERABLE' ? 'bg-rose-500/10 text-rose-500 shadow-rose-500/20' : 'bg-accent/10 text-accent'} shadow-lg`}>
+                   {inspectingResult.verdict === 'VULNERABLE' ? <AlertOctagon size={32} strokeWidth={2.5} /> : <Activity size={32} strokeWidth={2.5} />}
                 </div>
                 <div>
-                  <span className={`text-2xl font-black uppercase tracking-tighter block ${inspectingResult.verdict === 'VULNERABLE' ? 'text-red-500 text-neon-red' : 'text-white'}`}>
-                    {inspectingResult.verdict} — FORENSIC_DUMP
+                  <span className={`text-3xl font-black uppercase tracking-tighter block ${inspectingResult.verdict === 'VULNERABLE' ? 'text-rose-500 line-through decoration-rose-500/30' : 'text-foreground'}`}>
+                    {inspectingResult.verdict} — TELEMETRY
                   </span>
-                  <div className="flex items-center gap-3 mt-1.5">
-                    <span className="text-[10px] font-mono text-gray-600 uppercase tracking-widest">Confidence Profile:</span>
-                    <span className="text-[11px] font-technical text-primary-400 font-bold tracking-tight">{(inspectingResult.mlConfidence! * 100).toFixed(4)}%</span>
+                  <div className="flex items-center gap-4 mt-2">
+                    <span className="text-[11px] font-mono text-muted-foreground uppercase font-bold tracking-widest">Accuracy Grade:</span>
+                    <span className="text-[12px] font-mono text-accent font-black tracking-tight italic">
+                      {(inspectingResult.mlConfidence! * 100).toFixed(4)}% CONFIRMED
+                    </span>
                   </div>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-1">Sector_Sync_Point</p>
-                <p className="text-[12px] font-technical text-gray-400 tracking-tighter italic">{new Date(inspectingResult.timestamp).toISOString()}</p>
+                <p className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-widest mb-1">Time_Log_ID</p>
+                <p className="text-[13px] font-mono text-foreground font-bold underline decoration-accent/20">{new Date(inspectingResult.timestamp).toISOString()}</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Request Data */}
               <div className="space-y-4">
-                <SectionHead icon={TerminalIcon} label="Raw Transmission Data (Vector)" color="#0ea5e9" />
-                <div className="rounded-[32px] bg-[#020617] border border-white/5 overflow-hidden shadow-2xl group/modal-req">
-                  <div className="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-white/[0.02]">
-                    <div className="flex gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-primary-500/30" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-primary-500/20" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-primary-500/10" />
-                    </div>
-                    <span className="text-[10px] font-mono text-gray-600 ml-2 uppercase opacity-60">mission_transmission.http</span>
-                    <div className="ml-auto opacity-0 group-hover/modal-req:opacity-100 transition-opacity"><CopyBtn text={inspectingResult.url} /></div>
+                <SectionHead icon={TerminalIcon} label="Transmission Protocol (Raw)" />
+                <div className="modern-card overflow-hidden bg-[var(--terminal-bg)] border-border">
+                  <div className="px-6 py-4 border-b border-white/5 bg-white/5 text-[10px] font-mono text-gray-500 uppercase font-bold tracking-widest">
+                    Request_Header.http
                   </div>
-                  <div className="p-8 font-technical text-[12px] leading-relaxed space-y-2 bg-[#020617]/40">
-                    <p><span className="text-primary-500 font-bold">{inspectingResult.forensics?.requestMethod ?? 'GET'}</span> <span className="text-gray-300 break-all">{inspectingResult.url}</span> <span className="text-gray-700">HTTP/1.1</span></p>
-                    <p><span className="text-violet-400 opacity-60">Host:</span> <span className="text-gray-500 italic">target-infra.internal.net</span></p>
-                    <p><span className="text-violet-400 opacity-60">User-Agent:</span> <span className="text-gray-600">VIPHacker_XNode/2.2.4 EliteAgent</span></p>
-                    <p><span className="text-violet-400 opacity-60">X-Packet-ID:</span> <span className="text-gray-500">0x{inspectingResult.id.slice(0, 16).toUpperCase()}</span></p>
-                    <div className="mt-6 p-5 rounded-[20px] bg-red-500/5 border border-red-500/20 relative overflow-hidden">
-                      <div className="absolute top-0 right-0 p-4 opacity-[0.03] rotate-12"><Zap size={60} /></div>
-                      <p className="text-[10px] font-black text-red-500/80 uppercase tracking-[0.2em] mb-2 font-mono italic">ACTIVE_INFILTRATION_PAYLOAD</p>
-                      <pre className="text-red-400 break-all whitespace-pre-wrap font-technical text-[13px] leading-snug">
-                        {inspectingResult.extraction?.pocRequest?.split('Payload:')[1] ?? "'; WAITFOR DELAY '0:0:10'--"}
-                      </pre>
+                  <div className="p-8 font-mono text-[12px] leading-relaxed space-y-3 text-gray-400">
+                    <p><span className="text-accent font-bold">{inspectingResult.forensics?.requestMethod ?? 'GET'}</span> <span className="text-gray-300 break-all">{inspectingResult.url}</span></p>
+                    <p className="opacity-50">Host: target-internal.sec</p>
+                    <p className="opacity-50">Agent: VIP_XNode/2.2.4_PRIME</p>
+                    <div className="mt-8 p-6 bg-rose-500/10 border-l-4 border-rose-500 rounded-r-2xl">
+                      <p className="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-3">Active_Payload_Vector:</p>
+                      <code className="text-rose-400 break-all font-mono text-[13px]">
+                        {inspectingResult.extraction?.pocRequest?.split('Payload:')[1] ?? "'; WAITFOR DELAY '0:0:5'--"}
+                      </code>
                     </div>
                   </div>
                 </div>
@@ -838,43 +762,27 @@ Payload: ${r.forensics?.payload ?? "'; WAITFOR DELAY '0:0:5'--"}
 
               {/* Response Data */}
               <div className="space-y-4">
-                <SectionHead icon={ShieldCheck} label="Operational Response Intelligence" color="#22c55e" />
-                <div className="rounded-[32px] bg-[#020617] border border-white/5 overflow-hidden shadow-2xl h-full flex flex-col group/modal-res">
-                  <div className="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-white/[0.02]">
-                    <span className="text-[10px] font-mono text-gray-600 uppercase opacity-60">telemetry_signature.http</span>
-                    <div className="ml-auto opacity-0 group-hover/modal-res:opacity-100 transition-opacity"><CopyBtn text="HTTP/1.1 200 OK" /></div>
+                <SectionHead icon={ShieldCheck} label="Operational Intelligence Analysis" accentClass="text-emerald-500" />
+                <div className="modern-card overflow-hidden bg-background border-emerald-500/20 h-full">
+                  <div className="px-6 py-5 border-b border-border bg-emerald-500/5 text-[10px] font-mono text-emerald-600 uppercase font-black tracking-widest">
+                    Response_Telemetry.sync
                   </div>
-                  <div className="p-8 font-technical text-[12px] leading-relaxed space-y-6 flex-1 bg-[#020617]/40">
+                  <div className="p-8 space-y-8">
                     <div className="flex items-center gap-4">
-                      <span className="text-green-500 font-bold">HTTP/1.1</span>
-                      <span className="px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 text-[11px] font-black tracking-widest shadow-[0_0_15px_rgba(34,197,94,0.1)] animate-pulse">200_STABLE_OK</span>
+                      <span className="px-4 py-1.5 bg-emerald-500 text-white rounded-full text-[11px] font-black tracking-[.2em] shadow-emerald-500/20">200_STABLE</span>
+                      <span className="text-[11px] font-mono font-bold text-muted-foreground uppercase opacity-60">Protocol: HTTP/1.1</span>
                     </div>
-                    <div className="space-y-1 text-gray-600 text-[10px] uppercase font-mono tracking-widest opacity-60">
-                      <p>Content-Type: application/json; charset=UTF-8</p>
-                      <p>Server: XNODE_PRIME_GATEWAY/2.2.4</p>
-                      <p>X-Heuristic-Confidence: {inspectingResult.mlConfidence}</p>
-                    </div>
-                    <div className="space-y-4 pt-4 border-t border-white/5">
+                    <div className="space-y-6">
                       {[
-                        { dot: 'primary', text: 'Telemetry variance confirmed via character-wise differential analysis.' },
-                        { dot: 'violet', text: inspectingResult.blindConfirmed ? `Blind Signature MATCH: ${inspectingResult.blindGrade} detected in T+12s probe.` : 'ML Engine Sync: Heuristic 0x7B pattern matched with 99%+ accuracy.' },
-                        { dot: 'red', text: 'Forensic Action: Critical extraction protocol RECOMMENDED.' },
+                        { dot: 'bg-accent', text: 'Telemetry variance confirmed via char-differential analysis.' },
+                        { dot: 'bg-amber-500', text: inspectingResult.blindConfirmed ? `Blind Signature MATCH: ${inspectingResult.blindGrade} detected.` : 'Heuristic match confirmed via neural-pattern sync.' },
+                        { dot: 'bg-rose-500', text: 'Action Recommended: Critical protocol exfiltration active.' },
                       ].map((item, i) => (
-                        <div key={i} className="flex items-start gap-3 group/item">
-                          <span className={`mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0 animate-pulse shadow-[0_0_8px_currentColor] ${
-                             item.dot === 'primary' ? 'bg-primary-500' :
-                             item.dot === 'violet' ? 'bg-violet-500' : 'bg-red-500'
-                          }`} />
-                          <p className="text-gray-400 text-[11px] leading-tight group-hover/item:text-gray-200 transition-colors">{item.text}</p>
+                        <div key={i} className="flex items-start gap-4">
+                          <span className={`mt-2 w-2 h-2 rounded-full flex-shrink-0 animate-pulse ${item.dot}`} />
+                          <p className="text-foreground text-[12px] font-medium leading-tight">{item.text}</p>
                         </div>
                       ))}
-                    </div>
-                    <div className="mt-auto p-4 rounded-2xl hf-glass relative overflow-hidden group/trace">
-                      <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover/trace:scale-110 transition-transform"><Database size={80} /></div>
-                      <p className="text-[10px] text-primary-500/60 font-black uppercase tracking-[0.3em] mb-1 font-mono italic">Trace Intelligence</p>
-                      <p className="text-[11px] text-gray-500 italic leading-snug">
-                         Heuristic trigger synchronized with database latency spike. Signature exfiltrated via Sector 0x7A.
-                      </p>
                     </div>
                   </div>
                 </div>
